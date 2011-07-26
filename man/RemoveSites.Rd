@@ -40,8 +40,8 @@ Returns a list containing the following components:
 \author{Fisher, J.C.}
 
 \seealso{
-\code{\link{read.table}}, \code{\link{variogram}}, \code{gstat},
-\code{predict}, \code{rbga}
+\code{\link{read.table}}, \code{\link{variogram}}, \code{\link{gstat}},
+\code{\link{predict}}, \code{\link{rbga}}, \code{\link{spTransform}}
 }
 
 \examples{
