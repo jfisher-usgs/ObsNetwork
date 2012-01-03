@@ -4,7 +4,7 @@ FitVariogram <- function(obs, model, ...) {
   obj <- gstat(id="observation", formula=observation~1, data=obs)
 
   # Calculate sample variogram from gstat object
-  v <- variogram(obj)
+  v <- gstat::variogram(obj)
 
   # Fit variogram model to sample variogram
   v.fit <- do.call(fit.variogram, append(list(object=v, model=model),

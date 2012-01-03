@@ -1,5 +1,5 @@
 ReadObservations <- function(file, site.var, obs.var, acc.var, lng.var, lat.var,
-                             dt.var, dt.fmt="%Y%m%d",
+                             alt.var, dt.var, dt.fmt="%Y%m%d",
                              projargs="+proj=longlat +datum=NAD83") {
 
   # Read data from file
@@ -8,11 +8,11 @@ ReadObservations <- function(file, site.var, obs.var, acc.var, lng.var, lat.var,
                     allowEscapes=TRUE, flush=TRUE)
 
   # Reduce date frame size
-  obs <- obs[, c(lng.var, lat.var, site.var, dt.var, obs.var, acc.var)]
+  obs <- obs[, c(lng.var, lat.var, site.var, dt.var, obs.var, acc.var, alt.var)]
 
   # Rename variable names
   names(obs) <- c("longitude", "latitude", "site", "datetime", "observation",
-                  "accuracy")
+                  "accuracy", "altitude")
 
   # Convert coordinate reference system
   coordinates(obs) = as.formula("~ longitude + latitude")

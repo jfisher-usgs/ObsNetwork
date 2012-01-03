@@ -37,9 +37,5 @@ BuildGrid <- function(file, lng.var, lat.var, dx=0.03, dy=dx,
                                            ply@coords[, 1], ply@coords[, 2]))
   grd <- grd[is.in.ply]
 
-  # Draw plot
-  x11()
-  plot(grd, asp=1)
-
   grd
 }
