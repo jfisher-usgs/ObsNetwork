@@ -3,6 +3,7 @@ library(lattice)
 library(colorspace)
 library(rgdal)
 library(gstat, pos=match(paste("package", "sp", sep=":"), search()) + 1)
+library(genalg)
 
 library(RSurvey)
 
@@ -22,7 +23,8 @@ obs <- ReadObservations(file=file.obs, x.var="Longitude", y.var="Latitude",
 ###
 
 file.ply <- file.path(dir.path, "SpatialDomain.txt")
-grd <- BuildGrid(file=file.ply, x.var="Longitude", y.var="Latitude", dx=0.03)
+grd.gr <- BuildGrid(file=file.ply, x.var="Longitude", y.var="Latitude", dx=0.01)
+grd.ga <- BuildGrid(file=file.ply, x.var="Longitude", y.var="Latitude", dx=0.03)
 
 ###
 
@@ -45,21 +47,27 @@ RunCrossvalidation(obs, v.fit)
 
 ###
 
-#PlotKriging(obs, v.fit, grd, at.pred=seq(2600, 6000, by=200),
+#PlotKriging(obs, v.fit, grd.gr, at.pred=seq(2600, 6000, by=200),
 #            at.se=seq(30, 70, by=2))
 
 
-PlotKriging(obs, v.fit, grd)
-
-
-#PlotKriging(obs, v.fit, grd, rm.idxs=c(1, 20))
-
-#PlotKriging(obs, v.fit, grd, rm.idxs=50:100)
-
-
+PlotKriging(obs, v.fit, grd.gr)
 
 
 graphics.off()
 
 
+#PlotKriging(obs, v.fit, grd.gr, rm.idxs=c(1, 20))
+
+#PlotKriging(obs, v.fit, grd.gr, rm.idxs=50:100)
+
+###
+
+#ga <- RunGA(obs, v.fit, grd.ga, nsites=3, niters=3, pop.size=200)
+
+ga <- RunGA(obs, v.fit, grd.ga, nsites=10, niters=200, pop.size=200)
+
+
+summary.rbga(ga$ans, echo=TRUE)
+PlotKriging(obs, v.fit, grd.gr, rm.idxs=ga$rm.idxs)
 

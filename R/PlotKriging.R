@@ -22,7 +22,8 @@ PlotKriging <- function(obs, v.fit, grd, rm.idxs, at.pred, at.se,
     obs <- obs[-rm.idxs, ]
 
   # Run geostatistical prediction using ordinary kriging
-  obs.krig <- krige(as.formula("observation~1"), obs, grd, model=v.fit)
+  obs.krig <- krige(as.formula("observation~1"), obs, grd, model=v.fit,
+                    debug.level=debug.level)
   obs.krig[["observation.pred"]] <- obs.krig[["var1.pred"]]
 
   # Calculate standardard error from variance error
