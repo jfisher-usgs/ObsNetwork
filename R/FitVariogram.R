@@ -23,8 +23,7 @@ FitVariogram <- function(obs, model, ...) {
   x11()
   print(plot(v, model=v.fit, col="black", xlim=xlim, ylim=ylim,
              xlab="Lag distance in kilometers",
-             ylab="Semivariance in square kilometers"),
-             scales=list(y=list(rot=90)))
+             ylab="Semivariance in square kilometers"))
 
   invisible(v.fit)
 }

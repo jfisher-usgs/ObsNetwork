@@ -1,4 +1,4 @@
-BuildGrid <- function(file, lng.var, lat.var, dx=0.03, dy=dx,
+BuildGrid <- function(file, x.var, y.var, dx=0.03, dy=dx,
                projargs="+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs") {
 
   # Read data from file
@@ -7,10 +7,10 @@ BuildGrid <- function(file, lng.var, lat.var, dx=0.03, dy=dx,
                     allowEscapes=TRUE, flush=TRUE)
 
   # Reduce date frame size
-  ply <- ply[, c(lng.var, lat.var)]
+  ply <- ply[, c(x.var, y.var)]
 
   # Rename variable names
-  names(ply) <- c("longitude", "latitude")
+  names(ply) <- c("x", "y")
 
   # Convert to spatial points
   ply <- SpatialPoints(ply)
@@ -27,8 +27,8 @@ BuildGrid <- function(file, lng.var, lat.var, dx=0.03, dy=dx,
   yseq <- seq(ylim[1], dy * ceiling(ylim[2] / dy), by=dy)
 
   # Form grid
-  grd <- expand.grid(longitude=xseq, latitude=yseq)
-  coordinates(grd) <- as.formula("~ longitude + latitude")
+  grd <- expand.grid(x=xseq, y=yseq)
+  coordinates(grd) <- as.formula("~x+y")
   proj4string(grd) <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
   gridded(grd) <- TRUE
 
