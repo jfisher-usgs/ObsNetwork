@@ -8,9 +8,10 @@ RunGA <- function(obs, v.fit, grd, nsites=10, niters=200, pop.size=200) {
                              proj4string=CRS(as.character(projargs)))
     est <- krige(as.formula("observation~1"), obs[-idxs, ], newdata,
                  model=v.fit, debug.level=0)
-    obj.1 <- mean(sqrt(abs(est[1:ngrd, ]$var1.pred)))
-    obj.2 <- sum((est[(ngrd + 1):length(est), ]$var1.pred -
-                  obs$observation[idxs])^2)
+    est.se <- sqrt(abs(est[1:ngrd, ]$var1.var))
+    est.pred <- est[(ngrd + 1):length(est), ]$var1.pred
+    obj.1 <- mean(est.se)
+    obj.2 <- sum((est.pred - obs$observation[idxs])^2)
     c(obj.1, obj.2)
   }
 
@@ -75,17 +76,25 @@ RunGA <- function(obs, v.fit, grd, nsites=10, niters=200, pop.size=200) {
   op <- par(mar=c(5, 4, 3, 4))
 
   # Run GA
-  ans <- rbga(stringMin=rep(1, nsites), stringMax=rep(length(obs), nsites),
-              popSize=pop.size, iters=niters, verbose=TRUE,
-              monitorFunc=MonitorFun, evalFunc=EvalFun)
+  elapsed.time <- system.time({
+    ans <- rbga(stringMin=rep(1, nsites), stringMax=rep(length(obs), nsites),
+                popSize=pop.size, iters=niters, verbose=TRUE,
+                monitorFunc=MonitorFun, evalFunc=EvalFun)
+  })
   summary.rbga(ans, echo=TRUE)
   rm.idxs <- GetIdxsForBestSolution(ans)
-  rm.obs <- obs[idxs, ]
+  rm.obs <- obs[rm.idxs, ]
 
   # Reset graphics parameters
   par(op)
 
+  # Report elapsed time for running optimization
+  elapsed.time <- as.numeric(elapsed.time['elapsed']) / 3600
+  txt <- paste("\nTime required for optimal solution:",
+               format(elapsed.time), "hours\n\n")
+  cat(txt)
+
   # Return optimized site indexes to remove
   invisible(list(rm.idxs=rm.idxs, rm.obs=rm.obs, obj.values=obj.values,
-                 ans=ans))
+                 elapsed.time=elapsed.time, ans=ans))
 }
