@@ -2,27 +2,30 @@ library(sp)
 library(lattice)
 library(colorspace)
 library(rgdal)
-library(gstat, pos=match(paste("package", "sp", sep=":"), search()) + 1)
+library(gstat)
 library(genalg)
 
 library(RSurvey)
 
-#RestoreSession("D:/WORK/JFisher/Software/ObsNetwork")
-RestoreSession("K:/Software/ObsNetwork")
+RestoreSession("D:/WORK/JFisher/Software/ObsNetwork")
+dir.path <- "D:/WORK/JFisher/Software/ObsNetwork"
 
-#dir.path <- "D:/WORK/JFisher/Software/ObsNetwork/inst/extdata"
-dir.path <- "K:/Software/ObsNetwork/inst/extdata"
+#RestoreSession("K:/Software/ObsNetwork")
+#dir.path <- "K:/Software/ObsNetwork"
+
+
+
 
 ###
 
-file.obs <- file.path(dir.path, "ObservationData.txt")
+file.obs <- file.path(dir.path, "inst", "extdata", "ObservationData.txt")
 obs <- ReadObservations(file=file.obs, x.var="Longitude", y.var="Latitude",
                         site.var="Site_ID", obs.var="WL_elev",
                         acc.var="Accuracy", dt.var="Date_of_La")
 
 ###
 
-file.ply <- file.path(dir.path, "SpatialDomain.txt")
+file.ply <- file.path(dir.path, "inst", "extdata", "SpatialDomain.txt")
 grd.gr <- BuildGrid(file=file.ply, x.var="Longitude", y.var="Latitude", dx=0.01)
 grd.ga <- BuildGrid(file=file.ply, x.var="Longitude", y.var="Latitude", dx=0.03)
 
