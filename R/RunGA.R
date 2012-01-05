@@ -11,7 +11,7 @@ RunGA <- function(obs, v.fit, grd, nsites=10, niters=200, pop.size=200) {
     est.se <- sqrt(abs(est[1:ngrd, ]$var1.var))
     est.pred <- est[(ngrd + 1):length(est), ]$var1.pred
     obj.1 <- mean(est.se)
-    obj.2 <- sum((est.pred - obs$observation[idxs])^2)
+    obj.2 <- sqrt(sum((est.pred - obs$observation[idxs])^2))
     c(obj.1, obj.2)
   }
 
@@ -38,24 +38,24 @@ RunGA <- function(obs, v.fit, grd, nsites=10, niters=200, pop.size=200) {
 
   # Monitor progress at end of each iteration in GA
   MonitorFun <- function(obj) {
-    n <- obj$iter
     idxs <- GetIdxsForBestSolution(obj)
     objs <- CalcObj(idxs)
-    obj.values[n, ] <<- c(objs, sum(objs))
+    obj.values[obj$iter, ] <<- c(objs, sum(objs))
+    PlotObjValues()
+  }
 
-    x <- 1:n
-    y1 <- obj.values[x, "obj.1"]
-    y2 <- obj.values[x, "obj.2"]
-
-    plot(x, y1, type="o", pch=22, col="black", bg="blue",
-         xlab="Iteration", ylab="Prediction error")
-    par(new=TRUE)
-    plot(x, y2, type="o", pch=21, col="black", bg="red",
-         xaxt="n", yaxt="n", xlab="", ylab="")
-    axis(4)
-    mtext("Observation error", side=4, line=2.8)
-    legend("topright", c("Prediction error", "Observation error"),
-           pch=c(22, 21), pt.bg=c("blue", "red"), inset=0.02)
+  # Plot status of objective values
+  PlotObjValues <- function() {
+    obj.values <- na.omit(obj.values)
+    x <- 1:nrow(obj.values)
+    for (i in 1:nobjs) {
+      y <- obj.values[, i]
+      plot(x, y, type="o", pch=22, col=col.pal[i], bg=col.pal[i],
+           xaxt="n", xlab="Iteration", ylab=ylabs[i], tcl=tcl)
+      axis(3, tcl=tcl, labels=FALSE)
+      axis(4, tcl=tcl, labels=FALSE)
+      axis(1, tcl=tcl, labels=(i == nobjs))
+    }
   }
 
 
@@ -72,8 +72,12 @@ RunGA <- function(obs, v.fit, grd, nsites=10, niters=200, pop.size=200) {
                        dimnames=list(1:niters, c("obj.1", "obj.2", "total")))
 
   # Intialize plot for monitoring function
-  x11()
-  op <- par(mar=c(5, 4, 3, 4))
+  nobjs <- ncol(obj.values)
+  windows(width=8, height=nobjs * 2)
+  op <- par(mfrow=c(nobjs, 1), oma=c(3, 2, 2, 2), mar=c(1, 5, 0, 0))
+  tcl <- 0.50 / (6 * par("csi"))
+  ylabs <- c("Prediction error", "Observation error", "Total error")
+  col.pal <- c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#A6D854")
 
   # Run GA
   elapsed.time <- system.time({
