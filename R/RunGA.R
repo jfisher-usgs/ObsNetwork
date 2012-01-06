@@ -12,7 +12,8 @@ RunGA <- function(obs, v.fit, grd, nsites=10, niters=200, pop.size=200) {
     est.pred <- est[(ngrd + 1):length(est), ]$var1.pred
     obj.1 <- mean(est.se)
     obj.2 <- sqrt(sum((est.pred - obs$observation[idxs])^2))
-    c(obj.1, obj.2)
+    obj.3 <- mean(obs$accuracy[-idxs])
+    c(obj.1, obj.2, obj.3)
   }
 
   # Evaluate objective function in GA
@@ -48,13 +49,16 @@ RunGA <- function(obs, v.fit, grd, nsites=10, niters=200, pop.size=200) {
   PlotObjValues <- function() {
     obj.values <- na.omit(obj.values)
     x <- 1:nrow(obj.values)
-    for (i in 1:nobjs) {
+    xlim <- c(0, max(x) + 1)
+    for (i in 1:(nobjs + 1)) {
       y <- obj.values[, i]
-      plot(x, y, type="o", pch=22, col=col.pal[i], bg=col.pal[i],
-           xaxt="n", xlab="Iteration", ylab=ylabs[i], tcl=tcl)
+      ylim <- range(pretty(extendrange(y)))
+      plot(x, y, xlim=xlim, ylim=ylim, xaxs="i", yaxs="i",
+           type="o", pch=22, col=pal[i], bg=pal[i],
+           xaxt="n", ylab=ylabs[i], tcl=tcl)
       axis(3, tcl=tcl, labels=FALSE)
       axis(4, tcl=tcl, labels=FALSE)
-      axis(1, tcl=tcl, labels=(i == nobjs))
+      axis(1, tcl=tcl, labels=(i == nobjs + 1))
     }
   }
 
@@ -68,16 +72,18 @@ RunGA <- function(obs, v.fit, grd, nsites=10, niters=200, pop.size=200) {
   projargs <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
 
   # Initialize matrix of objective values
-  obj.values <- matrix(NA, nrow=niters, ncol=3,
-                       dimnames=list(1:niters, c("obj.1", "obj.2", "total")))
+  nobjs <- 3
+  obj.values <- matrix(NA, nrow=niters, ncol=nobjs + 1,
+                       dimnames=list(1:niters, c(paste("obj", 1:nobjs, sep="."),
+                                                 "total")))
 
-  # Intialize plot for monitoring function
-  nobjs <- ncol(obj.values)
-  windows(width=8, height=nobjs * 2)
-  op <- par(mfrow=c(nobjs, 1), oma=c(3, 2, 2, 2), mar=c(1, 5, 0, 0))
+  # Intialize plot and its common variables
+  windows(width=8, height=(nobjs + 1) * 2)
+  op <- par(mfrow=c(nobjs + 1, 1), oma=c(3, 2, 2, 2), mar=c(1, 5, 0, 2))
   tcl <- 0.50 / (6 * par("csi"))
-  ylabs <- c("Prediction error", "Observation error", "Total error")
-  col.pal <- c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#A6D854")
+  ylabs <- c("Prediction error", "Observation error", "Measurement error",
+             "Total error")
+  pal <- c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#A6D854")
 
   # Run GA
   elapsed.time <- system.time({
