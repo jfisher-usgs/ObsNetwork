@@ -66,7 +66,7 @@ graphics.off()
 
 ###
 
-#ga <- RunGA(obs, v.fit, grd.ga, nsites=3, niters=3, pop.size=200)
+#ga <- RunGA(obs, v.fit, grd.ga, nsites=10, niters=10, pop.size=200)
 
 ga <- RunGA(obs, v.fit, grd.ga, nsites=10, niters=200, pop.size=200)
 

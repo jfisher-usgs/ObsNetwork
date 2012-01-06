@@ -34,7 +34,6 @@ PlotKriging <- function(obs, v.fit, grd, rm.idxs, at.pred, at.se,
   xlim <- range(pretty(bbox.grd[1,], n=7))
   ylim <- range(pretty(bbox.grd[2,], n=7))
 
-
   # Calculate aspect ratio, used by default in spplot
   asp <- mapasp(grd, xlim=xlim, ylim=ylim)
 
