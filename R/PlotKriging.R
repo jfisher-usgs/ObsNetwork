@@ -34,6 +34,14 @@ PlotKriging <- function(obs, v.fit, grd, rm.idxs, at.pred, at.se,
   xlim <- range(pretty(bbox.grd[1,], n=7))
   ylim <- range(pretty(bbox.grd[2,], n=7))
 
+
+  # Calculate aspect ratio, used by default in spplot
+  asp <- mapasp(grd, xlim=xlim, ylim=ylim)
+
+  # Set width and height of graphics device
+  dev.width <- 7
+  dev.height <- dev.width * asp
+
   # Set main plot titles
   main1 <- "Prediction"
   main2 <- "Standard error"
@@ -89,13 +97,13 @@ PlotKriging <- function(obs, v.fit, grd, rm.idxs, at.pred, at.se,
   sp.layout[[n + 4]] <- leg.arrow
 
   # Draw plots
-  plot1 <- spplot(obs.krig, zcol="observation.pred",
+  plot1 <- spplot(obs.krig, zcol="observation.pred", aspect=asp,
                   scales=scales, xlim=xlim, ylim=ylim,
                   col.regions=cols1, at=at.pred, main=main1,
                   colorkey=colorkey, sp.layout=sp.layout,
                   contour=TRUE, labels=FALSE,
                   pretty=TRUE, col="gray")
-  x11()
+  x11(width=dev.width, height=dev.height)
   print(plot1)
   plot2 <- spplot(obs.krig, zcol="observation.se",
                   scales=scales, xlim=xlim, ylim=ylim,
@@ -103,6 +111,6 @@ PlotKriging <- function(obs, v.fit, grd, rm.idxs, at.pred, at.se,
                   colorkey=colorkey, sp.layout=sp.layout,
                   contour=TRUE, labels=FALSE,
                   pretty=TRUE, col="gray")
-  x11()
+  x11(width=dev.width, height=dev.height)
   print(plot2)
 }
