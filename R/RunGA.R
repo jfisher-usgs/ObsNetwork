@@ -115,7 +115,7 @@ RunGA <- function(obs, v.fit, grd, nsites=10, niters=200, pop.size=200) {
     count <- count + 1L
   }
   niters.solution <- niters - count
-  txt <- paste("\nNumber of iterations needed to find current solution:",
+  txt <- paste("\nNumber of iterations needed to find solution:",
                niters.solution, "\n\n")
   cat(txt)
 
