@@ -13,9 +13,6 @@ library(RSurvey)
 RestoreSession("K:/Software/ObsNetwork")
 dir.path <- "K:/Software/ObsNetwork"
 
-
-
-
 ###
 
 file.obs <- file.path(dir.path, "inst", "extdata", "ObservationData.txt")
@@ -38,11 +35,8 @@ grd.ga <- BuildGrid(file=file.ply, x.var="Longitude", y.var="Latitude", dx=0.03)
 
 v.fit <- FitVariogram(obs, model=vgm(model="Lin", nugget=0))
 
-
-
 #v.fit <- FitVariogram(obs, model=vgm(psill=190000, model="Gau",
 #                                     range=112, nugget=0))
-
 
 ###
 
@@ -53,12 +47,9 @@ RunCrossvalidation(obs, v.fit)
 #PlotKriging(obs, v.fit, grd.gr, at.pred=seq(2600, 6000, by=200),
 #            at.se=seq(30, 70, by=2))
 
-
 PlotKriging(obs, v.fit, grd.gr)
 
-
 graphics.off()
-
 
 #PlotKriging(obs, v.fit, grd.gr, rm.idxs=c(1, 20))
 
@@ -66,10 +57,9 @@ graphics.off()
 
 ###
 
-#ga <- RunGA(obs, v.fit, grd.ga, nsites=10, niters=10, pop.size=200)
+#ga <- RunGA(obs, v.fit, grd.ga, nsites=10, niters=10)
 
-ga <- RunGA(obs, v.fit, grd.ga, nsites=10, niters=200, pop.size=200)
-
+ga <- RunGA(obs, v.fit, grd.ga, nsites=10)
 
 summary.rbga(ga$ans, echo=TRUE)
 PlotKriging(obs, v.fit, grd.gr, rm.idxs=ga$rm.idxs)

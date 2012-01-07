@@ -1,4 +1,5 @@
-RunGA <- function(obs, v.fit, grd, nsites=10, niters=200, pop.size=200) {
+RunGA <- function(obs, v.fit, grd, nsites, niters=200, pop.size=200,
+                  obj.weights=c(1, 1, 1)) {
 
   # Additional functions (subroutines)
 
@@ -13,6 +14,11 @@ RunGA <- function(obs, v.fit, grd, nsites=10, niters=200, pop.size=200) {
     obj.1 <- mean(est.se)
     obj.2 <- sqrt(sum((est.obs - obs$observation[idxs])^2) / length(idxs))
     obj.3 <- mean(obs$accuracy[-idxs])
+#   obj.4 <- sum(obs$sd[-idxs])
+    obj.1 <- obj.1 * obj.weights[1]
+    obj.2 <- obj.2 * obj.weights[2]
+    obj.3 <- obj.3 * obj.weights[3]
+#   obj.4 <- obj.4 * obj.weights[4]
     c(obj.1, obj.2, obj.3)
   }
 
@@ -56,12 +62,17 @@ RunGA <- function(obs, v.fit, grd, nsites=10, niters=200, pop.size=200) {
       y <- obj.values[, i]
       ylim <- range(pretty(extendrange(y)))
       plot(x, y, xlim=xlim, ylim=ylim, xaxs="i", yaxs="i",
-           type="o", pch=22, xaxt="n", tcl=tcl,
-           col=pal[i], bg=pal[i], ylab=ylabs[i])
+           type="n", xaxt="n", tcl=tcl, ylab=labs[i])
       axis(3, tcl=tcl, labels=FALSE)
       axis(4, tcl=tcl, labels=FALSE)
       axis(1, tcl=tcl, labels=(i == m))
-      mtext(paste(format(y[n]), "    "), side=3, line=-2, adj=1, cex=0.75)
+      points(x, y, type="o", pch=21, col=pal[i], bg=pal[i])
+      txt <- paste(format(y[n]), "    ")
+      mtext(txt, side=3, line=-2, adj=1, cex=0.75)
+      if (i < m & is.weights) {
+        txt <- paste("Values weighted by", format(obj.weights[i]))
+        mtext(txt, side=4, line=0.5, cex=0.75, col="dark gray")
+      }
     }
   }
 
@@ -75,18 +86,35 @@ RunGA <- function(obs, v.fit, grd, nsites=10, niters=200, pop.size=200) {
   projargs <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
 
   # Initialize matrix of objective values
-  nobjs <- 3
+  nobjs <- 3L
   obj.values <- matrix(NA, nrow=niters, ncol=nobjs + 1,
                        dimnames=list(1:niters, c(paste("obj", 1:nobjs, sep="."),
                                                  "total")))
 
+  # Check validity of objective weights
+   if (!inherits(obj.weights, c("numeric", "integer")) |
+       length(obj.weights) != nobjs)
+    stop("problem with objective weights")
+   is.weights <- any(obj.weights != 1)
+
   # Intialize plot and its common variables
   windows(width=8, height=(nobjs + 1) * 2)
-  op <- par(mfrow=c(nobjs + 1, 1), oma=c(3, 2, 2, 2), mar=c(1, 5, 0, 2))
+  op <- par(mfrow=c(nobjs + 1, 1), oma=c(3, 2, 2, 2), mar=c(1, 6, 0, 2))
   tcl <- 0.50 / (6 * par("csi"))
-  ylabs <- c("Mean estimation error", "Root-mean-square error",
-             "Mean measurement error", "Total error")
   pal <- c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#A6D854")
+
+  # Plot labels
+  labs <- NULL
+  labs[1] <- paste("Mean estimation error,",
+                   "from the application of Kriging", sep="\n")
+  labs[2] <- paste("Root-mean-square error,",
+                   "difference between estimated",
+                   "and measured values", sep="\n")
+  labs[3] <- "Mean measurement error"
+# labs[4] <- paste("Total standard deviaiton,",
+#                  "variability of measurement"
+#                  "over time at removed sites", sep="\n")
+  labs[4] <- "Solution to objective function\nof optimization problem"
 
   # Run GA
   elapsed.time <- system.time({
@@ -104,7 +132,7 @@ RunGA <- function(obs, v.fit, grd, nsites=10, niters=200, pop.size=200) {
   # Report elapsed time for running optimization
   elapsed.time <- as.numeric(elapsed.time['elapsed']) / 3600
   txt <- paste("\nTime required for optimal solution:",
-               format(elapsed.time), "hours\n\n")
+               format(elapsed.time), "hours\n")
   cat(txt)
 
   # Report number of iterations needed to find solution
@@ -121,6 +149,6 @@ RunGA <- function(obs, v.fit, grd, nsites=10, niters=200, pop.size=200) {
 
   # Return optimized site indexes to remove
   invisible(list(rm.idxs=rm.idxs, rm.obs=rm.obs, obj.values=obj.values,
-                 elapsed.time=elapsed.time, niters.solution=niters.solution,
-                 ans=ans))
+                 obj.weights=obj.weights, elapsed.time=elapsed.time,
+                 niters.solution=niters.solution, ans=ans))
 }
