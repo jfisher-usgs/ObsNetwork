@@ -9,9 +9,9 @@ RunGA <- function(obs, v.fit, grd, nsites=10, niters=200, pop.size=200) {
     est <- krige(as.formula("observation~1"), obs[-idxs, ], newdata,
                  model=v.fit, debug.level=0)
     est.se <- sqrt(abs(est[1:ngrd, ]$var1.var))
-    est.pred <- est[(ngrd + 1):length(est), ]$var1.pred
+    est.obs <- est[(ngrd + 1):length(est), ]$var1.pred
     obj.1 <- mean(est.se)
-    obj.2 <- sqrt(sum((est.pred - obs$observation[idxs])^2))
+    obj.2 <- sqrt(sum((est.obs - obs$observation[idxs])^2) / length(idxs))
     obj.3 <- mean(obs$accuracy[-idxs])
     c(obj.1, obj.2, obj.3)
   }
@@ -48,17 +48,20 @@ RunGA <- function(obs, v.fit, grd, nsites=10, niters=200, pop.size=200) {
   # Plot status of objective values
   PlotObjValues <- function() {
     obj.values <- na.omit(obj.values)
-    x <- 1:nrow(obj.values)
-    xlim <- c(0, max(x) + 1)
-    for (i in 1:(nobjs + 1)) {
+    n <- nrow(obj.values)
+    m <- ncol(obj.values)
+    x <- 1:n
+    xlim <- c(0, n + 1)
+    for (i in 1:m) {
       y <- obj.values[, i]
       ylim <- range(pretty(extendrange(y)))
       plot(x, y, xlim=xlim, ylim=ylim, xaxs="i", yaxs="i",
-           type="o", pch=22, col=pal[i], bg=pal[i],
-           xaxt="n", ylab=ylabs[i], tcl=tcl)
+           type="o", pch=22, xaxt="n", tcl=tcl,
+           col=pal[i], bg=pal[i], ylab=ylabs[i])
       axis(3, tcl=tcl, labels=FALSE)
       axis(4, tcl=tcl, labels=FALSE)
-      axis(1, tcl=tcl, labels=(i == nobjs + 1))
+      axis(1, tcl=tcl, labels=(i == m))
+      mtext(paste(format(y[n]), "    "), side=3, line=-2, adj=1, cex=0.75)
     }
   }
 
@@ -81,8 +84,8 @@ RunGA <- function(obs, v.fit, grd, nsites=10, niters=200, pop.size=200) {
   windows(width=8, height=(nobjs + 1) * 2)
   op <- par(mfrow=c(nobjs + 1, 1), oma=c(3, 2, 2, 2), mar=c(1, 5, 0, 2))
   tcl <- 0.50 / (6 * par("csi"))
-  ylabs <- c("Prediction error", "Observation error", "Measurement error",
-             "Total error")
+  ylabs <- c("Mean estimation error", "Root-mean-square error",
+             "Mean measurement error", "Total error")
   pal <- c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#A6D854")
 
   # Run GA
@@ -104,7 +107,20 @@ RunGA <- function(obs, v.fit, grd, nsites=10, niters=200, pop.size=200) {
                format(elapsed.time), "hours\n\n")
   cat(txt)
 
+  # Report number of iterations needed to find solution
+  count <- 0L
+  for (i in (niters - 1):1) {
+    if (!identical(obj.values[i, ], obj.values[niters, ]))
+      break
+    count <- count + 1L
+  }
+  niters.solution <- niters - count
+  txt <- paste("\nNumber of iterations needed to find current solution:",
+               niters.solution, "\n\n")
+  cat(txt)
+
   # Return optimized site indexes to remove
   invisible(list(rm.idxs=rm.idxs, rm.obs=rm.obs, obj.values=obj.values,
-                 elapsed.time=elapsed.time, ans=ans))
+                 elapsed.time=elapsed.time, niters.solution=niters.solution,
+                 ans=ans))
 }
