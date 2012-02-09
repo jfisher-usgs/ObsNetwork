@@ -1,1 +1,6 @@
-export(RemoveSites)
+export(BuildGrid,
+       FitVariogram,
+       PlotKriging,
+       ReadObservations,
+       RunCrossvalidation,
+       RunGA)

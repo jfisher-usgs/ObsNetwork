@@ -1,5 +1,4 @@
 library(sp)
-library(lattice)
 library(colorspace)
 library(rgdal)
 library(gstat)
@@ -7,11 +6,11 @@ library(genalg)
 
 library(RSurvey)
 
-#RestoreSession("D:/WORK/JFisher/Software/ObsNetwork")
-#dir.path <- "D:/WORK/JFisher/Software/ObsNetwork"
+RestoreSession("D:/WORK/JFisher/Software/ObsNetwork")
+dir.path <- "D:/WORK/JFisher/Software/ObsNetwork"
 
-RestoreSession("K:/Software/ObsNetwork")
-dir.path <- "K:/Software/ObsNetwork"
+#RestoreSession("K:/Software/ObsNetwork")
+#dir.path <- "K:/Software/ObsNetwork"
 
 ###
 
