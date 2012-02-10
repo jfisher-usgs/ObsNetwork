@@ -89,12 +89,6 @@ PlotKriging <- function(obs, v.fit, grd, rm.idxs, at.pred, at.se,
   sp.layout[[n + 2]] <- scale.txt1
   sp.layout[[n + 3]] <- scale.txt2
 
-  # Add north arrow legend
-  lng <- xlim[2] - diff(xlim) * 0.05
-  leg.arrow <- list("SpatialPolygonsRescale", layout.north.arrow(),
-                    offset = c(lng, lat), scale=diff(ylim) * 0.1)
-  sp.layout[[n + 4]] <- leg.arrow
-
   # Draw plots
   plot1 <- spplot(obs.krig, zcol="observation.pred", aspect=asp,
                   scales=scales, xlim=xlim, ylim=ylim,

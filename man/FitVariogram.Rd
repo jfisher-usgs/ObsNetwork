@@ -13,9 +13,9 @@ FitVariogram(obs, model, ...)
 }
 
 \arguments{
-\item{obs}{something.}
-\item{model}{something}
-\item{...}{something}
+\item{obs}{SpatialPointsDataFrame; something.}
+\item{model}{variogramModel; something.}
+\item{...}{Arguments to be passed to \code{\link{fit.variogram}}.}
 }
 
 \details{
@@ -29,7 +29,7 @@ Something
 \author{J.C. Fisher}
 
 \seealso{
-\code{\link{plot}}
+\code{\link{fit.variogram}}
 }
 
 \examples{

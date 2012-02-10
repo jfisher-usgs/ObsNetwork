@@ -1,30 +1,70 @@
-ReadObservations <- function(file, x.var, y.var, site.var, obs.var, acc.var,
-                             dt.var, dt.fmt="%Y%m%d",
+ReadObservations <- function(file, x.var, y.var, site.var, obs.var, acy.var,
+                             dt.var, s.dt, e.dt, dt.fmt="%Y-%m-%d %H:%M",
                              projargs="+proj=longlat +datum=NAD83") {
 
   # Read data from file
-  obs <- read.table(file=file, header=TRUE, sep="\t", fill=TRUE,
-                    strip.white=TRUE, blank.lines.skip=TRUE,
-                    allowEscapes=TRUE, flush=TRUE)
+  d <- read.table(file=file, header=TRUE, sep="\t", fill=TRUE,
+                  strip.white=TRUE, blank.lines.skip=TRUE,
+                  allowEscapes=TRUE, flush=TRUE)
 
   # Reduce date frame size
-  obs <- obs[, c(x.var, y.var, site.var, obs.var, acc.var, dt.var)]
+  d <- d[, make.names(c(x.var, y.var, site.var, obs.var, acy.var, dt.var),
+                      unique=TRUE)]
 
   # Rename variable names
   var.names <- c("x", "y", "site", "observation", "accuracy", "datetime")
-  names(obs) <- var.names
+  names(d) <- var.names
 
-  # Convert coordinate reference system
+  # Force approriate classes
+  d$site <- as.numeric(d$site)
+  d$observation <- as.numeric(d$observation)
+  d$accuracy <- as.numeric(d$accuracy)
+  d$datetime <- as.POSIXct(as.character(d$datetime), format=dt.fmt)
+
+  # Remove NA values for site and observation
+  is.valid.rec <- !(is.na(d$x) | is.na(d$y) | is.na(d$site) |
+                    is.na(d$observation) | is.na(d$datetime))
+  d <- d[is.valid.rec, ]
+
+  # Determine start and end times for averaging
+  if (missing(s.dt))
+    s.dt <- min(d$datetime, na.rm=TRUE)
+  else
+    s.dt <- as.POSIXct(s.dt, format=dt.fmt)
+  if (missing(e.dt))
+    e.dt <- max(d$datetime, na.rm=TRUE)
+  else
+    e.dt <- as.POSIXct(e.dt, format=dt.fmt)
+
+  # Build output table
+  site <- unique(d$site)
+  n <- length(site)
+  x <- y <- acy <- sdv <- avg <- rep(NA, n)
+  for (i in 1:n) {
+    rec <- which(d$site == site[i])
+    d.rec <- d[rec, ]
+    idx <- which(d.rec$datetime >= s.dt & d.rec$datetime <= e.dt)
+    if (length(idx) == 0) {
+      site[i] <- NA
+      next
+    }
+    x[i] <- d.rec$x[1]
+    y[i] <- d.rec$y[1]
+    sdv[i] <- sd(d.rec$observation, na.rm=TRUE)
+
+    d.idx <- d.rec[idx, ]
+    acy[i] <- mean(d.idx$accuracy, na.rm=TRUE)
+    avg[i] <- mean(d.idx$observation, na.rm=TRUE)
+  }
+  obs <- as.data.frame(list(x=x, y=y, site=site, observation=avg,
+                            accuracy=acy, std.dev=sdv))
+  obs <- obs[!is.na(site), ]
+
+  # Set coordinate reference system
   coordinates(obs) = as.formula("~x+y")
   proj4string(obs) <- CRS(projargs)
   new.projargs <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
   obs <- spTransform(obs, CRS(new.projargs))
-
-  # Force approriate classes
-  obs$site <- as.factor(obs$site)
-  obs$datetime <- as.POSIXct(as.character(obs$datetime), format=dt.fmt)
-  obs$observation <- as.numeric(obs$observation)
-  obs$accuracy <- as.numeric(obs$accuracy)
 
   obs
 }

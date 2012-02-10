@@ -9,8 +9,7 @@ Something.
 }
 
 \usage{
-ReadObservations(file, x.var, y.var, site.var, obs.var, acc.var,
-                 dt.var, dt.fmt = "\%Y\%m\%d",
+ReadObservations(file, x.var, y.var, site.var, obs.var, acy.var,
                  projargs = "+proj=longlat +datum=NAD83")
 }
 
@@ -19,9 +18,7 @@ ReadObservations(file, x.var, y.var, site.var, obs.var, acc.var,
 \item{x.var, y.var}{something}
 \item{site.var}{something}
 \item{obs.var}{something}
-\item{acc.var}{something}
-\item{dt.var}{something}
-\item{dt.fmt}{something}
+\item{acy.var}{something}
 \item{projargs}{something}
 }
 

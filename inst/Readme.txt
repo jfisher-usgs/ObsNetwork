@@ -1,23 +1,50 @@
-library(sp)
+
 library(colorspace)
-library(rgdal)
 library(gstat)
 library(genalg)
-
+library(rgdal)
 library(RSurvey)
 
 RestoreSession("D:/WORK/JFisher/Software/ObsNetwork")
-dir.path <- "D:/WORK/JFisher/Software/ObsNetwork"
-
-#RestoreSession("K:/Software/ObsNetwork")
-#dir.path <- "K:/Software/ObsNetwork"
 
 ###
+
+map.id <- "INL"; dx <- 0.003 # map.id <- "ESRP"; dx <- 0.01
+sites.id <- 2008
+
+yrs <- 2010
+
+path <- "D:/WORK/JFisher/Projects/Observation Network/Data"
+
+
+f <- file.path(path, paste("Map", map.id, "_Spatial_Domain.gz", sep=""))
+grd <- BuildGrid(file=f, x.var="Longitude", y.var="Latitude", dx=dx)
+
+for (yr in yrs) {
+  dt <- paste(yr, c("-01-01 00:00", "-12-31 23:59"), sep="")
+  f <- file.path(path, paste("Map", map.id, "_Sites", sites.id, "_Data.gz", sep=""))
+  obs <- ReadObservations(file=f, x.var="dec_long_va", y.var="dec_lat_va",
+                          site.var="site_no", obs.var="alt_lev_va",
+                          acy.var="lev_acy", dt.var="lev_dt",
+                          s.dt=dt[1], e.dt=dt[2])
+
+  v.fit <- FitVariogram(obs, model=vgm(model="Lin", nugget=0))
+# RunCrossvalidation(obs, v.fit)
+
+  PlotKriging(obs, v.fit, grd)
+}
+
+
+
+
+
+
+###############################################################################
 
 file.obs <- file.path(dir.path, "inst", "extdata", "ObservationData.txt")
 obs <- ReadObservations(file=file.obs, x.var="Longitude", y.var="Latitude",
                         site.var="Site_ID", obs.var="WL_elev",
-                        acc.var="Accuracy", dt.var="Date_of_La")
+                        acc.var="Accuracy")
 
 ###
 

@@ -1,19 +1,24 @@
-BuildGrid <- function(file, x.var, y.var, dx=0.03, dy=dx,
-               projargs="+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs") {
+BuildGrid <- function(x, file, x.var, y.var, compute.chull=FALSE, dx=0.03, dy=dx,
+                      projargs="+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs") {
 
-  # Read data from file
-  ply <- read.table(file, header=TRUE, sep="\t", fill=TRUE,
+  if (missing(x)) {
+    x <- read.table(file, header=TRUE, sep="\t", fill=TRUE,
                     strip.white=TRUE, blank.lines.skip=TRUE,
                     allowEscapes=TRUE, flush=TRUE)
-
-  # Reduce date frame size
-  ply <- ply[, c(x.var, y.var)]
+    x <- x[, make.names(c(x.var, y.var), unique=TRUE)]
+  } else {
+    x <- coordinates(x)
+  }
 
   # Rename variable names
-  names(ply) <- c("x", "y")
+  names(x) <- c("x", "y")
+
+  # Compute convex hull
+  if (compute.chull)
+    x <- x[chull(x), ]
 
   # Convert to spatial points
-  ply <- SpatialPoints(ply)
+  ply <- SpatialPoints(x)
   proj4string(ply) <- CRS(projargs)
   new.projargs <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
   ply <- spTransform(ply, CRS(new.projargs))
