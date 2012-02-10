@@ -17,7 +17,7 @@ yrs <- 2010
 path <- "D:/WORK/JFisher/Projects/Observation Network/Data"
 
 
-f <- file.path(path, paste("Map", map.id, "_Spatial_Domain.gz", sep=""))
+f <- file.path(path, paste("Map", map.id, "_SpatialDomain.gz", sep=""))
 grd <- BuildGrid(file=f, x.var="Longitude", y.var="Latitude", dx=dx)
 
 for (yr in yrs) {
