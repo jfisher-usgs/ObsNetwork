@@ -1,5 +1,5 @@
 ReadObservations <- function(file, x.var, y.var, site.var, obs.var, acy.var,
-                             dt.var, s.dt, e.dt, dt.fmt="%Y-%m-%d %H:%M",
+                             dt.var, dt.lim, dt.fmt="%Y-%m-%d %H:%M",
                              projargs="+proj=longlat +datum=NAD83") {
 
   # Read data from file
@@ -27,14 +27,10 @@ ReadObservations <- function(file, x.var, y.var, site.var, obs.var, acy.var,
   d <- d[is.valid.rec, ]
 
   # Determine start and end times for averaging
-  if (missing(s.dt))
-    s.dt <- min(d$datetime, na.rm=TRUE)
+  if (missing(dt.lim))
+    dt.lim <- range(d$datetime, na.rm=TRUE)
   else
-    s.dt <- as.POSIXct(s.dt, format=dt.fmt)
-  if (missing(e.dt))
-    e.dt <- max(d$datetime, na.rm=TRUE)
-  else
-    e.dt <- as.POSIXct(e.dt, format=dt.fmt)
+    dt.lim <- as.POSIXct(dt.lim, format=dt.fmt)
 
   # Build output table
   site <- unique(d$site)
@@ -43,7 +39,7 @@ ReadObservations <- function(file, x.var, y.var, site.var, obs.var, acy.var,
   for (i in 1:n) {
     rec <- which(d$site == site[i])
     d.rec <- d[rec, ]
-    idx <- which(d.rec$datetime >= s.dt & d.rec$datetime <= e.dt)
+    idx <- which(d.rec$datetime >= dt.lim[1] & d.rec$datetime <= dt.lim[2])
     if (length(idx) == 0) {
       site[i] <- NA
       next
