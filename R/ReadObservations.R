@@ -60,7 +60,7 @@ ReadObservations <- function(file, x.var, y.var, site.var, obs.var, acy.var,
   coordinates(obs) = as.formula("~x+y")
   proj4string(obs) <- CRS(projargs)
   new.projargs <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-  obs <- spTransform(obs, CRS(new.projargs))
+  obs <- rgdal::spTransform(obs, CRS(new.projargs))
 
   obs
 }

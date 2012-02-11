@@ -22,6 +22,7 @@ PlotKriging <- function(obs, v.fit, grd, rm.idxs, at.pred, at.se,
     obs <- obs[-rm.idxs, ]
 
   # Run geostatistical prediction using ordinary kriging
+  # obs <- remove.duplicates(obs, zero=0.0, remove.second=TRUE)
   obs.krig <- krige(as.formula("observation~1"), obs, grd, model=v.fit,
                     debug.level=debug.level)
   obs.krig[["observation.pred"]] <- obs.krig[["var1.pred"]]

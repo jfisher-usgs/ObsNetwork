@@ -5,17 +5,18 @@ library(genalg)
 library(rgdal)
 library(RSurvey)
 
-path <- "D:/WORK/JFisher/Software/ObsNetwork"
-RestoreSession("D:/WORK/JFisher/Software/ObsNetwork")
+setwd("K:/Software/ObsNetwork")
+RestoreSession(file.path(getwd(), "R"))
 
 ###
 
-map.id <- "INL"; dx <- 0.003 # map.id <- "ESRP"; dx <- 0.01
+map.id <- "INL"; dx <- 0.003
+# map.id <- "ESRP"; dx <- 0.01
 
 sites.id <- 2008
 yrs <- 2008
 
-path <- "D:/WORK/JFisher/Software/ObsNetwork/inst/extdata"
+path <- file.path(getwd(), "inst", "extdata")
 
 f <- file.path(path, paste("Map", map.id, "_SpatialDomain.gz", sep=""))
 grd <- BuildGrid(file=f, x.var="Longitude", y.var="Latitude", dx=dx)
