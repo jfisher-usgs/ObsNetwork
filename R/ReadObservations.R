@@ -50,7 +50,7 @@ ReadObservations <- function(file, x.var, y.var, site.var, obs.var, acy.var,
 
     d.idx <- d.rec[idx, ]
     acy[i] <- mean(d.idx$accuracy, na.rm=TRUE)
-    avg[i] <- mean(d.idx$observation, na.rm=TRUE)
+    avg[i] <- median(d.idx$observation, na.rm=TRUE)
   }
   obs <- as.data.frame(list(x=x, y=y, site=site, observation=avg,
                             accuracy=acy, std.dev=sdv))

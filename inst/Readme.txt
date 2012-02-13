@@ -10,31 +10,55 @@ RestoreSession(file.path(getwd(), "R"))
 
 ###
 
-map.id <- "INL"; dx <- 0.003
-# map.id <- "ESRP"; dx <- 0.01
 
-sites.id <- 2008
-yrs <- 2008
+sites.id <- 2008; map.id <- "INL"; dx <- 0.003
+# sites.id <- 2008; map.id <- "ESRP"; dx <- 0.01;
+
+
 
 path <- file.path(getwd(), "inst", "extdata")
 
 f <- file.path(path, paste("Map", map.id, "_SpatialDomain.gz", sep=""))
 grd <- BuildGrid(file=f, x.var="Longitude", y.var="Latitude", dx=dx)
 
-for (yr in yrs) {
-  dt.lim <- paste(yr, c("-01-01 00:00", "-12-31 23:59"), sep="")
-  f <- file.path(path, paste("Map", map.id, "_Sites", sites.id, "_Data.gz", sep=""))
-  obs <- ReadObservations(file=f, x.var="dec_long_va", y.var="dec_lat_va",
-                          site.var="site_no", obs.var="alt_lev_va",
-                          acy.var="lev_acy", dt.var="lev_dt", dt.lim=dt.lim)
+yr <- 2008
+dt.lim <- paste(yr, c("-01-01 00:00", "-12-31 23:59"), sep="")
+f <- file.path(path, paste("Map", map.id, "_Sites", sites.id, "_Data.gz", sep=""))
+obs <- ReadObservations(file=f, x.var="dec_long_va", y.var="dec_lat_va",
+                        site.var="site_no", obs.var="alt_lev_va",
+                        acy.var="lev_acy", dt.var="lev_dt", dt.lim=dt.lim)
 
-  v.fit <- FitVariogram(obs, model=vgm(model="Lin", nugget=0))
+
+lm.drift <- lm(observation ~ x + y, data=obs)
+coeff <- as.numeric(coefficients(lm.drift))
+drift <- function(x) coeff[1] + coeff[2] * x[, 1] + coeff[3] * x[, 2]
+
+model <- vgm(model="Sph", nugget=0, range=80, psill=28000)
+
+model <- vgm(model="Sph", nugget=0, range=35, psill=130)
+
+# model <- vgm(model="Lin", nugget=0)
+v.fit <- FitVariogram(obs, model, drift)
+
+obs$residual <- obs$observation - drift(coordinates(obs))
+plot(gstat::variogram(gstat(id="residual", formula=residual~x+y, data=obs)), model=model)
+
+
 # RunCrossvalidation(obs, v.fit)
 
-  PlotKriging(obs, v.fit, grd)
-}
+PlotKriging(obs, v.fit, grd, drift)
+
+PlotKriging(obs, model, grd, drift)
 
 
+
+
+
+
+
+plot3d(x=cbind(coordinates(obs), drift(coordinates(obs))),
+       col="red", xlab="x", ylab="y", zlab="z")
+plot3d(x=cbind(coordinates(obs), obs$observation), col="blue", add=TRUE)
 
 
 

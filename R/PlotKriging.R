@@ -1,5 +1,13 @@
-PlotKriging <- function(obs, v.fit, grd, rm.idxs, at.pred, at.se,
+PlotKriging <- function(obs, v.fit, grd, drift, rm.idxs, at.pred, at.se,
                         debug.level=0) {
+
+  # Account for linear drift
+  if (!missing(drift) && inherits(drift, "function")) {
+    obs$residual <- obs$observation - drift(coordinates(obs))
+    id <- "residual"
+  } else {
+    id <- "observation"
+  }
 
   # Should site indexes be removed?
   is.rm.idxs <- !missing(rm.idxs) &&
@@ -17,18 +25,20 @@ PlotKriging <- function(obs, v.fit, grd, rm.idxs, at.pred, at.se,
     sp.layout <- list(pts.o)
   }
 
-  # Delete observations associated with removed site indexes
+  # Delete records associated with removed site indexes
   if (is.rm.idxs)
     obs <- obs[-rm.idxs, ]
 
-  # Run geostatistical prediction using ordinary kriging
+  # Run geostatistical prediction using universal kriging
   # obs <- remove.duplicates(obs, zero=0.0, remove.second=TRUE)
-  obs.krig <- krige(as.formula("observation~1"), obs, grd, model=v.fit,
-                    debug.level=debug.level)
-  obs.krig[["observation.pred"]] <- obs.krig[["var1.pred"]]
+  obs.krig <- krige(as.formula(paste(id, "x+y", sep="~")), obs, grd,
+                    model=v.fit, debug.level=debug.level)
+  obs.krig[["pred"]] <- obs.krig[["var1.pred"]]
+  if (id == "residual")
+    obs.krig[["pred"]] <- drift(coordinates(obs.krig)) + obs.krig[["pred"]]
 
   # Calculate standardard error from variance error
-  obs.krig[["observation.se"]] <- sqrt(obs.krig[["var1.var"]])
+  obs.krig[["se"]] <- sqrt(obs.krig[["var1.var"]])
 
   # Determine axis limits
   bbox.grd <- bbox(obs.krig)
@@ -57,9 +67,9 @@ PlotKriging <- function(obs, v.fit, grd, rm.idxs, at.pred, at.se,
 
   # Set axis breakpoints
   if (missing(at.pred))
-    at.pred <- pretty(obs.krig$observation.pred, n=12)
+    at.pred <- pretty(obs.krig$pred, n=12)
   if (missing(at.se))
-    at.se <- pretty(obs.krig$observation.se, n=12)
+    at.se <- pretty(obs.krig$se, n=12)
 
   # Set color palettes
   cols1 <- rev(heat_hcl(length(at.pred) + 1,
@@ -91,7 +101,7 @@ PlotKriging <- function(obs, v.fit, grd, rm.idxs, at.pred, at.se,
   sp.layout[[n + 3]] <- scale.txt2
 
   # Draw plots
-  plot1 <- spplot(obs.krig, zcol="observation.pred", aspect=asp,
+  plot1 <- spplot(obs.krig, zcol="pred", aspect=asp,
                   scales=scales, xlim=xlim, ylim=ylim,
                   col.regions=cols1, at=at.pred, main=main1,
                   colorkey=colorkey, sp.layout=sp.layout,
@@ -99,7 +109,7 @@ PlotKriging <- function(obs, v.fit, grd, rm.idxs, at.pred, at.se,
                   pretty=TRUE, col="gray")
   x11(width=dev.width, height=dev.height)
   print(plot1)
-  plot2 <- spplot(obs.krig, zcol="observation.se",
+  plot2 <- spplot(obs.krig, zcol="se",
                   scales=scales, xlim=xlim, ylim=ylim,
                   col.regions=cols2, at=at.se, main=main2,
                   colorkey=colorkey, sp.layout=sp.layout,
