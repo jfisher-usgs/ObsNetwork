@@ -1,5 +1,5 @@
-PlotKriging <- function(obs, v.fit, grd, drift, rm.idxs, at.pred, at.se,
-                        debug.level=0) {
+PlotKriging <- function(obs, model, grd, drift, rm.idxs, at.pred, at.se,
+                        debug.level=0, nmax=10, maxdist=Inf) {
 
   # Account for linear drift
   if (!missing(drift) && inherits(drift, "function")) {
@@ -32,7 +32,7 @@ PlotKriging <- function(obs, v.fit, grd, drift, rm.idxs, at.pred, at.se,
   # Run geostatistical prediction using universal kriging
   # obs <- remove.duplicates(obs, zero=0.0, remove.second=TRUE)
   obs.krig <- krige(as.formula(paste(id, "x+y", sep="~")), obs, grd,
-                    model=v.fit, debug.level=debug.level)
+                    model=model, debug.level=debug.level, maxdist=maxdist)
   obs.krig[["pred"]] <- obs.krig[["var1.pred"]]
   if (id == "residual")
     obs.krig[["pred"]] <- drift(coordinates(obs.krig)) + obs.krig[["pred"]]

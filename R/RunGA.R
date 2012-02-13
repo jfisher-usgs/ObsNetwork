@@ -7,7 +7,7 @@ RunGA <- function(obs, v.fit, grd, nsites, niters=200, pop.size=200,
   CalcObj <- function(idxs) {
     newdata <- SpatialPoints(rbind(coordinates(grd), coordinates(obs[idxs, ])),
                              proj4string=CRS(as.character(projargs)))
-    est <- krige(as.formula("observation~1"), obs[-idxs, ], newdata,
+    est <- krige(as.formula("observation~x+y"), obs[-idxs, ], newdata,
                  model=v.fit, debug.level=0)
     est.se <- sqrt(abs(est[1:ngrd, ]$var1.var))
     est.obs <- est[(ngrd + 1):length(est), ]$var1.pred

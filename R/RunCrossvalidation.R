@@ -8,7 +8,7 @@ RunCrossvalidation <- function(obs, v.fit) {
   # observations apart from the one under investigation. Repeat for
   # each observation.
   for (i in 1:nrow(obs)) {
-    est.pnt <- krige(as.formula("observation~1"), obs[-i, ], obs[i, ],
+    est.pnt <- krige(as.formula("observation~x+y"), obs[-i, ], obs[i, ],
                      model=v.fit, debug.level=0)
     mat[i, 1:2] <- c(obs[i, ]$observation, est.pnt$var1.pred)
   }
