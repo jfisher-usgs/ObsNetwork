@@ -1,19 +1,19 @@
-ReadObservations <- function(file, x.var, y.var, site.var, alt.var, hole.var,
-                             lev.var, acy.var, dt.var, dt.lim,
+ReadObservations <- function(file, x.var, y.var, site.var, net.var, alt.var,
+                             hole.var, lev.var, acy.var, dt.var, dt.lim,
                              dt.fmt="%Y-%m-%d %H:%M",
                              projargs="+proj=longlat +datum=NAD83") {
 
   # Read data from file
   d <- read.table(file=file, header=TRUE, sep="\t", fill=TRUE,
                   strip.white=TRUE, blank.lines.skip=TRUE,
-                  allowEscapes=TRUE, flush=TRUE)
+                  allowEscapes=TRUE, flush=TRUE, stringsAsFactors=FALSE)
 
   # Reduce date frame size
-  d <- d[, make.names(c(x.var, y.var, site.var, alt.var, hole.var,
+  d <- d[, make.names(c(x.var, y.var, site.var, net.var, alt.var, hole.var,
                         lev.var, acy.var, dt.var), unique=TRUE)]
 
   # Rename variable names
-  var.names <- c("x", "y", "site", "alt", "hole", "lev", "acy", "dt")
+  var.names <- c("x", "y", "site", "net", "alt", "hole", "lev", "acy", "dt")
   names(d) <- var.names
 
   # Force approriate classes
@@ -38,7 +38,7 @@ ReadObservations <- function(file, x.var, y.var, site.var, alt.var, hole.var,
   # Build output table
   site <- unique(d$site)
   n <- length(site)
-  x <- y <- alt <- hole <- acy.avg <- lev.sd <- lev.avg <- rep(NA, n)
+  x <- y <- alt <- hole <- acy.avg <- lev.sd <- lev.avg <- net <- rep(NA, n)
   for (i in 1:n) {
     rec <- which(d$site == site[i])
     d.rec <- d[rec, ]
@@ -51,13 +51,16 @@ ReadObservations <- function(file, x.var, y.var, site.var, alt.var, hole.var,
     y[i]    <- d.rec$y[1]
     alt[i]  <- d.rec$alt[1]
     hole[i] <- d.rec$hole[1]
+    net[i]  <- d.rec$net[1]
+
     lev.sd[i] <- sd(d.rec$lev, na.rm=TRUE)
 
     d.idx <- d.rec[idx, ]
     acy.avg[i] <- mean(d.idx$acy, na.rm=TRUE)
     lev.avg[i] <- median(d.idx$lev, na.rm=TRUE)
   }
-  obs <- as.data.frame(list(x=x, y=y, site=site, alt=alt, hole=hole,
+
+  obs <- as.data.frame(list(x=x, y=y, site=site, net=net, alt=alt, hole=hole,
                             lev=lev.avg, acy=acy.avg, sd=lev.sd))
   obs <- obs[!is.na(site), ]
 

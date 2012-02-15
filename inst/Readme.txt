@@ -12,51 +12,53 @@ RestoreSession(file.path(getwd(), "R"))
 ###
 
 
-f.obs <- "INL_Data.gz"
-f.ply <- "INL_SpatialDomain.gz"
+f.obs <- "ESRP_Observations.gz"
 
-f.obs <- "ESRP_Data.gz"
-f.ply <- "ESRP_SpatialDomain.gz"
+network <- "State"
+f.ply <- "ESRP_Polygon.gz"
+xlim <- c(-115.25, -111.5)
+ylim <- c(42.25, 44.5)
+vg.model <- vgm(4200, "Sph", 80, nugget=0)
+
+
+network <- "INL"
+f.ply <- "INL_Polygon.gz"
+xlim <- c(-113.3, -112.2)
+ylim <- c(43.3, 44.0)
 
 
 
-f.dem <- "ESRP_NED1km.gz"
-path <- file.path(getwd(), "inst", "extdata")
+
+
+krige.technique <- "RK" # Regression-kriging
+krige.technique <- "OK" # Ordinary-kriging
+
+
 
 
 yr <- 2008
-dt.lim <- paste(yr, c("-01-01 00:00", "-12-31 23:59"), sep="")
+dx <- NULL
+
+dt.lim <- c("2008-01-01 00:00", "2008-12-31 23:59")
+
+f.dem <- "USGS_NED_1km.gz"
+path <- file.path(getwd(), "inst", "extdata")
+
+
+###
+
+
+# Observations (NAVD 88 land surface altitudes using VERTCON)
 f <- file.path(path, f.obs)
 obs <- ReadObservations(file=f, x.var="dec_long_va", y.var="dec_lat_va",
-                        site.var="site_no", alt.var="alt_va",
+                        site.var="site_no", net.var="network", alt.var="alt_va",
                         hole.var="hole_depth_va", lev.var="lev_va",
                         acy.var="lev_acy", dt.var="lev_dt", dt.lim=dt.lim)
+idxs <- zerodist(obs, zero=0.0, unique.ID=FALSE)
+if (nrow(idxs) > 0)
+  stop()
 
-# idxs <- zerodist(obs, zero=0.0, unique.ID=FALSE)
-# site1 <- obs$site[idxs[, 1]]
-# site2 <- obs$site[idxs[, 2]]
-# hole1 <- obs$hole[idxs[, 1]]
-# hole2 <- obs$hole[idxs[, 2]]
-# rm.sites <- rep(NA, nrow(idxs))
-# rm.sites[hole1 > hole2] <- site1[hole1 > hole2]
-# rm.sites[hole1 < hole2] <- site2[hole1 < hole2]
-# coord <- coordinates(obs)[idxs[, 1], ]
-# dup.sites <- cbind(site1, site2, coord, hole1, hole2, rm.sites)
-# write.table(dup.sites, "clipboard", quote=FALSE, sep="\t",
-#             row.names=FALSE, col.names=FALSE)
-
-
-obs <- remove.duplicates(obs, zero=0.0, remove.second=TRUE)
-
-
-
-
-
-# All elevation values are in meters and are referenced to the NAVD 88.
-f <- file.path(path, f.dem)
-dem <- read.asciigrid(f, as.image=FALSE, plot.image=FALSE, colname="alt",
-                      proj4string=CRS("+proj=longlat +datum=NAD83"))
-
+# Polygon
 f <- file.path(path, f.ply)
 ply <- read.table(f, header=TRUE, sep="\t", fill=TRUE, strip.white=TRUE,
                   blank.lines.skip=TRUE, allowEscapes=TRUE, flush=TRUE)
@@ -65,70 +67,65 @@ names(ply) <- c("x", "y")
 ply <- Polygons(list(Polygon(ply, hole=FALSE)), "sp")
 ply <- SpatialPolygons(list(ply), proj4string=CRS("+proj=longlat +datum=NAD83"))
 
-lay1 <- list("sp.points", obs, pch=21, cex=0.5, col="black", fill="white", first=FALSE)
-lay2 <- list("sp.polygons", ply, col="black", first=FALSE)
-spplot(dem, scales=list(draw=TRUE), sp.layout=list(lay1, lay2))
+
+# DEM  (NAVD 88 land surface altitudes)
+f <- file.path(path, f.dem)
+dem <- read.asciigrid(f, as.image=FALSE, plot.image=FALSE, colname="alt",
+                      proj4string=CRS("+proj=longlat +datum=NAD83"))
+if (!is.null(dx)) {
+  grd.par <- gridparameters(dem)
+  if (dx > min(grd.par$cellsize)) {
+    cellcentre.offset <- grd.par$cellcentre.offset +
+                         dx / 2 - grd.par$cellsize[1] / 2
+    cellsize <- c(dx, dx)
+    cells.dim <- c(diff(bbox(dem)[1, ]) / dx + 1,
+                   diff(bbox(dem)[2, ]) / dx + 1)
+    gt <- GridTopology(cellcentre.offset, cellsize, cells.dim)
+    sg <- SpatialGrid(gt, proj4string=CRS("+proj=longlat +datum=NAD83"))
+    dem <- aggregate(dem, sg)
+  }
+}
 
 
-# dx <- 0.02
-# nx <- diff(bbox(dem)[1, ]) / dx
-# ny <- diff(bbox(dem)[2, ]) / dx
-# off <- gridparameters(dem)$cellcentre.offset
-# gt <- GridTopology(off, cellsize=c(dx, dx), cells.dim=c(nx, ny))
-# sg <- SpatialGrid(gt, proj4string=CRS("+proj=longlat +datum=NAD83"))
-# dem <- aggregate(dem, sg)
+PlotKriging(dem, "alt", obs[obs$net == network, ], ply,
+            xlim=xlim, ylim=ylim, pal=1L, contour=FALSE)
 
 
-obs$alt <- overlay(dem, obs)$alt
-
-
-lm.obs <- lm(lev~alt, obs)
-plot(lev~alt, as.data.frame(obs))
-abline(lm(lev~alt, as.data.frame(obs)))
-
-
-
-null.vgm <- vgm(var(obs$lev), "Sph", 100, nugget=0)
-vgm.lev.r <- fit.variogram(variogram(lev~alt, obs), model=null.vgm)
-plot(variogram(lev~alt, obs), vgm.lev.r, main="Fitted by gstat")
-
-
+# NA raster values outside polygon
 dem$alt <- dem$alt * over(dem, ply, fn=mean)
 
 
+if (krige.technique == "OK") {
+  obs$lev <- obs$alt - obs$lev
+  vg.model <- vgm(model="Lin", nugget=0)
+  vg.model <- fit.variogram(variogram(lev~1, obs), model=vg.model)
+  plot(variogram(lev~1, obs), vg.model)
 
-lev.uk <- krige(lev~alt, locations=obs, newdata=dem, model=vgm.lev.r, nmax=50)
-lev.uk$pred <- dem$alt - lev.uk$var1.pred
-lev.uk$se <- sqrt(lev.uk$var1.var)
+  kr <- krige(lev~1, locations=obs, newdata=dem, model=vg.model, nmax=50)
+  kr$pred <- kr$var1.pred
 
+} else if (krige.technique == "RK") {
+  ### obs$alt <- overlay(dem, obs)$alt
 
-at <- pretty(lev.uk$pred, 50)
-col <- terrain.colors(length(at))
-colorkey <- list(width=1, space="right", labels=list(rot=90))
-scales <- list(draw=TRUE, y=list(rot=90, tck=-1), x=list(tck=-1))
+  ## lm.obs <- lm(lev~alt, obs)
+  ## plot(lev~alt, as.data.frame(obs))
+  ## abline(lm(lev~alt, as.data.frame(obs)))
 
-spplot(lev.uk, "pred", main="UK predictions", at=at, col.regions=col,
-       scales=scales, colorkey=colorkey)
+  # vg.model <- fit.variogram(variogram(lev~alt, obs), model=vg.model)
 
+  print(plot(variogram(lev~alt, obs), vg.model))
 
-
-
-
-spplot(lev.uk, "se",  main="UK standard error", scales=scales, colorkey=colorkey)
-
-
-
-
-
-
+  kr <- krige(lev~alt, locations=obs, newdata=dem, model=vg.model, nmax=50)
+  kr$pred <- dem$alt - kr$var1.pred
+}
 
 
+# Standard error
+kr$se <- sqrt(kr$var1.var)
 
 
-
-
-
-
+PlotKriging(kr, "pred", obs, ply, xlim=xlim, ylim=ylim, pal=2L)
+PlotKriging(kr, "se",   obs, ply, xlim=xlim, ylim=ylim, pal=3L, contour=FALSE)
 
 
 
@@ -136,6 +133,19 @@ spplot(lev.uk, "se",  main="UK standard error", scales=scales, colorkey=colorkey
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+#### STOP ######################################################################
 
 
 f <- file.path(path, paste("Map", map.id, "_SpatialDomain.gz", sep=""))
@@ -170,7 +180,7 @@ PlotKriging(obs, model, grd, drift)
 
 
 
-#### EXAMPLE ####
+#### EXAMPLE ###################################################################
 
 ## Local universal kriging, using one continuous variable
 ## the variogram should be that of the residual:
@@ -206,7 +216,7 @@ spplot(elev, scales=list(draw=TRUE))
 
 
 
-########################### OLD README ###########################
+########################### OLD README ########################################
 
 file.obs <- file.path(dir.path, "inst", "extdata", "ObservationData.txt")
 obs <- ReadObservations(file=file.obs, x.var="Longitude", y.var="Latitude",
