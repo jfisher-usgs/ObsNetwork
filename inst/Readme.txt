@@ -87,7 +87,7 @@ if (!is.null(dx)) {
 }
 
 
-PlotKriging(dem, "alt", obs[obs$net == network, ], ply,
+PlotMap(dem, "alt", obs[obs$net == network, ], ply,
             xlim=xlim, ylim=ylim, pal=1L, contour=FALSE)
 
 
@@ -124,8 +124,8 @@ if (krige.technique == "OK") {
 kr$se <- sqrt(kr$var1.var)
 
 
-PlotKriging(kr, "pred", obs, ply, xlim=xlim, ylim=ylim, pal=2L)
-PlotKriging(kr, "se",   obs, ply, xlim=xlim, ylim=ylim, pal=3L, contour=FALSE)
+PlotMap(kr, "pred", obs, ply, xlim=xlim, ylim=ylim, pal=2L)
+PlotMap(kr, "se",   obs, ply, xlim=xlim, ylim=ylim, pal=3L, contour=FALSE)
 
 
 

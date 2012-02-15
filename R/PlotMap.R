@@ -1,6 +1,5 @@
-PlotKriging <- function(obj, zcol, pts, ply, rm.idxs, xlim, ylim,
-                        at, pal=1L, contour=TRUE, main="",
-                        gr.type="windows", gr.file=NULL) {
+PlotMap <- function(obj, zcol, pts, ply, rm.idxs, xlim, ylim, at, pal=1L,
+                    contour=TRUE, main="", gr.type="windows", gr.file=NULL) {
 
   # Define point symbols
   if (missing(pts)) {
