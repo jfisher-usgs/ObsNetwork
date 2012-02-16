@@ -3,6 +3,7 @@ library(colorspace)
 library(gstat)
 library(genalg)
 library(rgdal)
+library(raster)
 library(RSurvey)
 
 # setwd("K:/Software/ObsNetwork")
@@ -12,13 +13,7 @@ RestoreSession(file.path(getwd(), "R"))
 ###
 
 
-f.obs <- "ESRP_Observations.gz"
 
-network <- "State"
-f.ply <- "ESRP_Polygon.gz"
-xlim <- c(-115.25, -111.5)
-ylim <- c(42.25, 44.5)
-vg.model <- vgm(4200, "Sph", 80, nugget=0)
 
 
 network <- "INL"
@@ -28,35 +23,42 @@ ylim <- c(43.3, 44.0)
 
 
 
+network <- "State"
+f.ply <- "ESRP_Polygon.gz"
+xlim <- c(-115.25, -111.5)
+ylim <- c(42.25, 44.5)
 
 
-krige.technique <- "RK" # Regression-kriging
-krige.technique <- "OK" # Ordinary-kriging
+
+
+krige.technique <- "OK"
+vg.model <- vgm(model="Lin", nugget=0)
+fit.vg <- TRUE
+
+
+krige.technique <- "RK"
+vg.model <- vgm(psill=4200, model="Sph", range=80, nugget=0)
+fit.vg <- FALSE
 
 
 
 
-yr <- 2008
-dx <- NULL
-
-dt.lim <- c("2008-01-01 00:00", "2008-12-31 23:59")
-
-f.dem <- "USGS_NED_1km.gz"
-path <- file.path(getwd(), "inst", "extdata")
 
 
 ###
 
 
-# Observations (NAVD 88 land surface altitudes using VERTCON)
-f <- file.path(path, f.obs)
-obs <- ReadObservations(file=f, x.var="dec_long_va", y.var="dec_lat_va",
-                        site.var="site_no", net.var="network", alt.var="alt_va",
-                        hole.var="hole_depth_va", lev.var="lev_va",
-                        acy.var="lev_acy", dt.var="lev_dt", dt.lim=dt.lim)
-idxs <- zerodist(obs, zero=0.0, unique.ID=FALSE)
-if (nrow(idxs) > 0)
-  stop()
+path <- file.path(getwd(), "inst", "extdata")
+f.obs <- "ESRP_Observations.gz"
+f.dem <- "USGS_NED_1km.gz"
+yr <- 2008
+dx <- NULL
+dt.lim <- c("2008-01-01 00:00", "2008-12-31 23:59")
+nmax <- 50 # default is Inf
+
+
+###
+
 
 # Polygon
 f <- file.path(path, f.ply)
@@ -68,10 +70,12 @@ ply <- Polygons(list(Polygon(ply, hole=FALSE)), "sp")
 ply <- SpatialPolygons(list(ply), proj4string=CRS("+proj=longlat +datum=NAD83"))
 
 
-# DEM  (NAVD 88 land surface altitudes)
+# DEM
 f <- file.path(path, f.dem)
 dem <- read.asciigrid(f, as.image=FALSE, plot.image=FALSE, colname="alt",
                       proj4string=CRS("+proj=longlat +datum=NAD83"))
+dem <- as(crop(raster(dem), extent(c(xlim, ylim))), 'SpatialGridDataFrame')
+
 if (!is.null(dx)) {
   grd.par <- gridparameters(dem)
   if (dx > min(grd.par$cellsize)) {
@@ -83,49 +87,82 @@ if (!is.null(dx)) {
     gt <- GridTopology(cellcentre.offset, cellsize, cells.dim)
     sg <- SpatialGrid(gt, proj4string=CRS("+proj=longlat +datum=NAD83"))
     dem <- aggregate(dem, sg)
+  } else {
+    warning("")
   }
 }
 
 
+# Observations
+f <- file.path(path, f.obs)
+obs <- ReadObservations(file=f, x.var="dec_long_va", y.var="dec_lat_va",
+                        site.var="site_no", net.var="network", alt.var="alt_va",
+                        hole.var="hole_depth_va", lev.var="lev_va",
+                        acy.var="lev_acy", dt.var="lev_dt", dt.lim=dt.lim)
+idxs <- zerodist(obs, zero=0.0, unique.ID=FALSE)
+if (nrow(idxs) > 0)
+  stop()
+obs$alt.lev <- obs$alt - obs$lev
+
+
 PlotMap(dem, "alt", obs[obs$net == network, ], ply,
-            xlim=xlim, ylim=ylim, pal=1L, contour=FALSE)
+        xlim=xlim, ylim=ylim, pal=1L, contour=FALSE)
 
 
-# NA raster values outside polygon
+# Drift
+lm.drift <- lm(alt.lev ~ x + y, data=obs)
+summary(lm.drift)
+## plot3d(x=cbind(coordinates(obs), drift(coordinates(obs))),
+##        col="red", xlab="x", ylab="y", zlab="z")
+## plot3d(x=cbind(coordinates(obs), obs$alt.lev), col="blue", add=TRUE)
+
+
+# Variogram model (Ordinary-kriging and Regression-kriging)
+if (krige.technique == "OK") {
+  fo <- alt.lev~1
+} else {
+  fo <- alt.lev~alt
+}
+vg <- variogram(fo, obs)
+if (fit.vg)
+  vg.model <- fit.variogram(vg, vg.model)
+plot(vg, vg.model)
+
+
+# Reduce size
+is.in.ply <- !is.na(over(obs, ply, fn=mean))
+if (sum(as.integer(is.in.ply)) < nrow(obs))
+  warning("")
+obs <- obs[is.in.ply, ]
 dem$alt <- dem$alt * over(dem, ply, fn=mean)
 
 
-if (krige.technique == "OK") {
-  obs$lev <- obs$alt - obs$lev
-  vg.model <- vgm(model="Lin", nugget=0)
-  vg.model <- fit.variogram(variogram(lev~1, obs), model=vg.model)
-  plot(variogram(lev~1, obs), vg.model)
+# Kriging interpolation
+kr <- krige(formula=fo, locations=obs, newdata=dem, model=vg.model, nmax=nmax)
+kr$var1.se <- sqrt(kr$var1.var)
 
-  kr <- krige(lev~1, locations=obs, newdata=dem, model=vg.model, nmax=50)
-  kr$pred <- kr$var1.pred
-
-} else if (krige.technique == "RK") {
-  ### obs$alt <- overlay(dem, obs)$alt
-
-  ## lm.obs <- lm(lev~alt, obs)
-  ## plot(lev~alt, as.data.frame(obs))
-  ## abline(lm(lev~alt, as.data.frame(obs)))
-
-  # vg.model <- fit.variogram(variogram(lev~alt, obs), model=vg.model)
-
-  print(plot(variogram(lev~alt, obs), vg.model))
-
-  kr <- krige(lev~alt, locations=obs, newdata=dem, model=vg.model, nmax=50)
-  kr$pred <- dem$alt - kr$var1.pred
-}
+PlotMap(kr, "var1.pred", obs, ply, xlim=xlim, ylim=ylim, pal=2L)
+PlotMap(kr, "var1.se",   obs, ply, xlim=xlim, ylim=ylim, pal=3L, contour=FALSE)
 
 
-# Standard error
-kr$se <- sqrt(kr$var1.var)
 
 
-PlotMap(kr, "pred", obs, ply, xlim=xlim, ylim=ylim, pal=2L)
-PlotMap(kr, "se",   obs, ply, xlim=xlim, ylim=ylim, pal=3L, contour=FALSE)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
