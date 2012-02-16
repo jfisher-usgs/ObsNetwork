@@ -24,7 +24,7 @@ ylim <- c(43.3, 44.0)
 
 
 network <- "State"
-f.ply <- "ESRP_Polygon.gz"
+f.ply <- "ESRP_Polygons.gz"
 xlim <- c(-115.25, -111.5)
 ylim <- c(42.25, 44.5)
 
@@ -48,11 +48,16 @@ fit.vg <- FALSE
 ###
 
 
+f.dem <- "USGS_NED_500m.gz"
+dx <- 0.01
+
+# f.dem <- "USGS_NED_1km.gz"
+# dx <- NULL
+
+
 path <- file.path(getwd(), "inst", "extdata")
 f.obs <- "ESRP_Observations.gz"
-f.dem <- "USGS_NED_1km.gz"
 yr <- 2008
-dx <- NULL
 dt.lim <- c("2008-01-01 00:00", "2008-12-31 23:59")
 nmax <- 50 # default is Inf
 
@@ -60,14 +65,24 @@ nmax <- 50 # default is Inf
 ###
 
 
-# Polygon
+# Polygon(s)
 f <- file.path(path, f.ply)
-ply <- read.table(f, header=TRUE, sep="\t", fill=TRUE, strip.white=TRUE,
-                  blank.lines.skip=TRUE, allowEscapes=TRUE, flush=TRUE)
-ply <- ply[, c("dec_long_va", "dec_lat_va")]
-names(ply) <- c("x", "y")
-ply <- Polygons(list(Polygon(ply, hole=FALSE)), "sp")
-ply <- SpatialPolygons(list(ply), proj4string=CRS("+proj=longlat +datum=NAD83"))
+d <- read.table(f, header=TRUE, sep="\t", fill=TRUE, strip.white=TRUE,
+                blank.lines.skip=TRUE, allowEscapes=TRUE, flush=TRUE)
+
+if (ncol(d) > 2) {
+  lst <- list()
+  cd <- unique(d[, 3])
+  hole <- FALSE
+  for (i in seq(along=cd)) {
+    lst[[i]] <- Polygon(d[d[, 3] == cd[i], 1:2], hole=hole)
+    hole <- TRUE
+  }
+} else {
+  lst <- list(Polygon(d[, 1:2], hole=FALSE))
+}
+ply <- SpatialPolygons(list(Polygons(lst, "sd")),
+                       proj4string=CRS("+proj=longlat +datum=NAD83"))
 
 
 # DEM
@@ -153,154 +168,4 @@ PlotMap(kr, "var1.se",   obs, ply, xlim=xlim, ylim=ylim, pal=3L, contour=FALSE)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#### STOP ######################################################################
-
-
-f <- file.path(path, paste("Map", map.id, "_SpatialDomain.gz", sep=""))
-grd <- BuildGrid(file=f, x.var="Longitude", y.var="Latitude", dx=dx)
-
-
-lm.drift <- lm(observation ~ x + y, data=obs)
-coeff <- as.numeric(coefficients(lm.drift))
-drift <- function(x) coeff[1] + coeff[2] * x[, 1] + coeff[3] * x[, 2]
-obs$residual <- obs$observation - drift(coordinates(obs))
-
-# plot3d(x=cbind(coordinates(obs), drift(coordinates(obs))),
-#        col="red", xlab="x", ylab="y", zlab="z")
-# plot3d(x=cbind(coordinates(obs), obs$observation), col="blue", add=TRUE)
-
-
-v <- gstat::variogram(gstat(id="residual", formula=residual~1, data=obs))
-
-# model <- fit.variogram(object=v, model=vgm(model="Lin", nugget=0))
-
-# model <- vgm(model="Sph", nugget=0, range=35, psill=130)
-
-model <- vgm(model="Sph", nugget=0, range=80, psill=28000)
-
-plot(v, model=model)
-
-
-
-# RunCrossvalidation(obs, model)
-
-PlotKriging(obs, model, grd, drift)
-
-
-
-#### EXAMPLE ###################################################################
-
-## Local universal kriging, using one continuous variable
-## the variogram should be that of the residual:
-
-data(meuse)
-data(meuse.grid)
-
-coordinates(meuse) <- ~x+y
-gridded(meuse.grid) <- ~x+y
-
-x <- krige(log(zinc) ~ sqrt(dist), meuse, meuse.grid,
-           model = vgm(.149, "Sph", 700, .0674), nmax = 40)
-
-spplot(x, zcol="var1.pred")
-
-#### Regression Kriging ####
-
-## http://spatial-analyst.net/wiki/index.php?title=Regression-kriging_guide
-
-f <- file.path(path, paste("Map", map.id, "_NED1km.gz", sep=""))
-elev <- read.asciigrid(f, as.image=FALSE, plot.image=FALSE, colname="elev",
-                       proj4string=CRS("+proj=longlat +datum=NAD83"))
-
-spplot(elev, scales=list(draw=TRUE))
-
-
-
-
-
-
-
-
-
-
-
-########################### OLD README ########################################
-
-file.obs <- file.path(dir.path, "inst", "extdata", "ObservationData.txt")
-obs <- ReadObservations(file=file.obs, x.var="Longitude", y.var="Latitude",
-                        site.var="Site_ID", obs.var="WL_elev",
-                        acc.var="Accuracy")
-
-###
-
-file.ply <- file.path(dir.path, "inst", "extdata", "SpatialDomain.txt")
-grd.gr <- BuildGrid(file=file.ply, x.var="Longitude", y.var="Latitude", dx=0.01)
-grd.ga <- BuildGrid(file=file.ply, x.var="Longitude", y.var="Latitude", dx=0.03)
-
-###
-
-#for (i in c(0, 45, 90, 135)) {
-#  model <- vgm(psill=190000, model="Gau", range=112, nugget=0, anis=c(i, 0.5))
-#  FitVariogram(obs, model)
-#}
-
-v.fit <- FitVariogram(obs, model=vgm(model="Lin", nugget=0))
-
-#v.fit <- FitVariogram(obs, model=vgm(psill=190000, model="Gau",
-#                                     range=112, nugget=0))
-
-###
-
-RunCrossvalidation(obs, v.fit)
-
-###
-
-#PlotKriging(obs, v.fit, grd.gr, at.pred=seq(2600, 6000, by=200),
-#            at.se=seq(30, 70, by=2))
-
-PlotKriging(obs, v.fit, grd.gr)
-
-graphics.off()
-
-#PlotKriging(obs, v.fit, grd.gr, rm.idxs=c(1, 20))
-
-#PlotKriging(obs, v.fit, grd.gr, rm.idxs=50:100)
-
-###
-
-#ga <- RunGA(obs, v.fit, grd.ga, nsites=10, niters=10)
-
-ga <- RunGA(obs, v.fit, grd.ga, nsites=10)
-
-summary.rbga(ga$ans, echo=TRUE)
-PlotKriging(obs, v.fit, grd.gr, rm.idxs=ga$rm.idxs)
 
