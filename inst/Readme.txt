@@ -6,8 +6,8 @@ library(rgdal)
 library(raster)
 library(RSurvey)
 
-setwd("K:/Software/ObsNetwork")
-# setwd("D:/WORK/JFisher/Software/ObsNetwork")
+# setwd("K:/Software/ObsNetwork")
+setwd("D:/WORK/JFisher/Software/ObsNetwork")
 RestoreSession(file.path(getwd(), "R"))
 
 ###
@@ -17,14 +17,14 @@ RestoreSession(file.path(getwd(), "R"))
 
 
 network <- "INL"
-f.ply <- "INL_Polygon.gz"
+ply.dsn <- "INL_Polygon"
 xlim <- c(-113.3, -112.2)
 ylim <- c(43.3, 44.0)
 dem.fact <- 1
 
 
 network <- "State"
-f.ply <- "ESRP_Polygons.gz"
+ply.dsn <- "ESRP_Polygon"
 xlim <- c(-115.25, -111.5)
 ylim <- c(42.25, 44.5)
 dem.fact <- 2
@@ -47,9 +47,9 @@ fit.vg <- FALSE
 ###
 
 
-f.dem <- "USGS_NED_500m.gz"
+dem.file <- "USGS_NED_500m.txt"
 path <- file.path(getwd(), "inst", "extdata")
-f.obs <- "ESRP_Observations.gz"
+obs.file <- "ESRP_Observations.gz"
 yr <- 2008
 dt.lim <- c("2008-01-01 00:00", "2008-12-31 23:59")
 nmax <- 50 # default is Inf
@@ -58,30 +58,14 @@ nmax <- 50 # default is Inf
 ###
 
 
-# Polygon(s)
-f <- file.path(path, f.ply)
-d <- read.table(f, header=TRUE, sep="\t", fill=TRUE, strip.white=TRUE,
-                blank.lines.skip=TRUE, allowEscapes=TRUE, flush=TRUE)
-
-if (ncol(d) > 2) {
-  lst <- list()
-  cd <- unique(d[, 3])
-  hole <- FALSE
-  for (i in seq(along=cd)) {
-    lst[[i]] <- Polygon(d[d[, 3] == cd[i], 1:2], hole=hole)
-    hole <- TRUE
-  }
-} else {
-  lst <- list(Polygon(d[, 1:2], hole=FALSE))
-}
-ply <- SpatialPolygons(list(Polygons(lst, "sd")),
-                       proj4string=CRS("+proj=longlat +datum=NAD83"))
-
+# Polygon
+ply <- readOGR(dsn=file.path(path, ply.dsn), layer=ply.dsn)
+ply <- rgdal::spTransform(ply, CRS("+proj=longlat +datum=NAD83"))
 
 # Grid map
-f <- file.path(path, f.dem)
-dem <- read.asciigrid(f, as.image=FALSE, plot.image=FALSE, colname="alt",
-                      proj4string=CRS("+proj=longlat +datum=NAD83"))
+f <- file.path(path, dem.file)
+dem <- readGDAL(f, band=1, p4s="+proj=longlat +datum=NAD83")
+names(dem) <- "alt"
 dem <- as(crop(raster(dem), extent(c(xlim, ylim))), 'SpatialGridDataFrame')
 
 if (dem.fact > 1) {
@@ -91,7 +75,7 @@ if (dem.fact > 1) {
 
 
 # Observations
-f <- file.path(path, f.obs)
+f <- file.path(path, obs.file)
 obs <- ReadObservations(file=f, x.var="dec_long_va", y.var="dec_lat_va",
                         site.var="site_no", net.var="network", alt.var="alt_va",
                         hole.var="hole_depth_va", lev.var="lev_va",
@@ -127,11 +111,13 @@ plot(vg, vg.model)
 
 
 # Reduce size
-is.in.ply <- !is.na(over(obs, ply, fn=mean))
-if (sum(as.integer(is.in.ply)) < nrow(obs))
+obs.in.ply <- overlay(obs, ply)
+if (sum(obs.in.ply, na.rm=TRUE) < nrow(obs))
   warning("")
-obs <- obs[is.in.ply, ]
-dem$alt <- dem$alt * over(dem, ply, fn=mean)
+obs <- obs[!is.na(obs.in.ply), ]
+
+dem.in.ply <- overlay(dem, ply)
+dem$alt <- dem$alt * dem.in.ply
 
 
 # Kriging interpolation
@@ -140,14 +126,6 @@ kr$var1.se <- sqrt(kr$var1.var)
 
 PlotMap(kr, "var1.pred", obs, ply, xlim=xlim, ylim=ylim, pal=2L)
 PlotMap(kr, "var1.se",   obs, ply, xlim=xlim, ylim=ylim, pal=3L, contour=FALSE)
-
-
-
-
-
-
-
-
 
 
 
