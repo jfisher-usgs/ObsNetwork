@@ -6,8 +6,8 @@ library(rgdal)
 library(raster)
 library(RSurvey)
 
-# setwd("K:/Software/ObsNetwork")
-setwd("D:/WORK/JFisher/Software/ObsNetwork")
+setwd("K:/Software/ObsNetwork")
+# setwd("D:/WORK/JFisher/Software/ObsNetwork")
 RestoreSession(file.path(getwd(), "R"))
 
 ###
@@ -20,20 +20,21 @@ network <- "INL"
 f.ply <- "INL_Polygon.gz"
 xlim <- c(-113.3, -112.2)
 ylim <- c(43.3, 44.0)
-
+dem.fact <- 1
 
 
 network <- "State"
 f.ply <- "ESRP_Polygons.gz"
 xlim <- c(-115.25, -111.5)
 ylim <- c(42.25, 44.5)
-
+dem.fact <- 2
 
 
 
 krige.technique <- "OK"
 vg.model <- vgm(model="Lin", nugget=0)
 fit.vg <- TRUE
+
 
 
 krige.technique <- "RK"
@@ -43,18 +44,10 @@ fit.vg <- FALSE
 
 
 
-
-
 ###
 
 
 f.dem <- "USGS_NED_500m.gz"
-dx <- 0.01
-
-# f.dem <- "USGS_NED_1km.gz"
-# dx <- NULL
-
-
 path <- file.path(getwd(), "inst", "extdata")
 f.obs <- "ESRP_Observations.gz"
 yr <- 2008
@@ -85,26 +78,15 @@ ply <- SpatialPolygons(list(Polygons(lst, "sd")),
                        proj4string=CRS("+proj=longlat +datum=NAD83"))
 
 
-# DEM
+# Grid map
 f <- file.path(path, f.dem)
 dem <- read.asciigrid(f, as.image=FALSE, plot.image=FALSE, colname="alt",
                       proj4string=CRS("+proj=longlat +datum=NAD83"))
 dem <- as(crop(raster(dem), extent(c(xlim, ylim))), 'SpatialGridDataFrame')
 
-if (!is.null(dx)) {
-  grd.par <- gridparameters(dem)
-  if (dx > min(grd.par$cellsize)) {
-    cellcentre.offset <- grd.par$cellcentre.offset +
-                         dx / 2 - grd.par$cellsize[1] / 2
-    cellsize <- c(dx, dx)
-    cells.dim <- c(diff(bbox(dem)[1, ]) / dx + 1,
-                   diff(bbox(dem)[2, ]) / dx + 1)
-    gt <- GridTopology(cellcentre.offset, cellsize, cells.dim)
-    sg <- SpatialGrid(gt, proj4string=CRS("+proj=longlat +datum=NAD83"))
-    dem <- aggregate(dem, sg)
-  } else {
-    warning("")
-  }
+if (dem.fact > 1) {
+  dem <- as(aggregate(raster(dem), fact=dem.fact, fun=mean, expand=TRUE,
+                      na.rm=TRUE), 'SpatialGridDataFrame')
 }
 
 
