@@ -6,8 +6,8 @@ library(rgdal)
 library(raster)
 library(RSurvey)
 
-# setwd("K:/Software/ObsNetwork")
-setwd("D:/WORK/JFisher/Software/ObsNetwork")
+setwd("K:/Software/ObsNetwork")
+# setwd("D:/WORK/JFisher/Software/ObsNetwork")
 RestoreSession(file.path(getwd(), "R"))
 
 ###
@@ -47,7 +47,7 @@ fit.vg <- FALSE
 ###
 
 
-dem.file <- "USGS_NED_500m.txt"
+dem.file <- "NED_500m.tif"
 path <- file.path(getwd(), "inst", "extdata")
 obs.file <- "ESRP_Observations.gz"
 yr <- 2008
@@ -93,9 +93,9 @@ PlotMap(dem, "alt", obs[obs$net == network, ], ply,
 # Drift
 lm.drift <- lm(alt.lev ~ x + y, data=obs)
 summary(lm.drift)
-## plot3d(x=cbind(coordinates(obs), drift(coordinates(obs))),
-##        col="red", xlab="x", ylab="y", zlab="z")
-## plot3d(x=cbind(coordinates(obs), obs$alt.lev), col="blue", add=TRUE)
+## rgl::plot3d(x=cbind(coordinates(obs), drift(coordinates(obs))),
+##             col="red", xlab="x", ylab="y", zlab="z")
+## rgl::plot3d(x=cbind(coordinates(obs), obs$alt.lev), col="blue", add=TRUE)
 
 
 # Variogram model (Ordinary-kriging and Regression-kriging)
