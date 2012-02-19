@@ -20,14 +20,14 @@ network <- "INL"
 ply.dsn <- "INL_Polygon"
 xlim <- c(-113.3, -112.2)
 ylim <- c(43.3, 44.0)
-dem.fact <- 1
+grd.fact <- 1
 
 
 network <- "State"
 ply.dsn <- "ESRP_Polygon"
 xlim <- c(-115.25, -111.5)
 ylim <- c(42.25, 44.5)
-dem.fact <- 2
+grd.fact <- 2
 
 
 
@@ -47,7 +47,7 @@ fit.vg <- FALSE
 ###
 
 
-dem.file <- "NED_500m.tif"
+grd.file <- "NED_500m.tif"
 path <- file.path(getwd(), "inst", "extdata")
 obs.file <- "ESRP_Observations.gz"
 yr <- 2008
@@ -58,39 +58,37 @@ nmax <- 50 # default is Inf
 ###
 
 
-# Polygon
-ply <- readOGR(dsn=file.path(path, ply.dsn), layer=ply.dsn)
-ply <- rgdal::spTransform(ply, CRS("+proj=longlat +datum=NAD83"))
-
-# Grid map
-f <- file.path(path, dem.file)
-dem <- readGDAL(f, band=1, p4s="+proj=longlat +datum=NAD83")
-names(dem) <- "alt"
-dem <- as(crop(raster(dem), extent(c(xlim, ylim))), 'SpatialGridDataFrame')
-
-if (dem.fact > 1) {
-  dem <- as(aggregate(raster(dem), fact=dem.fact, fun=mean, expand=TRUE,
+# Raster grid
+f <- file.path(path, grd.file)
+grd <- readGDAL(f, band=1)
+names(grd) <- "alt"
+grd <- as(crop(raster(grd), extent(c(xlim, ylim))), 'SpatialGridDataFrame')
+if (grd.fact > 1) {
+  grd <- as(aggregate(raster(grd), fact=grd.fact, fun=mean, expand=TRUE,
                       na.rm=TRUE), 'SpatialGridDataFrame')
 }
+grd.crs <- grd@proj4string
 
 
 # Observations
 f <- file.path(path, obs.file)
-obs <- ReadObservations(file=f, x.var="dec_long_va", y.var="dec_lat_va",
+obs <- ReadObservations(f, x.var="dec_long_va", y.var="dec_lat_va",
                         site.var="site_no", net.var="network", alt.var="alt_va",
                         hole.var="hole_depth_va", lev.var="lev_va",
                         acy.var="lev_acy", dt.var="lev_dt", dt.lim=dt.lim)
-idxs <- zerodist(obs, zero=0.0, unique.ID=FALSE)
-if (nrow(idxs) > 0)
-  stop()
-obs$alt.lev <- obs$alt - obs$lev
+proj4string(obs) <- grd.crs
 
 
-PlotMap(dem, "alt", obs[obs$net == network, ], ply,
+# Polygon
+ply <- readOGR(dsn=file.path(path, ply.dsn), layer=ply.dsn)
+ply <- rgdal::spTransform(ply, grd.crs)
+
+
+PlotMap(grd, "alt", obs[obs$net == network, ], ply,
         xlim=xlim, ylim=ylim, pal=1L, contour=FALSE)
 
 
-# Drift
+# Identify drift
 lm.drift <- lm(alt.lev ~ x + y, data=obs)
 summary(lm.drift)
 ## rgl::plot3d(x=cbind(coordinates(obs), drift(coordinates(obs))),
@@ -107,7 +105,7 @@ if (krige.technique == "OK") {
 vg <- variogram(fo, obs)
 if (fit.vg)
   vg.model <- fit.variogram(vg, vg.model)
-plot(vg, vg.model)
+## plot(vg, vg.model)
 
 
 # Reduce size
@@ -116,12 +114,12 @@ if (sum(obs.in.ply, na.rm=TRUE) < nrow(obs))
   warning("")
 obs <- obs[!is.na(obs.in.ply), ]
 
-dem.in.ply <- overlay(dem, ply)
-dem$alt <- dem$alt * dem.in.ply
+grd.in.ply <- overlay(grd, ply)
+grd$alt <- grd$alt * grd.in.ply
 
 
 # Kriging interpolation
-kr <- krige(formula=fo, locations=obs, newdata=dem, model=vg.model, nmax=nmax)
+kr <- krige(formula=fo, locations=obs, newdata=grd, model=vg.model, nmax=nmax)
 kr$var1.se <- sqrt(kr$var1.var)
 
 PlotMap(kr, "var1.pred", obs, ply, xlim=xlim, ylim=ylim, pal=2L)
