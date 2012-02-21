@@ -28,7 +28,8 @@ RunCrossValidation <- function(fo, obs, grd, vg.model, nmax=Inf, ply=NULL) {
   }
   scales <- list(draw=TRUE, y=list(rot=90, tck=-1), x=list(tck=-1))
   x11()
-  print(bubble(cv, "residual", main="Cross Validation Residuals",
+  tcl <- 0.50 / (6 * par("csi"))
+  print(bubble(cv, "residual", tcl=tcl, main="Cross Validation Residuals",
                xlim=xlim, ylim=ylim, scales=scales, sp.layout=sp.layout,
                key.space="bottom"))
 
@@ -40,7 +41,6 @@ RunCrossValidation <- function(fo, obs, grd, vg.model, nmax=Inf, ply=NULL) {
   ylim <- range(pretty(extendrange(y)))
 
   x11()
-  tcl <- 0.50 / (6 * par("csi"))
   plot(x, y, xaxs="i", yaxs="i", xlim=xlim, ylim=ylim, asp=1, tcl=tcl,
        xlab="Observed value", ylab="Predicted value")
   lines(x=lim, y=lim, col="blue")
