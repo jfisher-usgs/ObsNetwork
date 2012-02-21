@@ -38,7 +38,7 @@ PlotMap <- function(obj, zcol, pts, ply, rm.idxs, xlim, ylim, at, pal=1L,
   dev.height <- dev.width * asp
 
   # Set generic plot arguments
-  colorkey <- list(width=1, space="right", labels=list(rot=90))
+  colorkey <- list(width=1, space="right", labels=list(rot=-90))
   scales <- list(draw=TRUE, y=list(rot=90, tck=-1), x=list(tck=-1))
 
   # Set axis breakpoints

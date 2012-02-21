@@ -6,8 +6,8 @@ library(rgdal)
 library(raster)
 library(RSurvey)
 
-setwd("K:/Software/ObsNetwork")
-# setwd("D:/WORK/JFisher/Software/ObsNetwork")
+# setwd("K:/Software/ObsNetwork")
+setwd("D:/WORK/JFisher/Software/ObsNetwork")
 RestoreSession(file.path(getwd(), "R"))
 
 ###
@@ -46,7 +46,7 @@ fit.vg <- FALSE
 
 grd.file <- "NED_500m.tif"
 path <- file.path(getwd(), "inst", "extdata")
-obs.file <- "ESRP_Observations.gz"
+obs.file <- "ESRP_Observations.csv.gz"
 yr <- 2008
 dt.lim <- c("2008-01-01 00:00", "2008-12-31 23:59")
 nmax <- 50 # default is Inf
@@ -126,6 +126,33 @@ kr$var1.se <- sqrt(kr$var1.var)
 PlotMap(kr, "var1.pred", obs, ply, xlim=xlim, ylim=ylim, pal=2L)
 PlotMap(kr, "var1.se",   obs, ply, xlim=xlim, ylim=ylim, pal=3L, contour=FALSE)
 
+
 # Cross-validation
-cv <- RunCrossValidation(fo, obs, grd, vg.model, nmax, ply)
+cross.validation <- RunCrossValidation(fo, obs, grd, vg.model, nmax, ply)
+
+
+
+
+
+sp.layout <- list()
+sp.layout[[1]] <- list("sp.polygons", ply, col="black", first=FALSE)
+scales <- list(draw=TRUE, y=list(rot=90, tck=-1), x=list(tck=-1))
+tcl <- 0.50 / (6 * par("csi"))
+asp <- mapasp(ply, xlim=xlim, ylim=ylim)
+
+x11()
+print(bubble(cross.validation$cv, "residual", main="Residuals", tcl=tcl,
+             xlim=xlim, ylim=ylim, scales=scales, sp.layout=sp.layout,
+             key.space="bottom", aspect=asp))
+
+x11()
+print(bubble(obs, "acy", main="Accuracy", tcl=tcl,
+             xlim=xlim, ylim=ylim, scales=scales, sp.layout=sp.layout,
+             key.space="bottom", aspect=asp))
+
+x11()
+print(bubble(obs, "sd", main="Standard deviation", tcl=tcl,
+             xlim=xlim, ylim=ylim, scales=scales, sp.layout=sp.layout,
+             key.space="bottom", aspect=asp))
+
 

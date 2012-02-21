@@ -16,30 +16,12 @@ RunCrossValidation <- function(fo, obs, grd, vg.model, nmax=Inf, ply=NULL) {
   # Correlation predicted and residual, ideally 0
   cor.pred.res <- cor(cv$observed - cv$residual, cv$residual)
 
-  # Bubble plot of residuals
-  sp.layout <- list()
-  if (!is.null(ply)) {
-    xlim <- extendrange(bbox(ply)["x", ])
-    ylim <- extendrange(bbox(ply)["y", ])
-    sp.layout[[1]] <- list("sp.polygons", ply, col="black", first=FALSE)
-  } else {
-    xlim <- extendrange(coordinates(obs)[, "x"])
-    ylim <- extendrange(coordinates(obs)[, "y"])
-  }
-  scales <- list(draw=TRUE, y=list(rot=90, tck=-1), x=list(tck=-1))
-  x11()
-  tcl <- 0.50 / (6 * par("csi"))
-  print(bubble(cv, "residual", tcl=tcl, main="Cross Validation Residuals",
-               xlim=xlim, ylim=ylim, scales=scales, sp.layout=sp.layout,
-               key.space="bottom"))
-
   # Plot observed versus predicted
   x <- cv$observed
   y <- cv$var1.pred
   lim <- range(pretty(extendrange(c(x, y))))
   xlim <- range(pretty(extendrange(x)))
   ylim <- range(pretty(extendrange(y)))
-
   x11()
   plot(x, y, xaxs="i", yaxs="i", xlim=xlim, ylim=ylim, asp=1, tcl=tcl,
        xlab="Observed value", ylab="Predicted value")
@@ -58,7 +40,7 @@ RunCrossValidation <- function(fo, obs, grd, vg.model, nmax=Inf, ply=NULL) {
   txt <- paste("Mean residual", format(ave.err), sep=" = ")
   mtext(txt, side=3, line=0, adj=1, cex=0.75)
 
-  list(me=me, mspe=mspe, msne=msne, cor.obs.pred=cor.obs.pred,
+  list(cv=cv, me=me, mspe=mspe, msne=msne, cor.obs.pred=cor.obs.pred,
        cor.pred.res=cor.pred.res)
 }
 

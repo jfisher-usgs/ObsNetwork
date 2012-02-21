@@ -1,9 +1,9 @@
 ReadObservations <- function(file, x.var, y.var, site.var, net.var, alt.var,
                              hole.var, lev.var, acy.var, dt.var, dt.lim,
-                             dt.fmt="%Y-%m-%d %H:%M") {
+                             dt.fmt="%Y-%m-%d %H:%M", sep=",") {
 
   # Read table file
-  obs <- read.table(file=file, header=TRUE, sep="\t", fill=TRUE,
+  obs <- read.table(file=file, header=TRUE, sep=sep, fill=TRUE,
                     strip.white=TRUE, blank.lines.skip=TRUE,
                     allowEscapes=TRUE, flush=TRUE, stringsAsFactors=FALSE)
 
