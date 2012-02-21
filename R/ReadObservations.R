@@ -66,7 +66,7 @@ ReadObservations <- function(file, x.var, y.var, site.var, net.var, alt.var,
 
   d <- d[!is.na(site), ]
 
-  coordinates(d) = as.formula("~x+y")
+  coordinates(d) = ~x+y
 
   idxs <- zerodist(d, zero=0.0, unique.ID=FALSE)
   if (nrow(idxs) > 0)

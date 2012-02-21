@@ -14,8 +14,6 @@ RestoreSession(file.path(getwd(), "R"))
 
 
 
-
-
 network <- "INL"
 ply.dsn <- "INL_Polygon"
 xlim <- c(-113.3, -112.2)
@@ -37,10 +35,9 @@ fit.vg <- TRUE
 
 
 
-krige.technique <- "RK"
+krige.technique <- "UK"
 vg.model <- vgm(psill=4200, model="Sph", range=80, nugget=0)
 fit.vg <- FALSE
-
 
 
 
@@ -119,11 +116,16 @@ grd$alt <- grd$alt * grd.in.ply
 
 
 # Kriging interpolation
-kr <- krige(formula=fo, locations=obs, newdata=grd, model=vg.model, nmax=nmax)
+elapsed.time <- system.time({
+  kr <- krige(formula=fo, locations=obs, newdata=grd, model=vg.model, nmax=nmax)
+})
+elapsed.time <- as.numeric(elapsed.time['elapsed'])
+
 kr$var1.se <- sqrt(kr$var1.var)
 
 PlotMap(kr, "var1.pred", obs, ply, xlim=xlim, ylim=ylim, pal=2L)
 PlotMap(kr, "var1.se",   obs, ply, xlim=xlim, ylim=ylim, pal=3L, contour=FALSE)
 
-
+# Cross-validation
+cv <- RunCrossValidation(fo, obs, grd, vg.model, nmax, ply)
 

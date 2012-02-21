@@ -1,41 +1,63 @@
-RunCrossvalidation <- function(obs, v.fit) {
+RunCrossValidation <- function(fo, obs, grd, vg.model, nmax=Inf, ply=NULL) {
 
-  # Initialize correlation matrix
-  mat <- matrix(NA, nrow=nrow(obs), ncol=3,
-                dimnames=list(1:nrow(obs), c("obs", "est", "err")))
+  # Cross validation
+  cv <- krige.cv(fo, obs, grd, model=vg.model, nmax=nmax)
+  coordinates(cv) <- ~x+y
+  proj4string(cv) <- grd@proj4string
 
-  # Calculate observation and error at each site by using all field
-  # observations apart from the one under investigation. Repeat for
-  # each observation.
-  for (i in 1:nrow(obs)) {
-    est.pnt <- krige(as.formula("observation~x+y"), obs[-i, ], obs[i, ],
-                     model=v.fit, debug.level=0)
-    mat[i, 1:2] <- c(obs[i, ]$observation, est.pnt$var1.pred)
+  # Mean error, ideally 0
+  me <- mean(cv$residual)
+  # MSPE, ideally small
+  mspe <- mean(cv$residual^2)
+  # Mean square normalized error, ideally close to 1
+  msne <- mean(cv$zscore^2)
+  # Correlation observed and predicted, ideally 1
+  cor.obs.pred <- cor(cv$observed, cv$observed - cv$residual)
+  # Correlation predicted and residual, ideally 0
+  cor.pred.res <- cor(cv$observed - cv$residual, cv$residual)
+
+  # Bubble plot of residuals
+  sp.layout <- list()
+  if (!is.null(ply)) {
+    xlim <- extendrange(bbox(ply)["x", ])
+    ylim <- extendrange(bbox(ply)["y", ])
+    sp.layout[[1]] <- list("sp.polygons", ply, col="black", first=FALSE)
+  } else {
+    xlim <- extendrange(coordinates(obs)[, "x"])
+    ylim <- extendrange(coordinates(obs)[, "y"])
   }
-  mat[, "err"] <- mat[, "obs"] - mat[, "est"]
+  scales <- list(draw=TRUE, y=list(rot=90, tck=-1), x=list(tck=-1))
+  x11()
+  print(bubble(cv, "residual", main="Cross Validation Residuals",
+               xlim=xlim, ylim=ylim, scales=scales, sp.layout=sp.layout,
+               key.space="bottom"))
 
-  # Plot measured versus estimated
-  x <- mat[, "obs"]
-  y <- mat[, "est"]
-  lim <- range(pretty(c(x, y)))
+  # Plot observed versus predicted
+  x <- cv$observed
+  y <- cv$var1.pred
+  lim <- range(pretty(extendrange(c(x, y))))
+  xlim <- range(pretty(extendrange(x)))
+  ylim <- range(pretty(extendrange(y)))
+
   x11()
   tcl <- 0.50 / (6 * par("csi"))
-  plot(x, y, xlim=lim, ylim=lim, xaxs="i", yaxs="i", asp=1, tcl=tcl,
-       xlab="Measured value", ylab="Estimated value")
+  plot(x, y, xaxs="i", yaxs="i", xlim=xlim, ylim=ylim, asp=1, tcl=tcl,
+       xlab="Observed value", ylab="Predicted value")
   lines(x=lim, y=lim, col="blue")
 
-  # Plot estimated versus estimation error
-  x <- mat[, "est"]
-  y <- mat[, "err"]
-  xlim <- range(pretty(x))
-  ylim <- range(pretty(y))
+  # Plot predicted versus residual
+  x <- cv$var1.pred
+  y <- cv$residual
+  xlim <- range(pretty(extendrange(x)))
+  ylim <- range(pretty(extendrange(y)))
   x11()
-  plot(x, y, xlim=xlim, ylim=ylim, xaxs="i", yaxs="i", tcl=tcl,
-       xlab="Estimated value", ylab="Estimated error")
+  plot(x, y, xaxs="i", yaxs="i", xlim=xlim, ylim=ylim, tcl=tcl,
+       xlab="Predicted value", ylab="Residual")
   ave.err <- mean(y)
   lines(x=xlim, y=rep(ave.err, 2), col="red")
-  txt <- paste("Mean estimated error", format(ave.err), sep=" = ")
+  txt <- paste("Mean residual", format(ave.err), sep=" = ")
   mtext(txt, side=3, line=0, adj=1, cex=0.75)
 
-  invisible()
+  list(me=me, mspe=mspe, msne=msne, cor.obs.pred=cor.obs.pred,
+       cor.pred.res=cor.pred.res)
 }
