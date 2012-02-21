@@ -61,3 +61,4 @@ RunCrossValidation <- function(fo, obs, grd, vg.model, nmax=Inf, ply=NULL) {
   list(me=me, mspe=mspe, msne=msne, cor.obs.pred=cor.obs.pred,
        cor.pred.res=cor.pred.res)
 }
+
