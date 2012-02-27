@@ -6,8 +6,8 @@ library(rgdal)
 library(raster)
 library(RSurvey)
 
-# setwd("K:/Software/ObsNetwork")
-setwd("D:/WORK/JFisher/Software/ObsNetwork")
+setwd("D:/Software/ObsNetwork")
+# setwd("D:/WORK/JFisher/Software/ObsNetwork")
 RestoreSession(file.path(getwd(), "R"))
 
 ###
@@ -124,7 +124,7 @@ elapsed.time <- as.numeric(elapsed.time['elapsed'])
 kr$var1.se <- sqrt(kr$var1.var)
 
 PlotMap(kr, "var1.pred", obs, ply, xlim=xlim, ylim=ylim, pal=2L)
-PlotMap(kr, "var1.se",   obs, ply, xlim=xlim, ylim=ylim, pal=3L, contour=FALSE)
+PlotMap(kr, "var1.se",   obs, ply, xlim=xlim, ylim=ylim, pal=3L)
 
 
 # Cross-validation
@@ -138,21 +138,20 @@ sp.layout <- list()
 sp.layout[[1]] <- list("sp.polygons", ply, col="black", first=FALSE)
 scales <- list(draw=TRUE, y=list(rot=90, tck=-1), x=list(tck=-1))
 tcl <- 0.50 / (6 * par("csi"))
-asp <- mapasp(ply, xlim=xlim, ylim=ylim)
 
 x11()
 print(bubble(cross.validation$cv, "residual", main="Residuals", tcl=tcl,
              xlim=xlim, ylim=ylim, scales=scales, sp.layout=sp.layout,
-             key.space="bottom", aspect=asp))
+             key.space="bottom"))
 
 x11()
 print(bubble(obs, "acy", main="Accuracy", tcl=tcl,
              xlim=xlim, ylim=ylim, scales=scales, sp.layout=sp.layout,
-             key.space="bottom", aspect=asp))
+             key.space="bottom"))
 
 x11()
 print(bubble(obs, "sd", main="Standard deviation", tcl=tcl,
              xlim=xlim, ylim=ylim, scales=scales, sp.layout=sp.layout,
-             key.space="bottom", aspect=asp))
+             key.space="bottom"))
 
 

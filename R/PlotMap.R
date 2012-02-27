@@ -53,10 +53,12 @@ PlotMap <- function(obj, zcol, pts, ply, rm.idxs, xlim, ylim, at, pal=1L,
     cols <- rev(heat_hcl(length(at) + 1,
                          h=c(234, 66), c=c(79, 25), l=c(56, 85),
                          power=c(0.2, 1.1)))
-  } else if (pal == 3L) {
     cols <- rev(heat_hcl(length(at) + 1,
-                         h=c(0, 90), c=c(80, 30), l=c(30, 90),
-                         power=c(0.2, 2.0)))
+                         h=c(265, 80), c=c(60, 10), l=c(25, 95),
+                         power=c(0.7, 2.0)))
+  } else if (pal == 3L) {
+    cols <- diverge_hcl(length(at) + 1, h=c(101, 18), c=100,
+                        l=c(70, 90), power=1.0)
   }
 
   # Add spatial scale legend
