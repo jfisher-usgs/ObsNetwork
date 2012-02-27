@@ -1,5 +1,5 @@
-ReadObservations <- function(file, x.var, y.var, site.var, net.var, alt.var,
-                             hole.var, lev.var, acy.var, dt.var, dt.lim,
+ReadObservations <- function(file, x.var, y.var, site.var, net.var,
+                             var1.var, var2.var, acy.var, dt.var, dt.lim,
                              dt.fmt="%Y-%m-%d %H:%M", sep=",") {
 
   # Read table file
@@ -8,25 +8,24 @@ ReadObservations <- function(file, x.var, y.var, site.var, net.var, alt.var,
                     allowEscapes=TRUE, flush=TRUE, stringsAsFactors=FALSE)
 
   # Reduce size of data frame
-  obs <- obs[, c(x.var, y.var, site.var, net.var, alt.var, hole.var, lev.var,
+  obs <- obs[, c(x.var, y.var, site.var, net.var, var1.var, var2.var,
                  acy.var, dt.var)]
 
   # Rename variable names
-  var.names <- c("x", "y", "site", "net", "alt", "hole", "lev", "acy", "dt")
+  var.names <- c("x", "y", "site", "net", "var1", "var2", "acy", "dt")
   names(obs) <- var.names
 
   # Force approriate classes
-  obs$x    <- as.numeric(obs$x)
-  obs$y    <- as.numeric(obs$y)
-  obs$site <- as.numeric(obs$site)
-  obs$alt  <- as.numeric(obs$alt)
-  obs$hole <- as.numeric(obs$hole)
-  obs$lev  <- as.numeric(obs$lev)
-  obs$acy  <- as.numeric(obs$acy)
-  obs$dt   <- as.POSIXct(as.character(obs$dt), format=dt.fmt)
+  obs$x     <- as.numeric(obs$x)
+  obs$y     <- as.numeric(obs$y)
+  obs$site  <- as.numeric(obs$site)
+  obs$var1  <- as.numeric(obs$var1)
+  obs$var2  <- as.numeric(obs$var2)
+  obs$acy   <- as.numeric(obs$acy)
+  obs$dt    <- as.POSIXct(as.character(obs$dt), format=dt.fmt)
 
   # Remove NA values
-  is.valid.rec <- !(is.na(obs$site) | is.na(obs$alt) | is.na(obs$lev) |
+  is.valid.rec <- !(is.na(obs$site) | is.na(obs$var1) | is.na(obs$var2) |
                     is.na(obs$dt))
   obs <- obs[is.valid.rec, ]
 
@@ -41,7 +40,7 @@ ReadObservations <- function(file, x.var, y.var, site.var, net.var, alt.var,
   site <- unique(obs$site)
   d <- as.data.frame(site, stringsAsFactors=FALSE)
   n <- nrow(d)
-  d[, c("x", "y", "alt", "hole", "acy", "sd", "lev", "net", "alt.lev")] <- NA
+  d[, c("x", "y", "var1", "var2", "acy", "sd", "net")] <- NA
   for (i in 1:n) {
     rec <- which(obs$site == d$site[i])
     obs.rec <- obs[rec, ]
@@ -52,17 +51,15 @@ ReadObservations <- function(file, x.var, y.var, site.var, net.var, alt.var,
     }
     d$x[i]    <- obs.rec$x[1]
     d$y[i]    <- obs.rec$y[1]
-    d$alt[i]  <- obs.rec$alt[1]
-    d$hole[i] <- obs.rec$hole[1]
+    d$var2[i] <- obs.rec$var2[1]
     d$net[i]  <- obs.rec$net[1]
 
-    d$sd[i] <- sd(obs.rec$lev, na.rm=TRUE)
+    d$sd[i] <- sd(obs.rec$var1, na.rm=TRUE)
 
     obs.idx <- obs.rec[idx, ]
-    d$acy[i] <- mean(obs.idx$acy, na.rm=TRUE)
-    d$lev[i] <- median(obs.idx$lev, na.rm=TRUE)
+    d$acy[i]  <- mean(obs.idx$acy, na.rm=TRUE)
+    d$var1[i] <- median(obs.idx$var1, na.rm=TRUE)
   }
-  d$alt.lev <- d$alt - d$lev
 
   d <- d[!is.na(site), ]
 

@@ -6,8 +6,8 @@ library(rgdal)
 library(raster)
 library(RSurvey)
 
-setwd("D:/Software/ObsNetwork")
-# setwd("D:/WORK/JFisher/Software/ObsNetwork")
+# setwd("D:/Software/ObsNetwork")
+setwd("D:/WORK/JFisher/Software/ObsNetwork")
 RestoreSession(file.path(getwd(), "R"))
 
 ###
@@ -58,7 +58,7 @@ nmax <- 50 # default is Inf
 # Raster grid
 f <- file.path(path, grd.file)
 grd <- readGDAL(f, band=1)
-names(grd) <- "alt"
+names(grd) <- "var2"
 grd <- as(crop(raster(grd), extent(c(xlim, ylim))), 'SpatialGridDataFrame')
 if (grd.fact > 1) {
   grd <- as(aggregate(raster(grd), fact=grd.fact, fun=mean, expand=TRUE,
@@ -70,8 +70,8 @@ grd.crs <- grd@proj4string
 # Observations
 f <- file.path(path, obs.file)
 obs <- ReadObservations(f, x.var="dec_long_va", y.var="dec_lat_va",
-                        site.var="site_no", net.var="network", alt.var="alt_va",
-                        hole.var="hole_depth_va", lev.var="lev_va",
+                        site.var="site_no", net.var="network",
+                        var1.var="alt_lev_va", var2.var="alt_va",
                         acy.var="lev_acy", dt.var="lev_dt", dt.lim=dt.lim)
 proj4string(obs) <- grd.crs
 
@@ -81,12 +81,12 @@ ply <- readOGR(dsn=file.path(path, ply.dsn), layer=ply.dsn)
 ply <- rgdal::spTransform(ply, grd.crs)
 
 
-PlotMap(grd, "alt", obs[obs$net == network, ], ply,
-        xlim=xlim, ylim=ylim, pal=1L, contour=FALSE)
+PlotGrid(grd, "var2", obs[obs$net == network, ], ply,
+         xlim=xlim, ylim=ylim, pal=1L, contour=FALSE)
 
 
 # Identify drift
-lm.drift <- lm(alt.lev ~ x + y, data=obs)
+lm.drift <- lm(var1 ~ x + y, data=obs)
 summary(lm.drift)
 ## rgl::plot3d(x=cbind(coordinates(obs), drift(coordinates(obs))),
 ##             col="red", xlab="x", ylab="y", zlab="z")
@@ -95,9 +95,9 @@ summary(lm.drift)
 
 # Variogram model (Ordinary-kriging and Regression-kriging)
 if (krige.technique == "OK") {
-  fo <- alt.lev~1
+  fo <- var1~1
 } else {
-  fo <- alt.lev~alt
+  fo <- var1~var2
 }
 vg <- variogram(fo, obs)
 if (fit.vg)
@@ -112,7 +112,7 @@ if (sum(obs.in.ply, na.rm=TRUE) < nrow(obs))
 obs <- obs[!is.na(obs.in.ply), ]
 
 grd.in.ply <- overlay(grd, ply)
-grd$alt <- grd$alt * grd.in.ply
+grd$var2 <- grd$var2 * grd.in.ply
 
 
 # Kriging interpolation
@@ -123,35 +123,19 @@ elapsed.time <- as.numeric(elapsed.time['elapsed'])
 
 kr$var1.se <- sqrt(kr$var1.var)
 
-PlotMap(kr, "var1.pred", obs, ply, xlim=xlim, ylim=ylim, pal=2L)
-PlotMap(kr, "var1.se",   obs, ply, xlim=xlim, ylim=ylim, pal=3L)
+PlotGrid(kr, "var1.pred", obs, ply, xlim=xlim, ylim=ylim, pal=2L)
+PlotGrid(kr, "var1.se",   obs, ply, xlim=xlim, ylim=ylim, pal=3L)
 
 
 # Cross-validation
 cross.validation <- RunCrossValidation(fo, obs, grd, vg.model, nmax, ply)
 
 
-
-
-
-sp.layout <- list()
-sp.layout[[1]] <- list("sp.polygons", ply, col="black", first=FALSE)
-scales <- list(draw=TRUE, y=list(rot=90, tck=-1), x=list(tck=-1))
-tcl <- 0.50 / (6 * par("csi"))
-
-x11()
-print(bubble(cross.validation$cv, "residual", main="Residuals", tcl=tcl,
-             xlim=xlim, ylim=ylim, scales=scales, sp.layout=sp.layout,
-             key.space="bottom"))
-
-x11()
-print(bubble(obs, "acy", main="Accuracy", tcl=tcl,
-             xlim=xlim, ylim=ylim, scales=scales, sp.layout=sp.layout,
-             key.space="bottom"))
-
-x11()
-print(bubble(obs, "sd", main="Standard deviation", tcl=tcl,
-             xlim=xlim, ylim=ylim, scales=scales, sp.layout=sp.layout,
-             key.space="bottom"))
-
+# Bubble plots
+PlotBubble(cross.validation$cv, "residual", main="Residuals",
+           ply=ply, xlim=xlim, ylim=ylim)
+PlotBubble(obs, "acy", main="Accuracy",
+           ply=ply, xlim=xlim, ylim=ylim)
+PlotBubble(obs, "sd", main="Standard deviation",
+           ply=ply, xlim=xlim, ylim=ylim)
 
