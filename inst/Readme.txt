@@ -82,7 +82,11 @@ ply <- rgdal::spTransform(ply, grd.crs)
 
 
 PlotGrid(grd, "var2", obs[obs$net == network, ], ply,
-         xlim=xlim, ylim=ylim, pal=1L, contour=FALSE)
+         xlim=xlim, ylim=ylim, pal=1L, contour=FALSE, label.pts="mapid")
+
+
+
+
 
 
 # Identify drift
@@ -138,4 +142,8 @@ PlotBubble(obs, "acy", main="Accuracy",
            ply=ply, xlim=xlim, ylim=ylim)
 PlotBubble(obs, "sd", main="Standard deviation",
            ply=ply, xlim=xlim, ylim=ylim)
+
+
+
+
 

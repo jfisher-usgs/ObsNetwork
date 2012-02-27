@@ -1,5 +1,6 @@
 PlotGrid <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at, pal=1L,
-                     contour=TRUE, main="", gr.type="windows", gr.file=NULL) {
+                     contour=TRUE, label.pts=FALSE, main="", gr.type="windows",
+                     gr.file=NULL) {
 
   # Initialize layout
   lo <- list()
@@ -14,6 +15,21 @@ PlotGrid <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at, pal=1L,
                                     cex=0.5, col="black", fill="white")
       lo[[length(lo) + 1L]] <- list("sp.points", pts[rm.idxs, ], pch=4,
                                     cex=0.5, col="black", lwd=2)
+    }
+  }
+
+  # Point labels
+  labs <- NULL
+  if (is.logical(label.pts) && label.pts) {
+    labs <- as.character(1:nrow(pts))
+  } else if (label.pts %in% names(pts)) {
+    labs <- as.character(pts[[label.pts]])
+  }
+  if (!is.null(labs)) {
+    xy <- coordinates(pts)
+    n <- length(lo)
+    for (i in 1:nrow(xy)) {
+      lo[[n + i]] <- list("sp.text", loc=xy[i, ], txt=labs[i], cex=0.5)
     }
   }
 
@@ -79,12 +95,13 @@ PlotGrid <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at, pal=1L,
   OpenGraphicsDevice(gr.file, type=gr.type, w=dev.width, h=dev.height)
 
   # Draw plots
-  print(spplot(grd, zcol=zcol, aspect=asp,
-               scales=scales, xlim=xlim, ylim=ylim,
-               col.regions=cols, at=at, main=main,
-               colorkey=colorkey, sp.layout=lo,
-               contour=contour, labels=FALSE,
-               pretty=TRUE, col="gray"))
+  p <- spplot(grd, zcol=zcol, aspect=asp,
+              scales=scales, xlim=xlim, ylim=ylim,
+              col.regions=cols, at=at, main=main,
+              colorkey=colorkey, sp.layout=lo,
+              contour=contour, labels=FALSE,
+              pretty=TRUE, col="gray")
+  print(p)
 
   if (gr.type != "windows")
     dev.off()

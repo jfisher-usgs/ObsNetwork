@@ -40,8 +40,10 @@ ReadObservations <- function(file, x.var, y.var, site.var, net.var,
   site <- unique(obs$site)
   d <- as.data.frame(site, stringsAsFactors=FALSE)
   n <- nrow(d)
-  d[, c("x", "y", "var1", "var2", "acy", "sd", "net")] <- NA
+  d[, c("x", "y", "mapid", "var1", "var2", "acy", "sd", "net")] <- NA
   for (i in 1:n) {
+    d$mapid[i] <- i
+
     rec <- which(obs$site == d$site[i])
     obs.rec <- obs[rec, ]
     idx <- which(obs.rec$dt >= dt.lim[1] & obs.rec$dt <= dt.lim[2])
@@ -49,6 +51,7 @@ ReadObservations <- function(file, x.var, y.var, site.var, net.var,
       d$site[i] <- NA
       next
     }
+
     d$x[i]    <- obs.rec$x[1]
     d$y[i]    <- obs.rec$y[1]
     d$var2[i] <- obs.rec$var2[1]
