@@ -112,7 +112,7 @@ RunGA <- function(obs, grd, nsites, vg.model, formula, nmax=Inf,
   labs[2] <- paste("Root-mean-square error,",
                    "difference between estimated",
                    "and measured values", sep="\n")
-  labs[3] <- paste("Total standard deviaiton,",
+  labs[3] <- paste("Mean standard deviaiton,",
                    "variability of measurement",
                    "over time at removed sites", sep="\n")
   labs[4] <- "Mean measurement error"

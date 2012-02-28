@@ -6,6 +6,7 @@ library(rgdal)
 library(raster)
 library(RSurvey)
 
+# setwd("C:/Users/jfisher/Documents/ObsNetwork")
 # setwd("D:/Software/ObsNetwork")
 setwd("D:/WORK/JFisher/Software/ObsNetwork")
 RestoreSession(file.path(getwd(), "R"))
@@ -106,8 +107,7 @@ if (sum(obs.in.ply, na.rm=TRUE) < nrow(obs))
   warning("")
 obs <- obs[!is.na(obs.in.ply), ]
 
-grd.in.ply <- overlay(grd, ply)
-grd$var2 <- grd$var2 * grd.in.ply
+grd$var2 <- grd$var2 * overlay(grd, ply)
 
 
 # Kriging interpolation
@@ -141,6 +141,7 @@ graphics.off()
 
 new.grd <- as(aggregate(raster(grd), fact=10, fun=mean, expand=TRUE,
                         na.rm=TRUE), 'SpatialGridDataFrame')
+new.grd$var2 <- new.grd$var2 * overlay(new.grd, ply)
 PlotGrid(new.grd, "var2", ply=ply, xlim=xlim, ylim=ylim, pal=2L, contour=FALSE)
 
 
