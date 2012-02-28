@@ -4,19 +4,21 @@ OpenGraphicsDevice <- function(file, type="windows", w=8.5, h=11, p=12,
 #   "windows", "pdf", "png", or "postscript"
 
   if (type == "windows") {
-    x11(width=w, height=h, pointsize=p)
+    if (.Platform$OS.type == "windows")
+      windows(width=w, height=h, pointsize=p, family="sans")
+    else
+      x11(width=w, height=h, pointsize=p)
   } else {
     if (missing(file)) {
-      f <- tempfile(pattern="R", tmpdir=getwd(),
-                    fileext=paste(".", type, sep=""))
+      stop("file required")
     }
     if (type == "pdf") {
-      pdf(file=f, width=w, height=h, pointsize=p, version="1.6",
+      pdf(file=file, width=w, height=h, pointsize=p, version="1.6",
           colormodel="cmyk")
     } else if (type == "png") {
-      png(filename=f, width=w, height=h, units="in", pointsize=p, res=res)
+      png(filename=file, width=w, height=h, units="in", pointsize=p, res=res)
     } else if (type == "postscript") {
-      postscript(file=f, width=w, height=h, pointsize=p)
+      postscript(file=file, width=w, height=h, pointsize=p)
     } else {
       stop(paste("graphics type not recognized"))
     }

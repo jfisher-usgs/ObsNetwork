@@ -6,8 +6,8 @@ library(rgdal)
 library(raster)
 library(RSurvey)
 
-# setwd("D:/Software/ObsNetwork")
-setwd("D:/WORK/JFisher/Software/ObsNetwork")
+setwd("D:/Software/ObsNetwork")
+# setwd("D:/WORK/JFisher/Software/ObsNetwork")
 RestoreSession(file.path(getwd(), "R"))
 
 ###
