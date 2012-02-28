@@ -1,5 +1,5 @@
-OpenGraphicsDevice <- function(file, type="windows", w=8.5, h=11, p=12,
-                               res=300) {
+OpenGraphicsDevice <- function(file, type="windows", w=7, h=7, p=12,
+                               res=300, gui.title="Save As") {
 # This function opens a graphics device of type:
 #   "windows", "pdf", "png", or "postscript"
 
@@ -9,8 +9,15 @@ OpenGraphicsDevice <- function(file, type="windows", w=8.5, h=11, p=12,
     else
       x11(width=w, height=h, pointsize=p)
   } else {
-    if (missing(file)) {
-      stop("file required")
+    if (missing(file) || is.null(file)) {
+      if (type == "postscript")
+        ext <- ".eps"
+      else
+        ext <- paste(".", type, sep="")
+      file <- as.character(tcl("tk_getSaveFile", title=gui.title,
+                               defaultextension=ext,
+                               initialfile=paste("*", ext, sep=""),
+                               initialdir=file.path(getwd(), "..")))
     }
     if (type == "pdf") {
       pdf(file=file, width=w, height=h, pointsize=p, version="1.6",

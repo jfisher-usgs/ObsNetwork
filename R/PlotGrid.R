@@ -22,7 +22,7 @@ PlotGrid <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at, pal=1L,
   labs <- NULL
   if (is.logical(label.pts) && label.pts) {
     labs <- as.character(1:nrow(pts))
-  } else if (label.pts %in% names(pts)) {
+  } else if (is.character(label.pts) && label.pts %in% names(pts)) {
     labs <- as.character(pts[[label.pts]])
   }
   if (!is.null(labs)) {
@@ -95,7 +95,7 @@ PlotGrid <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at, pal=1L,
   OpenGraphicsDevice(gr.file, type=gr.type, w=dev.width, h=dev.height)
 
   # Draw plots
-  p <- spplot(grd, zcol=zcol, aspect=asp,
+  p <- spplot(grd, zcol=zcol, outer=FALSE, aspect=asp,
               scales=scales, xlim=xlim, ylim=ylim,
               col.regions=cols, at=at, main=main,
               colorkey=colorkey, sp.layout=lo,

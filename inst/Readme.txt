@@ -6,8 +6,8 @@ library(rgdal)
 library(raster)
 library(RSurvey)
 
-setwd("D:/Software/ObsNetwork")
-# setwd("D:/WORK/JFisher/Software/ObsNetwork")
+# setwd("D:/Software/ObsNetwork")
+setwd("D:/WORK/JFisher/Software/ObsNetwork")
 RestoreSession(file.path(getwd(), "R"))
 
 ###
@@ -80,22 +80,13 @@ proj4string(obs) <- grd.crs
 ply <- readOGR(dsn=file.path(path, ply.dsn), layer=ply.dsn)
 ply <- rgdal::spTransform(ply, grd.crs)
 
-
 PlotGrid(grd, "var2", obs[obs$net == network, ], ply,
          xlim=xlim, ylim=ylim, pal=1L, contour=FALSE, label.pts="mapid")
-
-
-
-
 
 
 # Identify drift
 lm.drift <- lm(var1 ~ x + y, data=obs)
 summary(lm.drift)
-## rgl::plot3d(x=cbind(coordinates(obs), drift(coordinates(obs))),
-##             col="red", xlab="x", ylab="y", zlab="z")
-## rgl::plot3d(x=cbind(coordinates(obs), obs$alt.lev), col="blue", add=TRUE)
-
 
 # Variogram model (Ordinary-kriging and Regression-kriging)
 if (krige.technique == "OK") {
@@ -106,10 +97,10 @@ if (krige.technique == "OK") {
 vg <- variogram(fo, obs)
 if (fit.vg)
   vg.model <- fit.variogram(vg, vg.model)
-## plot(vg, vg.model)
+## print(plot(vg, vg.model))
 
 
-# Reduce size
+# Reduce data
 obs.in.ply <- overlay(obs, ply)
 if (sum(obs.in.ply, na.rm=TRUE) < nrow(obs))
   warning("")
@@ -144,6 +135,16 @@ PlotBubble(obs, "sd", main="Standard deviation",
            ply=ply, xlim=xlim, ylim=ylim)
 
 
+# Optimization
+
+graphics.off()
+
+new.grd <- as(aggregate(raster(grd), fact=10, fun=mean, expand=TRUE,
+                        na.rm=TRUE), 'SpatialGridDataFrame')
+PlotGrid(new.grd, "var2", ply=ply, xlim=xlim, ylim=ylim, pal=2L, contour=FALSE)
 
 
+
+ga <- RunGA(obs[obs$net == network, ], grd=new.grd, nsites=5,
+            vg.model=vg.model, formula=fo, nmax=nmax, niters=20, pop.size=200)
 

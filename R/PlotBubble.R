@@ -1,5 +1,5 @@
-PlotBubble <- function(pts, zcol, ply, xlim, ylim, main="", gr.type="windows",
-                       gr.file=NULL) {
+PlotBubble <- function(pts, zcol, ply, xlim, ylim, main="",
+                       gr.type="windows", gr.file=NULL) {
 
   sp.layout <- list()
   sp.layout[[1]] <- list("sp.polygons", ply, col="black", first=FALSE)
@@ -9,9 +9,9 @@ PlotBubble <- function(pts, zcol, ply, xlim, ylim, main="", gr.type="windows",
 
   tcl <- 0.50 / (6 * par("csi"))
 
-  print(bubble(pts, zcol, main="Residuals", tcl=tcl,
-               xlim=xlim, ylim=ylim, scales=scales, sp.layout=sp.layout,
-               key.space="bottom"))
+  p <- bubble(pts, zcol, main=main, tcl=tcl, xlim=xlim, ylim=ylim,
+              scales=scales, sp.layout=sp.layout, key.space="bottom")
+  print(p)
 
   if (gr.type != "windows")
     dev.off()

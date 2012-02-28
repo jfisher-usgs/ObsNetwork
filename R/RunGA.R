@@ -1,25 +1,29 @@
-RunGA <- function(obs, v.fit, grd, nsites, niters=200, pop.size=200,
-                  obj.weights=c(1, 1, 1)) {
+RunGA <- function(obs, grd, nsites, vg.model, formula, nmax=Inf,
+                  niters=200, pop.size=200, obj.weights=c(1, 1, 1, 1)) {
 
   # Additional functions (subroutines)
 
   # Calculate objective functions
   CalcObj <- function(idxs) {
-    newdata <- SpatialPoints(rbind(coordinates(grd), coordinates(obs[idxs, ])),
-                             proj4string=CRS(as.character(projargs)))
-    est <- krige(as.formula("observation~x+y"), obs[-idxs, ], newdata,
-                 model=v.fit, debug.level=0)
-    est.se <- sqrt(abs(est[1:ngrd, ]$var1.var))
-    est.obs <- est[(ngrd + 1):length(est), ]$var1.pred
-    obj.1 <- mean(est.se)
-    obj.2 <- sqrt(sum((est.obs - obs$observation[idxs])^2) / length(idxs))
-    obj.3 <- mean(obs$accuracy[-idxs])
-#   obj.4 <- sum(obs$sd[-idxs])
+    newdata <- rbind(grd.pts, obs[idxs, "var2"])
+
+    kr <- krige(formula=formula, locations=obs[-idxs, ], newdata=newdata,
+                model=vg.model, nmax=nmax, debug.level=0)
+
+    pred <- kr[(npts + 1):length(kr), ]$var1.pred
+    se <- sqrt(abs(kr[1:npts, ]$var1.var))
+
+    obj.1 <- mean(se)
+    obj.2 <- sqrt(sum((pred - obs$var1[idxs])^2) / length(idxs))
+    obj.3 <- mean(obs$sd[-idxs])
+    obj.4 <- mean(obs$acy[-idxs])
+
     obj.1 <- obj.1 * obj.weights[1]
     obj.2 <- obj.2 * obj.weights[2]
     obj.3 <- obj.3 * obj.weights[3]
-#   obj.4 <- obj.4 * obj.weights[4]
-    c(obj.1, obj.2, obj.3)
+    obj.4 <- obj.4 * obj.weights[4]
+
+    c(obj.1, obj.2, obj.3, obj.4)
   }
 
   # Evaluate objective function in GA
@@ -79,14 +83,12 @@ RunGA <- function(obs, v.fit, grd, nsites, niters=200, pop.size=200,
 
   # Main program
 
-  # Calculate length of grid
-  ngrd <- length(grd)
-
-  # Set default projection
-  projargs <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+  # Convert grid to data frame
+  grd.pts <- as(grd, "SpatialPointsDataFrame")
+  npts <- length(grd.pts)
 
   # Initialize matrix of objective values
-  nobjs <- 3L
+  nobjs <- length(obj.weights)
   obj.values <- matrix(NA, nrow=niters, ncol=nobjs + 1,
                        dimnames=list(1:niters, c(paste("obj", 1:nobjs, sep="."),
                                                  "total")))
@@ -110,11 +112,11 @@ RunGA <- function(obs, v.fit, grd, nsites, niters=200, pop.size=200,
   labs[2] <- paste("Root-mean-square error,",
                    "difference between estimated",
                    "and measured values", sep="\n")
-  labs[3] <- "Mean measurement error"
-# labs[4] <- paste("Total standard deviaiton,",
-#                  "variability of measurement"
-#                  "over time at removed sites", sep="\n")
-  labs[4] <- "Solution to objective function\nof optimization problem"
+  labs[3] <- paste("Total standard deviaiton,",
+                   "variability of measurement",
+                   "over time at removed sites", sep="\n")
+  labs[4] <- "Mean measurement error"
+  labs[5] <- "Solution to objective function\nof optimization problem"
 
   # Run GA
   elapsed.time <- system.time({
