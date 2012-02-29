@@ -16,7 +16,7 @@ RunGA <- function(obs, grd, nsites, vg.model, formula, nmax=Inf,
     obj.1 <- mean(se)
     obj.2 <- sqrt(sum((pred - obs$var1[idxs])^2) / length(idxs))
     obj.3 <- mean(obs$sd[-idxs])
-    obj.4 <- mean(obs$acy[-idxs])
+    obj.4 <- mean(obs$acy[idxs])
 
     obj.1 <- obj.1 * obj.weights[1]
     obj.2 <- obj.2 * obj.weights[2]

@@ -7,8 +7,8 @@ library(raster)
 library(RSurvey)
 
 # setwd("C:/Users/jfisher/Documents/ObsNetwork")
-# setwd("D:/Software/ObsNetwork")
-setwd("D:/WORK/JFisher/Software/ObsNetwork")
+setwd("D:/Software/ObsNetwork")
+# setwd("D:/WORK/JFisher/Software/ObsNetwork")
 RestoreSession(file.path(getwd(), "R"))
 
 ###
@@ -139,13 +139,13 @@ PlotBubble(obs, "sd", main="Standard deviation",
 
 graphics.off()
 
-new.grd <- as(aggregate(raster(grd), fact=10, fun=mean, expand=TRUE,
+new.grd <- as(aggregate(raster(grd), fact=5, fun=mean, expand=TRUE,
                         na.rm=TRUE), 'SpatialGridDataFrame')
 new.grd$var2 <- new.grd$var2 * overlay(new.grd, ply)
 PlotGrid(new.grd, "var2", ply=ply, xlim=xlim, ylim=ylim, pal=2L, contour=FALSE)
 
 
 
-ga <- RunGA(obs[obs$net == network, ], grd=new.grd, nsites=5,
-            vg.model=vg.model, formula=fo, nmax=nmax, niters=20, pop.size=200)
+ga <- RunGA(obs[obs$net == network, ], grd=new.grd, nsites=20,
+            vg.model=vg.model, formula=fo, nmax=nmax, niters=500, pop.size=300)
 
