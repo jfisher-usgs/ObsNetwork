@@ -7,8 +7,8 @@ library(raster)
 library(RSurvey)
 
 # setwd("C:/Users/jfisher/Documents/ObsNetwork")
-setwd("D:/Software/ObsNetwork")
-# setwd("D:/WORK/JFisher/Software/ObsNetwork")
+# setwd("D:/Software/ObsNetwork")
+setwd("D:/WORK/JFisher/Software/ObsNetwork")
 RestoreSession(file.path(getwd(), "R"))
 
 ###
@@ -16,14 +16,14 @@ RestoreSession(file.path(getwd(), "R"))
 
 
 network <- "INL"
-ply.dsn <- "INL_Polygon"
+ply.dsn <- "INL_SpatialDomain"
 xlim <- c(-113.3, -112.2)
 ylim <- c(43.3, 44.0)
 grd.fact <- 1
 
 
 network <- "State"
-ply.dsn <- "ESRP_Polygon"
+ply.dsn <- "ESRP_SpatialDomain"
 xlim <- c(-115.25, -111.5)
 ylim <- c(42.25, 44.5)
 grd.fact <- 2
@@ -45,9 +45,9 @@ fit.vg <- FALSE
 ###
 
 
-grd.file <- "NED_500m.tif"
+grd.file <- "ESRP_NED500m.tif"
 path <- file.path(getwd(), "inst", "extdata")
-obs.file <- "ESRP_Observations.csv.gz"
+obs.file <- "ESRP_WaterLevels.csv.gz"
 yr <- 2008
 dt.lim <- c("2008-01-01 00:00", "2008-12-31 23:59")
 nmax <- 50 # default is Inf
@@ -60,6 +60,12 @@ nmax <- 50 # default is Inf
 f <- file.path(path, grd.file)
 grd <- readGDAL(f, band=1)
 names(grd) <- "var2"
+
+# ESRP_NED500m <- grd
+# f <- file.path(getwd(), "data", "ESRP_NED500m.rda")
+# save(ESRP_NED500m, file=f, compress=TRUE)
+# load(file=f)
+
 grd <- as(crop(raster(grd), extent(c(xlim, ylim))), 'SpatialGridDataFrame')
 if (grd.fact > 1) {
   grd <- as(aggregate(raster(grd), fact=grd.fact, fun=mean, expand=TRUE,
@@ -76,13 +82,10 @@ obs <- ReadObservations(f, x.var="dec_long_va", y.var="dec_lat_va",
                         acy.var="lev_acy", dt.var="lev_dt", dt.lim=dt.lim)
 proj4string(obs) <- grd.crs
 
-
-# Polygon
-ply <- readOGR(dsn=file.path(path, ply.dsn), layer=ply.dsn)
-ply <- rgdal::spTransform(ply, grd.crs)
-
-PlotGrid(grd, "var2", obs[obs$net == network, ], ply,
-         xlim=xlim, ylim=ylim, pal=1L, contour=FALSE, label.pts="mapid")
+# ESRP_WaterLevels <- obs
+# f <- file.path(getwd(), "data", "ESRP_WaterLevels.rda")
+# save(ESRP_WaterLevels, file=f, compress=TRUE)
+# load(file=f)
 
 
 # Identify drift
@@ -98,7 +101,38 @@ if (krige.technique == "OK") {
 vg <- variogram(fo, obs)
 if (fit.vg)
   vg.model <- fit.variogram(vg, vg.model)
-## print(plot(vg, vg.model))
+print(plot(vg, vg.model))
+
+
+
+
+
+
+
+# Polygon
+ply <- readOGR(dsn=file.path(path, ply.dsn), layer=ply.dsn)
+ply <- rgdal::spTransform(ply, grd.crs)
+
+# ESRP_SpatialDomain <- ply
+# f <- file.path(getwd(), "data", "ESRP_SpatialDomain.rda")
+# save(ESRP_SpatialDomain, file=f, compress=TRUE)
+# load(file=f)
+
+
+# INL_SpatialDomain <- ply
+# f <- file.path(getwd(), "data", "INL_SpatialDomain.rda")
+# save(INL_SpatialDomain, file=f, compress=TRUE)
+# load(file=f)
+
+PlotGrid(grd, "var2", obs[obs$net == network, ], ply,
+         xlim=xlim, ylim=ylim, pal=1L, contour=FALSE, label.pts="mapid")
+
+
+
+
+
+
+
 
 
 # Reduce data
