@@ -1,5 +1,10 @@
-PlotBubble <- function(pts, zcol, ply, xlim, ylim, main="",
-                       gr.type="windows", gr.file=NULL) {
+PlotBubble <- function(pts, zcol, ply, xlim=bbox(ply)[1, ], ylim=bbox(ply)[2, ],
+                       main="", gr.type="windows", gr.file=NULL) {
+
+  coords <- as.data.frame(coordinates(pts))
+  is.in.bbox <- coords$x >= xlim[1] & coords$x <= xlim[2] &
+                coords$y >= ylim[1] & coords$y <= ylim[2]
+  pts <- pts[is.in.bbox, ]
 
   sp.layout <- list()
   sp.layout[[1]] <- list("sp.polygons", ply, col="black", first=FALSE)

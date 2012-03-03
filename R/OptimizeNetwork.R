@@ -23,6 +23,17 @@ OptimizeNetwork <- function() {
   # save(ESRP_NED500m, file=f, compress=TRUE)
   # load(file=f)
 
+  # ESRP_WaterLevels <-obs
+  # f <- file.path(getwd(), "data", "ESRP_WaterLevels.rda")
+  # save(ESRP_WaterLevels, file=f, compress=TRUE)
+
+
+
+
+
+
+
+
   ###
 
 
@@ -58,6 +69,23 @@ OptimizeNetwork <- function() {
   yr <- 2008
   dt.lim <- c("2008-01-01 00:00", "2008-12-31 23:59")
   nmax <- 50
+  nsites <- 20
+
+
+
+
+
+  pal.var2 <- function(n) {
+                rev(diverge_hcl(n, h=c(260, 0), c=100, l=c(50, 90), power=1))
+              }
+  pal.var1 <- function(n) {
+                rev(heat_hcl(n, h=c(265, 80), c=c(60, 10), l=c(25, 95),
+                             power=c(0.7, 2)))
+              }
+  pal.err  <- function(n) {
+                heat_hcl(n, h=c(130, 30), c=c(65, 6), l=c(45, 100),
+                         power=c(0.3, 1.8))
+              }
 
 
   ###
@@ -67,6 +95,7 @@ OptimizeNetwork <- function() {
   f <- file.path(path, grd.file)
   grd <- readGDAL(f, band=1)
   names(grd) <- "var2"
+
   grd.crs <- grd@proj4string
 
 
@@ -77,6 +106,7 @@ OptimizeNetwork <- function() {
   # Polygon
   f <- file.path(path, ply.dsn)
   ply <- readOGR(dsn=f, layer=ply.dsn)
+
   ply <- rgdal::spTransform(ply, grd.crs)
 
 
@@ -85,12 +115,15 @@ OptimizeNetwork <- function() {
   d <- read.table(file=f, header=TRUE, sep=",", fill=TRUE, strip.white=TRUE,
                   blank.lines.skip=TRUE, allowEscapes=TRUE, flush=TRUE,
                   stringsAsFactors=FALSE)
-  obs <- ProcessObs(d, x.var="dec_long_va", y.var="dec_lat_va",
-                    projargs="+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs",
-                    site.var="site_no", net.var="network",
-                    var1.var="alt_lev_va", var2.var="alt_va",
-                    acy.var="lev_acy", dt.var="lev_dt", dt.lim=dt.lim)
+  obs.projargs <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+  obs <- ProcessObservations(d, x.var="dec_long_va", y.var="dec_lat_va",
+                             projargs=obs.projargs, siteno.var="site_no",
+                             sitenm.var="station_nm", net.var="network",
+                             var1.var="alt_lev_va", var2.var="alt_va",
+                             acy.var="lev_acy", dt.var="lev_dt", dt.lim=dt.lim)
+
   obs <- rgdal::spTransform(obs, grd.crs)
+
 
   # Plot accuracy and standard deviation (man page only)
   PlotBubble(obs, "acy", main="Measurment error",
@@ -103,7 +136,7 @@ OptimizeNetwork <- function() {
   lm.drift <- lm(var1 ~ x + y, data=obs)
   summary(lm.drift)
 
-  # Construct variogram model (Ordinary-kriging and Regression/Universal-kriging)
+  # Construct variogram model
   vg <- variogram(vg.formula, obs)
   if (vg.fit)
     vg.model <- fit.variogram(vg, vg.model)
@@ -114,7 +147,7 @@ OptimizeNetwork <- function() {
 
   # Plot DEM (man page only)
   PlotGrid(grd, "var2", obs[obs$net == network, ], ply,
-           xlim=xlim, ylim=ylim, pal=1L, contour=FALSE, label.pts="mapid")
+           xlim=xlim, ylim=ylim, pal=pal.var2, contour=FALSE, label.pts="mapid")
 
 
   # Crop grid to polygon
@@ -122,16 +155,18 @@ OptimizeNetwork <- function() {
 
 
   # Cross-validation
-  cross.validation <- RunCrossValidation(vg.formula, obs, grd, vg.model, nmax, ply)
+  cross.validation <- RunCrossValidation(vg.formula, obs, grd, vg.model, nmax,
+                                         ply)
   PlotBubble(cross.validation$cv, "residual", main="Residuals",
              ply=ply, xlim=xlim, ylim=ylim)
 
 
   # Kriging interpolation (man page only)
-  kr <- krige(formula=vg.formula, locations=obs, newdata=grd, model=vg.model, nmax=nmax)
+  kr <- krige(formula=vg.formula, locations=obs, newdata=grd, model=vg.model,
+              nmax=nmax)
   kr$var1.se <- sqrt(kr$var1.var)
-  PlotGrid(kr, "var1.pred", obs, ply, xlim=xlim, ylim=ylim, pal=2L)
-  PlotGrid(kr, "var1.se",   obs, ply, xlim=xlim, ylim=ylim, pal=3L)
+  PlotGrid(kr, "var1.pred", obs, ply, xlim=xlim, ylim=ylim, pal=pal.var1)
+  PlotGrid(kr, "var1.se",   obs, ply, xlim=xlim, ylim=ylim, pal=pal.err)
 
 
   # Reduce grid resolution
@@ -141,22 +176,26 @@ OptimizeNetwork <- function() {
   }
 
   # Plot updated grid (man page only)
-  PlotGrid(grd, "var2", ply=ply, xlim=xlim, ylim=ylim, pal=2L, contour=FALSE)
+  PlotGrid(grd, "var2", ply=ply, xlim=xlim, ylim=ylim, pal=pal.var2,
+           contour=FALSE)
 
 
   # Run GA
 
   graphics.off()
 
-  ga <- RunGA(obs, network, grd, nsites=20,
+  ga <- RunGA(obs, network, grd, nsites=nsites,
               vg.model=vg.model, formula=vg.formula, nmax=nmax,
-              niters=5, pop.size=200)
-
-  PlotGrid(ga$kr, "var1.pred", obs, ply, , xlim=xlim, ylim=ylim, pal=2L,
-           rm.idxs=which(obs$site %in% ga$rm.obs$site))
+              niters=10, pop.size=300)
 
 
   # TODO: ADD FUNCTION: WriteGAResults()
+
+  PlotGrid(ga$kr, "var1.pred", obs, ply, , xlim=xlim, ylim=ylim, pal=pal.var1,
+           rm.idxs=which(obs$siteno %in% ga$rm.obs$siteno))
+
+
+
 
 
 

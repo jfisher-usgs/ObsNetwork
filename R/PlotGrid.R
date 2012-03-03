@@ -1,6 +1,6 @@
-PlotGrid <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at, pal=1L,
-                     contour=TRUE, label.pts=FALSE, main="", gr.type="windows",
-                     gr.file=NULL) {
+PlotGrid <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
+                     pal=terrain.colors, contour=TRUE, label.pts=FALSE, main="",
+                     gr.type="windows", gr.file=NULL) {
 
   # Initialize layout
   lo <- list()
@@ -62,14 +62,7 @@ PlotGrid <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at, pal=1L,
 
   # Set color palettes
   n <- length(at) + 1L
-  if (pal == 1L) {
-    cols <- rev(diverge_hcl(n, h=c(260, 0), c=100, l=c(50, 90), power=1.0))
-  } else if (pal == 2L) {
-    cols <- rev(heat_hcl(n, h=c(265, 80), c=c(60, 10), l=c(25, 95),
-                         power=c(0.7, 2.0)))
-  } else if (pal == 3L) {
-    cols <- diverge_hcl(n, h=c(101, 18), c=100, l=c(70, 90), power=1.0)
-  }
+  cols <- pal(n)
 
   # Add spatial scale legend
   lng <- xlim[1] + diff(xlim) * 0.02
