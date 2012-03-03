@@ -14,7 +14,7 @@ RunGA <- function(obs, network, grd, nsites, vg.model, formula, nmax=Inf,
     pred <- kr[(ngrd.pts + 1):length(kr), ]$var1.pred
     se <- sqrt(abs(kr[1:ngrd.pts, ]$var1.var))
 
-    obj.1 <- se
+    obj.1 <- mean(se)
     obj.2 <- sqrt(sum((pred - obs$var1[idxs])^2) / nsites)
     obj.3 <- mean(obs$sd[idxs])
     obj.4 <- mean(obs$acy[-idxs])
@@ -116,7 +116,7 @@ RunGA <- function(obs, network, grd, nsites, vg.model, formula, nmax=Inf,
   tcl <- 0.50 / (6 * par("csi"))
   pal <- c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#A6D854")
   labs <- NULL
-  labs[1] <- paste("Total prediction error,",
+  labs[1] <- paste("Mean prediction error,",
                    "from the application of Kriging", sep="\n")
   labs[2] <- paste("Root-mean-square error,",
                    "difference between predicted and",

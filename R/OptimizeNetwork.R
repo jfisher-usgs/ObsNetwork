@@ -186,7 +186,7 @@ OptimizeNetwork <- function() {
 
   ga <- RunGA(obs, network, grd, nsites=nsites,
               vg.model=vg.model, formula=vg.formula, nmax=nmax,
-              niters=10, pop.size=300)
+              niters=10, pop.size=300, obj.weights=c(10, 1, 1, 1))
 
 
   # TODO: ADD FUNCTION: WriteGAResults()
