@@ -23,9 +23,9 @@ OptimizeNetwork <- function() {
   # save(ESRP_NED500m, file=f, compress=TRUE)
   # load(file=f)
 
-  # ESRP_WaterLevels <-obs
-  # f <- file.path(getwd(), "data", "ESRP_WaterLevels.rda")
-  # save(ESRP_WaterLevels, file=f, compress=TRUE)
+  # ESRP_WaterLevels_2008 <- obs
+  # f <- file.path(getwd(), "data", "ESRP_WaterLevels_2008.rda")
+  # save(ESRP_WaterLevels_2008, file=f, compress=TRUE)
 
 
 
@@ -67,7 +67,6 @@ OptimizeNetwork <- function() {
   path <- file.path(getwd(), "inst", "extdata")
   obs.file <- "ESRP_WaterLevels.csv.gz"
   yr <- 2008
-  dt.lim <- c("2008-01-01 00:00", "2008-12-31 23:59")
   nmax <- 50
   nsites <- 20
 
@@ -116,6 +115,7 @@ OptimizeNetwork <- function() {
                   blank.lines.skip=TRUE, allowEscapes=TRUE, flush=TRUE,
                   stringsAsFactors=FALSE)
   obs.projargs <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+  dt.lim <- c("2008-01-01 00:00", "2008-12-31 23:59")
   obs <- ProcessObservations(d, x.var="dec_long_va", y.var="dec_lat_va",
                              projargs=obs.projargs, siteno.var="site_no",
                              sitenm.var="station_nm", net.var="network",
