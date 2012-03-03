@@ -7,8 +7,8 @@ library(raster)
 library(RSurvey)
 
 # setwd("C:/Users/jfisher/Documents/ObsNetwork")
-# setwd("D:/Software/ObsNetwork")
-setwd("D:/WORK/JFisher/Software/ObsNetwork")
+setwd("D:/Software/ObsNetwork")
+# setwd("D:/WORK/JFisher/Software/ObsNetwork")
 RestoreSession(file.path(getwd(), "R"))
 
 # ESRP_NED500m <- grd
@@ -137,18 +137,25 @@ if (grd.fact > 1) {
 PlotGrid(grd, "var2", ply=ply, xlim=xlim, ylim=ylim, pal=2L, contour=FALSE)
 
 
-# Optimization
+# Run GA
 
+graphics.off()
 
-# TODO: NEED TO SEND ALL OBSERVATIONS AND PIECE OUT NEWORK WELLS WITHIN FUNCTION
-
-ga <- RunGA(obs[obs$net == network, ], grd=grd, nsites=20,
+ga <- RunGA(obs, network, grd, nsites=20,
             vg.model=vg.model, formula=vg.formula, nmax=nmax,
-            niters=5, pop.size=300)
+            niters=100, pop.size=200)
 
 
 # TODO: ADD FUNCTION: WriteGAResults()
 
 
-graphics.off()
+PlotGrid(ga$kr, "var1.pred", obs, ply, , xlim=xlim, ylim=ylim, pal=2L,
+         rm.idxs=which(obs$site %in% ga$rm.obs$site))
+
+
+
+
+
+
+
 

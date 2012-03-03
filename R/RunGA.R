@@ -1,4 +1,4 @@
-RunGA <- function(obs, grd, nsites, vg.model, formula, nmax=Inf,
+RunGA <- function(obs, network, grd, nsites, vg.model, formula, nmax=Inf,
                   niters=200, pop.size=200, obj.weights=c(1, 1, 1, 1)) {
 
   # Additional functions (subroutines)
@@ -7,16 +7,17 @@ RunGA <- function(obs, grd, nsites, vg.model, formula, nmax=Inf,
   CalcObj <- function(idxs) {
     newdata <- rbind(grd.pts, obs[idxs, "var2"])
 
+    # Perform kriging
     kr <- krige(formula=formula, locations=obs[-idxs, ], newdata=newdata,
                 model=vg.model, nmax=nmax, debug.level=0)
 
-    pred <- kr[(npts + 1):length(kr), ]$var1.pred
-    se <- sqrt(abs(kr[1:npts, ]$var1.var))
+    pred <- kr[(ngrd.pts + 1):length(kr), ]$var1.pred
+    se <- sqrt(abs(kr[1:ngrd.pts, ]$var1.var))
 
     obj.1 <- mean(se)
-    obj.2 <- sqrt(sum((pred - obs$var1[idxs])^2) / length(idxs))
-    obj.3 <- mean(obs$sd[-idxs])
-    obj.4 <- mean(obs$acy[idxs])
+    obj.2 <- sqrt(sum((pred - obs$var1[idxs])^2) / nsites)
+    obj.3 <- mean(obs$sd[idxs])
+    obj.4 <- mean(obs$acy[-idxs])
 
     obj.1 <- obj.1 * obj.weights[1]
     obj.2 <- obj.2 * obj.weights[2]
@@ -32,7 +33,7 @@ RunGA <- function(obs, grd, nsites, vg.model, formula, nmax=Inf,
     if (length(unique(idxs)) < length(idxs))
       return(1e15)
     objs <- CalcObj(idxs)
-    sum(objs)
+    sum(objs, na.rm=TRUE)
   }
 
   # Get indexes for best GA solution
@@ -51,7 +52,7 @@ RunGA <- function(obs, grd, nsites, vg.model, formula, nmax=Inf,
   MonitorFun <- function(obj) {
     idxs <- GetIdxsForBestSolution(obj)
     objs <- CalcObj(idxs)
-    obj.values[obj$iter, ] <<- c(objs, sum(objs))
+    obj.values[obj$iter, ] <<- c(objs, sum(objs, na.rm=TRUE))
     PlotObjValues()
   }
 
@@ -83,9 +84,19 @@ RunGA <- function(obs, grd, nsites, vg.model, formula, nmax=Inf,
 
   # Main program
 
+  if (missing(network)) {
+    nsites.in.network <- length(obs)
+  } else {
+    is.net <- obs$net == network
+    nsites.in.network <- sum(is.net)
+    if (nsites.in.network == 0)
+      stop("network not in observation table")
+    obs <- rbind(obs[is.net, ], obs[!is.net, ])
+  }
+
   # Convert grid to data frame
   grd.pts <- as(grd, "SpatialPointsDataFrame")
-  npts <- length(grd.pts)
+  ngrd.pts <- length(grd.pts)
 
   # Initialize matrix of objective values
   nobjs <- length(obj.weights)
@@ -99,33 +110,32 @@ RunGA <- function(obs, grd, nsites, vg.model, formula, nmax=Inf,
     stop("problem with objective weights")
    is.weights <- any(obj.weights != 1)
 
-  # Intialize plot and its common variables
+  # Set plot attributes
   windows(width=8, height=(nobjs + 1) * 2)
   op <- par(mfrow=c(nobjs + 1, 1), oma=c(3, 2, 2, 2), mar=c(1, 6, 0, 2))
   tcl <- 0.50 / (6 * par("csi"))
   pal <- c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#A6D854")
-
-  # Plot labels
   labs <- NULL
-  labs[1] <- paste("Mean estimation error,",
+  labs[1] <- paste("Mean prediction error,",
                    "from the application of Kriging", sep="\n")
-  labs[2] <- paste("Root-mean-square error,",
-                   "difference between estimated",
-                   "and measured values", sep="\n")
+  labs[2] <- paste("Root-mean-square error, diff.",
+                   "between predicted and measured",
+                   "values at removed sites", sep="\n")
   labs[3] <- paste("Mean standard deviaiton,",
                    "variability of measurement",
                    "over time at removed sites", sep="\n")
   labs[4] <- "Mean measurement error"
-  labs[5] <- "Solution to objective function\nof optimization problem"
+  labs[5] <- "Solution to objective function"
 
   # Run GA
   elapsed.time <- system.time({
-    ans <- rbga(stringMin=rep(1, nsites), stringMax=rep(length(obs), nsites),
-                popSize=pop.size, iters=niters, verbose=TRUE,
-                monitorFunc=MonitorFun, evalFunc=EvalFun)
+    rbga.ans <- rbga(stringMin=rep(1, nsites),
+                     stringMax=rep(nsites.in.network, nsites),
+                     popSize=pop.size, iters=niters, verbose=TRUE,
+                     monitorFunc=MonitorFun, evalFunc=EvalFun)
   })
-  summary.rbga(ans, echo=TRUE)
-  rm.idxs <- GetIdxsForBestSolution(ans)
+  summary.rbga(rbga.ans, echo=TRUE)
+  rm.idxs <- GetIdxsForBestSolution(rbga.ans)
   rm.obs <- obs[rm.idxs, ]
 
   # Reset graphics parameters
@@ -149,8 +159,13 @@ RunGA <- function(obs, grd, nsites, vg.model, formula, nmax=Inf,
                niters.solution, "\n\n")
   cat(txt)
 
+  # Perform final kriging
+  kr <- krige(formula=formula, locations=obs[-rm.idxs, ], newdata=grd,
+              model=vg.model, nmax=nmax, debug.level=0)
+  kr$var1.se <- sqrt(kr$var1.var)
+
   # Return optimized site indexes to remove
-  invisible(list(rm.idxs=rm.idxs, rm.obs=rm.obs, obj.values=obj.values,
+  invisible(list(rm.obs=rm.obs, obj.values=obj.values,
                  obj.weights=obj.weights, elapsed.time=elapsed.time,
-                 niters.solution=niters.solution, ans=ans))
+                 niters.solution=niters.solution, rbga.ans=rbga.ans, kr=kr))
 }
