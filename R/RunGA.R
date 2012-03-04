@@ -142,22 +142,20 @@ RunGA <- function(obs, network, grd, nsites, vg.model, formula, nmax=Inf,
   par(op)
 
   # Report elapsed time for running optimization
-  elapsed.time <- as.numeric(elapsed.time['elapsed']) / 3600
-  txt <- paste("\nTime required for optimal solution:",
-               format(elapsed.time), "hours\n")
-  cat(txt)
+  hrs <- as.numeric(elapsed.time['elapsed']) / 3600
+  elapsed.time <- paste("\nElapsed time:", format(hrs), "hours\n")
+  cat(elapsed.time)
 
-  # Report number of iterations needed to find solution
+  # Determine how many times the final solution was repeated
   count <- 0L
   for (i in (niters - 1):1) {
     if (!identical(obj.values[i, ], obj.values[niters, ]))
       break
     count <- count + 1L
   }
-  niters.solution <- niters - count
-  txt <- paste("\nNumber of iterations needed to find solution:",
-               niters.solution, "\n\n")
-  cat(txt)
+  ans.rep <- paste("\nNumber of times final solution was repeated:",
+                   niters - count, "\n")
+  cat(ans.rep)
 
   # Perform final kriging
   kr <- krige(formula=formula, locations=obs[-rm.idxs, ], newdata=grd,
@@ -166,6 +164,6 @@ RunGA <- function(obs, network, grd, nsites, vg.model, formula, nmax=Inf,
 
   # Return optimized site indexes to remove
   invisible(list(rm.obs=rm.obs, obj.values=obj.values,
-                 obj.weights=obj.weights, elapsed.time=elapsed.time,
-                 niters.solution=niters.solution, rbga.ans=rbga.ans, kr=kr))
+                 elapsed.time=elapsed.time, ans.rep=ans.rep,
+                 rbga.ans=rbga.ans, kr=kr))
 }

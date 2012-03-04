@@ -42,7 +42,6 @@ OptimizeNetwork <- function() {
   ylim <- c(43.3, 44.0)
 
 
-
   network <- "State"
   xlim <- c(-115.25, -111.5)
   ylim <- c(42.25, 44.5)
@@ -62,17 +61,15 @@ OptimizeNetwork <- function() {
 
 
   grd.fact <- 5
-  ply.dsn <- "ESRP_SpatialDomain"
-  grd.file <- "ESRP_NED500m.tif"
-  path <- file.path(getwd(), "inst", "extdata")
-  obs.file <- "ESRP_WaterLevels.csv.gz"
+
   yr <- 2008
   nmax <- 50
   nsites <- 20
 
-
-
-
+  path <- file.path(getwd(), "inst", "extdata")
+  f.grd <- file.path(path, "ESRP_NED500m.tif")
+  f.obs <- file.path(path, "ESRP_WaterLevels.csv.gz")
+  dsn.ply <- file.path(path, "ESRP_SpatialDomain")
 
   pal.var2 <- function(n) {
                 rev(diverge_hcl(n, h=c(260, 0), c=100, l=c(50, 90), power=1))
@@ -91,8 +88,8 @@ OptimizeNetwork <- function() {
 
 
   # Raster grid
-  f <- file.path(path, grd.file)
-  grd <- readGDAL(f, band=1)
+
+  grd <- readGDAL(f.grd, band=1)
   names(grd) <- "var2"
 
   grd.crs <- grd@proj4string
@@ -103,15 +100,13 @@ OptimizeNetwork <- function() {
 
 
   # Polygon
-  f <- file.path(path, ply.dsn)
-  ply <- readOGR(dsn=f, layer=ply.dsn)
+  ply <- readOGR(dsn=dsn.ply, layer=basename(dsn.ply))
 
   ply <- rgdal::spTransform(ply, grd.crs)
 
 
   # Observations
-  f <- file.path(path, obs.file)
-  d <- read.table(file=f, header=TRUE, sep=",", fill=TRUE, strip.white=TRUE,
+  d <- read.table(file=f.obs, header=TRUE, sep=",", fill=TRUE, strip.white=TRUE,
                   blank.lines.skip=TRUE, allowEscapes=TRUE, flush=TRUE,
                   stringsAsFactors=FALSE)
   obs.projargs <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
@@ -181,23 +176,14 @@ OptimizeNetwork <- function() {
 
 
   # Run GA
-
-  graphics.off()
-
   ga <- RunGA(obs, network, grd, nsites=nsites,
               vg.model=vg.model, formula=vg.formula, nmax=nmax,
               niters=10, pop.size=300, obj.weights=c(10, 1, 1, 1))
 
-
-  # TODO: ADD FUNCTION: WriteGAResults()
+  WriteGAResults(ga)
 
   PlotGrid(ga$kr, "var1.pred", obs, ply, , xlim=xlim, ylim=ylim, pal=pal.var1,
            rm.idxs=which(obs$siteno %in% ga$rm.obs$siteno))
-
-
-
-
-
 
 
 }
