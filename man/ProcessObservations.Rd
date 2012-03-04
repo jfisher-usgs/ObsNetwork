@@ -11,7 +11,7 @@ Something.
 \usage{
 ProcessObservations(d, x.var, y.var, projargs, siteno.var, sitenm.var,
                     net.var, var1.var, var2.var, acy.var, dt.var, dt.lim,
-                    dt.fmt = "%Y-%m-%d %H:%M")
+                    dt.fmt = "\%Y-\%m-\%d \%H:\%M")
 }
 
 \arguments{

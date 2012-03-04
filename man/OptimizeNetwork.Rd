@@ -12,9 +12,6 @@ Something.
 OptimizeNetwork()
 }
 
-\arguments{
-}
-
 \details{
 Something...
 }

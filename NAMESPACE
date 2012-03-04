@@ -5,7 +5,4 @@ export(OpenGraphicsDevice,
        ProcessObservations,
        RunCrossValidation,
        RunGA,
-       WriteGAResults,
-       ESRP_NED500m,
-       ESRP_SpatialDomain,
-       ESRP_WaterLevels_2008)
+       WriteGAResults)

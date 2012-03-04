@@ -19,6 +19,7 @@ PlotBubble(pts, zcol, ply, xlim = bbox(ply)[1, ], ylim = bbox(ply)[2, ],
 \item{ply}{something}
 \item{xlim, ylim}{something}
 \item{main}{something}
+\item{gr.type}{something}
 \item{gr.file}{something}
 }
 

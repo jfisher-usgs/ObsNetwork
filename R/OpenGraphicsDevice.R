@@ -14,10 +14,10 @@ OpenGraphicsDevice <- function(file, type="windows", w=7, h=7, p=12,
         ext <- ".eps"
       else
         ext <- paste(".", type, sep="")
-      file <- as.character(tcl("tk_getSaveFile", title=win.title,
-                               defaultextension=ext,
-                               initialfile=paste("*", ext, sep=""),
-                               initialdir=file.path(getwd(), "..")))
+      file <- as.character(tcltk::tcl("tk_getSaveFile", title=win.title,
+                                      defaultextension=ext,
+                                      initialfile=paste("*", ext, sep=""),
+                                      initialdir=file.path(getwd(), "..")))
     }
     if (type == "pdf") {
       pdf(file=file, width=w, height=h, pointsize=p, version="1.6",

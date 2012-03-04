@@ -9,11 +9,11 @@ Something.
 }
 
 \usage{
-RunCrossValidation(vg.formula, obs, grd, vg.model, nmax = Inf, ply = NULL)
+RunCrossValidation(formula, obs, grd, vg.model, nmax = Inf, ply = NULL)
 }
 
 \arguments{
-\item{vg.formula}{something}
+\item{formula}{something}
 \item{obs}{something}
 \item{grd}{something}
 \item{vg.model}{something}

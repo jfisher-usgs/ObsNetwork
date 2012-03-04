@@ -10,7 +10,7 @@ This function starts the device driver for producing graphics.
 
 \usage{
 OpenGraphicsDevice(file, type = "windows", w = 7, h = 7, p = 12,
-                   res = 300, gui.title = "Save As")
+                   res = 300, win.title = "Save As")
 }
 
 \arguments{

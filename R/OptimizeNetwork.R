@@ -5,18 +5,20 @@ OptimizeNetwork <- function() {
 
   # Main program
 
-
   library(colorspace)
+  library(sp)
   library(gstat)
   library(genalg)
   library(rgdal)
   library(raster)
-  library(RSurvey)
 
   # setwd("C:/Users/jfisher/Documents/ObsNetwork")
   setwd("D:/Software/ObsNetwork")
   # setwd("D:/WORK/JFisher/Software/ObsNetwork")
-  RestoreSession(file.path(getwd(), "R"))
+
+
+### library(RSurvey)
+### RestoreSession(file.path(getwd(), "R"))
 
   # ESRP_NED500m <- grd
   # f <- file.path(getwd(), "data", "ESRP_NED500m.rda")
@@ -47,12 +49,12 @@ OptimizeNetwork <- function() {
   ylim <- c(42.25, 44.5)
 
 
-  vg.formula <- var1~1
+  formula <- var1~1
   vg.model <- vgm(model="Lin", nugget=0)
   vg.fit <- TRUE
 
 
-  vg.formula <- var1~var2
+  formula <- var1~var2
   vg.model <- vgm(psill=4200, model="Sph", range=80, nugget=0)
   vg.fit <- FALSE
 
@@ -132,7 +134,7 @@ OptimizeNetwork <- function() {
   summary(lm.drift)
 
   # Construct variogram model
-  vg <- variogram(vg.formula, obs)
+  vg <- variogram(formula, obs)
   if (vg.fit)
     vg.model <- fit.variogram(vg, vg.model)
 
@@ -151,14 +153,14 @@ OptimizeNetwork <- function() {
 
 
   # Cross-validation
-  cross.validation <- RunCrossValidation(vg.formula, obs, grd, vg.model, nmax,
+  cross.validation <- RunCrossValidation(formula, obs, grd, vg.model, nmax,
                                          ply)
   PlotBubble(cross.validation$cv, "residual", main="Residuals",
              ply=ply, xlim=xlim, ylim=ylim)
 
 
   # Kriging interpolation (man page only)
-  kr <- krige(formula=vg.formula, locations=obs, newdata=grd, model=vg.model,
+  kr <- krige(formula=formula, locations=obs, newdata=grd, model=vg.model,
               nmax=nmax)
   kr$var1.se <- sqrt(kr$var1.var)
   PlotRaster(kr, "var1.pred", obs, ply, xlim=xlim, ylim=ylim, pal=pal.var1)
@@ -178,13 +180,13 @@ OptimizeNetwork <- function() {
 
   # Run GA
   ga <- RunGA(obs, network, grd.mod, nsites=nsites,
-              vg.model=vg.model, formula=vg.formula, nmax=nmax,
+              vg.model=vg.model, formula=formula, nmax=nmax,
               niters=10, pop.size=300, obj.weights=c(10, 1, 1, 1))
 
   WriteGAResults(ga)
 
   is.rm.site <- obs$siteno %in% ga$rm.obs$siteno
-  kr <- krige(formula=vg.formula, locations=obs[!is.rm.site, ], newdata=grd,
+  kr <- krige(formula=formula, locations=obs[!is.rm.site, ], newdata=grd,
               model=vg.model, nmax=nmax)
   kr$var1.se <- sqrt(kr$var1.var)
   PlotRaster(kr, "var1.pred", obs, ply, xlim=xlim, ylim=ylim, pal=pal.var1,

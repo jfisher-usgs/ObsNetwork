@@ -10,7 +10,7 @@ they provide little or no beneficial added information.
 }
 
 \usage{
-RunGA(obs, network, grd, nsites, vg.model, vg.formula, nmax = Inf,
+RunGA(obs, network, grd, nsites, vg.model, formula, nmax = Inf,
       niters = 200, pop.size = 200, obj.weights = c(1, 1, 1, 1))
 }
 
@@ -20,6 +20,7 @@ RunGA(obs, network, grd, nsites, vg.model, vg.formula, nmax = Inf,
 \item{grd}{something.}
 \item{nsites}{integer; the desired number of observation sites to remove.}
 \item{vg.model}{something}
+\item{formula}{something}
 \item{nmax}{something}
 \item{niters}{integer; the number of iterations in the genetic algorithm.}
 \item{pop.size}{integer; the population size in the genetic algorithm.}

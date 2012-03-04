@@ -1,8 +1,8 @@
-RunCrossValidation <- function(vg.formula, obs, grd, vg.model, nmax=Inf,
+RunCrossValidation <- function(formula, obs, grd, vg.model, nmax=Inf,
                                ply=NULL) {
 
   # Cross validation
-  cv <- krige.cv(vg.formula, obs, grd, model=vg.model, nmax=nmax)
+  cv <- krige.cv(formula, obs, grd, model=vg.model, nmax=nmax)
   coordinates(cv) <- ~x+y
   proj4string(cv) <- grd@proj4string
 
@@ -24,6 +24,7 @@ RunCrossValidation <- function(vg.formula, obs, grd, vg.model, nmax=Inf,
   xlim <- range(pretty(extendrange(x)))
   ylim <- range(pretty(extendrange(y)))
   x11()
+  tcl <- 0.50 / (6 * par("csi"))
   plot(x, y, xaxs="i", yaxs="i", xlim=xlim, ylim=ylim, asp=1, tcl=tcl,
        xlab="Observed value", ylab="Predicted value")
   lines(x=lim, y=lim, col="blue")
