@@ -9,15 +9,16 @@ WriteGAResults <- function(ga, file) {
   x <- ga$rm.obs
   write.table(x, file=file, append=FALSE, quote=FALSE, sep="\t",
               row.names=FALSE)
-
-  # Answer repeated
-  x <- ga$ans.rep
-  cat(x, file=file, append=TRUE)
+  cat("\n", file=file, append=TRUE)
 
   # Objective values
   x <- ga$obj.values[nrow(ga$obj.values), ]
   write.table(x, file=file, append=TRUE, col.names=FALSE, row.names=TRUE,
               quote=FALSE, sep="\t")
+
+  # Answer repeated
+  x <- ga$ans.rep
+  cat(x, file=file, append=TRUE)
 
   # Elapsed time
   x <- ga$elapsed.time

@@ -1,6 +1,8 @@
-export(BuildGrid,
-       FitVariogram,
-       PlotKriging,
-       ReadObservations,
-       RunCrossvalidation,
-       RunGA)
+export(OpenGraphicsDevice,
+       OptimizeNetwork,
+       PlotBubble,
+       PlotGrid,
+       ProcessObservations,
+       RunCrossValidation,
+       RunGA,
+       WriteGAResults)

@@ -1,6 +1,6 @@
-\name{RunCrossvalidation}
+\name{RunCrossValidation}
 
-\alias{RunCrossvalidation}
+\alias{RunCrossValidation}
 
 \title{Run Crossvalidation}
 
@@ -9,7 +9,7 @@ Something.
 }
 
 \usage{
-RunCrossvalidation(obs, v.fit)
+RunCrossValidation(obs, v.fit)
 }
 
 \arguments{

@@ -23,7 +23,6 @@ RunGA <- function(obs, network, grd, nsites, vg.model, formula, nmax=Inf,
     obj.2 <- obj.2 * obj.weights[2]
     obj.3 <- obj.3 * obj.weights[3]
     obj.4 <- obj.4 * obj.weights[4]
-
     c(obj.1, obj.2, obj.3, obj.4)
   }
 
@@ -48,7 +47,7 @@ RunGA <- function(obs, network, grd, nsites, vg.model, formula, nmax=Inf,
     idxs
   }
 
-  # Monitor progress at end of each iteration in GA
+  # Monitor progress at end of each GA iteration
   MonitorFun <- function(obj) {
     idxs <- GetIdxsForBestSolution(obj)
     objs <- CalcObj(idxs)
@@ -56,7 +55,7 @@ RunGA <- function(obs, network, grd, nsites, vg.model, formula, nmax=Inf,
     PlotObjValues()
   }
 
-  # Plot status of objective values
+  # Plot status of objectives
   PlotObjValues <- function() {
     obj.values <- na.omit(obj.values)
     n <- nrow(obj.values)
@@ -74,8 +73,8 @@ RunGA <- function(obs, network, grd, nsites, vg.model, formula, nmax=Inf,
       points(x, y, type="o", pch=21, col=pal[i], bg=pal[i])
       txt <- paste(format(y[n]), "    ")
       mtext(txt, side=3, line=-2, adj=1, cex=0.75)
-      if (i < m & is.weights) {
-        txt <- paste("Values weighted by", format(obj.weights[i]))
+      if (i < m & is.weighted[i]) {
+        txt <- paste("Weighted by", format(obj.weights[i]))
         mtext(txt, side=4, line=0.5, cex=0.75, col="dark gray")
       }
     }
@@ -84,6 +83,7 @@ RunGA <- function(obs, network, grd, nsites, vg.model, formula, nmax=Inf,
 
   # Main program
 
+  # Bring network sites to the front
   if (missing(network)) {
     nsites.in.network <- length(obs)
   } else {
@@ -108,7 +108,7 @@ RunGA <- function(obs, network, grd, nsites, vg.model, formula, nmax=Inf,
    if (!inherits(obj.weights, c("numeric", "integer")) |
        length(obj.weights) != nobjs)
     stop("problem with objective weights")
-   is.weights <- any(obj.weights != 1)
+   is.weighted <- obj.weights != 1
 
   # Set plot attributes
   windows(width=8, height=(nobjs + 1) * 2)
@@ -148,22 +148,16 @@ RunGA <- function(obs, network, grd, nsites, vg.model, formula, nmax=Inf,
 
   # Determine how many times the final solution was repeated
   count <- 0L
-  for (i in (niters - 1):1) {
+  for (i in niters:1) {
     if (!identical(obj.values[i, ], obj.values[niters, ]))
       break
     count <- count + 1L
   }
   ans.rep <- paste("\nNumber of times final solution was repeated:",
-                   niters - count, "\n")
+                   count, "\n")
   cat(ans.rep)
 
-  # Perform final kriging
-  kr <- krige(formula=formula, locations=obs[-rm.idxs, ], newdata=grd,
-              model=vg.model, nmax=nmax, debug.level=0)
-  kr$var1.se <- sqrt(kr$var1.var)
-
-  # Return optimized site indexes to remove
-  invisible(list(rm.obs=rm.obs, obj.values=obj.values,
-                 elapsed.time=elapsed.time, ans.rep=ans.rep,
-                 rbga.ans=rbga.ans, kr=kr))
+  # Return optimized sites to remove
+  invisible(list(rm.obs=rm.obs, obj.values=obj.values, ans.rep=ans.rep,
+                 elapsed.time=elapsed.time, rbga.ans=rbga.ans))
 }

@@ -78,7 +78,7 @@ OptimizeNetwork <- function() {
                 rev(heat_hcl(n, h=c(265, 80), c=c(60, 10), l=c(25, 95),
                              power=c(0.7, 2)))
               }
-  pal.err  <- function(n) {
+  pal.se   <- function(n) {
                 heat_hcl(n, h=c(130, 30), c=c(65, 6), l=c(45, 100),
                          power=c(0.3, 1.8))
               }
@@ -161,29 +161,33 @@ OptimizeNetwork <- function() {
               nmax=nmax)
   kr$var1.se <- sqrt(kr$var1.var)
   PlotGrid(kr, "var1.pred", obs, ply, xlim=xlim, ylim=ylim, pal=pal.var1)
-  PlotGrid(kr, "var1.se",   obs, ply, xlim=xlim, ylim=ylim, pal=pal.err)
+  PlotGrid(kr, "var1.se",   obs, ply, xlim=xlim, ylim=ylim, pal=pal.se)
 
 
   # Reduce grid resolution
   if (grd.fact > 1) {
-    grd <- as(aggregate(raster(grd), fact=grd.fact, fun=mean, expand=TRUE,
-                        na.rm=TRUE), 'SpatialGridDataFrame')
+    grd.mod <- as(aggregate(raster(grd), fact=grd.fact, fun=mean, expand=TRUE,
+                            na.rm=TRUE), 'SpatialGridDataFrame')
   }
 
   # Plot updated grid (man page only)
-  PlotGrid(grd, "var2", ply=ply, xlim=xlim, ylim=ylim, pal=pal.var2,
+  PlotGrid(grd.mod, "var2", ply=ply, xlim=xlim, ylim=ylim, pal=pal.var2,
            contour=FALSE)
 
 
   # Run GA
-  ga <- RunGA(obs, network, grd, nsites=nsites,
+  ga <- RunGA(obs, network, grd.mod, nsites=nsites,
               vg.model=vg.model, formula=vg.formula, nmax=nmax,
               niters=10, pop.size=300, obj.weights=c(10, 1, 1, 1))
 
   WriteGAResults(ga)
 
-  PlotGrid(ga$kr, "var1.pred", obs, ply, , xlim=xlim, ylim=ylim, pal=pal.var1,
-           rm.idxs=which(obs$siteno %in% ga$rm.obs$siteno))
-
-
+  is.rm.site <- obs$siteno %in% ga$rm.obs$siteno
+  kr <- krige(formula=vg.formula, locations=obs[!is.rm.site, ], newdata=grd,
+              model=vg.model, nmax=nmax)
+  kr$var1.se <- sqrt(kr$var1.var)
+  PlotGrid(kr, "var1.pred", obs, ply, xlim=xlim, ylim=ylim, pal=pal.var1,
+           rm.idxs=which(is.rm.site))
+  PlotGrid(kr, "var1.se",   obs, ply, xlim=xlim, ylim=ylim, pal=pal.se,
+           rm.idxs=which(is.rm.site))
 }
