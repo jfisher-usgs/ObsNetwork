@@ -1,4 +1,4 @@
-RunGA <- function(obs, network, grd, nsites, vg.model, formula, nmax=Inf,
+RunGA <- function(obs, network, grd, nsites, vg.model, vg.formula, nmax=Inf,
                   niters=200, pop.size=200, obj.weights=c(1, 1, 1, 1)) {
 
   # Additional functions (subroutines)
@@ -8,7 +8,7 @@ RunGA <- function(obs, network, grd, nsites, vg.model, formula, nmax=Inf,
     newdata <- rbind(grd.pts, obs[idxs, "var2"])
 
     # Perform kriging
-    kr <- krige(formula=formula, locations=obs[-idxs, ], newdata=newdata,
+    kr <- krige(formula=vg.formula, locations=obs[-idxs, ], newdata=newdata,
                 model=vg.model, nmax=nmax, debug.level=0)
 
     pred <- kr[(ngrd.pts + 1):length(kr), ]$var1.pred

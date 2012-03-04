@@ -1,8 +1,11 @@
 export(OpenGraphicsDevice,
        OptimizeNetwork,
        PlotBubble,
-       PlotGrid,
+       PlotRaster,
        ProcessObservations,
        RunCrossValidation,
        RunGA,
-       WriteGAResults)
+       WriteGAResults,
+       ESRP_NED500m,
+       ESRP_SpatialDomain,
+       ESRP_WaterLevels_2008)

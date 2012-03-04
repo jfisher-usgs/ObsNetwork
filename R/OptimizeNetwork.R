@@ -141,8 +141,9 @@ OptimizeNetwork <- function() {
 
 
   # Plot DEM (man page only)
-  PlotGrid(grd, "var2", obs[obs$net == network, ], ply,
-           xlim=xlim, ylim=ylim, pal=pal.var2, contour=FALSE, label.pts="mapid")
+  PlotRaster(grd, "var2", obs[obs$net == network, ], ply,
+             xlim=xlim, ylim=ylim, pal=pal.var2, contour=FALSE,
+             label.pts="mapid")
 
 
   # Crop grid to polygon
@@ -160,8 +161,8 @@ OptimizeNetwork <- function() {
   kr <- krige(formula=vg.formula, locations=obs, newdata=grd, model=vg.model,
               nmax=nmax)
   kr$var1.se <- sqrt(kr$var1.var)
-  PlotGrid(kr, "var1.pred", obs, ply, xlim=xlim, ylim=ylim, pal=pal.var1)
-  PlotGrid(kr, "var1.se",   obs, ply, xlim=xlim, ylim=ylim, pal=pal.se)
+  PlotRaster(kr, "var1.pred", obs, ply, xlim=xlim, ylim=ylim, pal=pal.var1)
+  PlotRaster(kr, "var1.se",   obs, ply, xlim=xlim, ylim=ylim, pal=pal.se)
 
 
   # Reduce grid resolution
@@ -171,8 +172,8 @@ OptimizeNetwork <- function() {
   }
 
   # Plot updated grid (man page only)
-  PlotGrid(grd.mod, "var2", ply=ply, xlim=xlim, ylim=ylim, pal=pal.var2,
-           contour=FALSE)
+  PlotRaster(grd.mod, "var2", ply=ply, xlim=xlim, ylim=ylim, pal=pal.var2,
+             contour=FALSE)
 
 
   # Run GA
@@ -186,8 +187,8 @@ OptimizeNetwork <- function() {
   kr <- krige(formula=vg.formula, locations=obs[!is.rm.site, ], newdata=grd,
               model=vg.model, nmax=nmax)
   kr$var1.se <- sqrt(kr$var1.var)
-  PlotGrid(kr, "var1.pred", obs, ply, xlim=xlim, ylim=ylim, pal=pal.var1,
-           rm.idxs=which(is.rm.site))
-  PlotGrid(kr, "var1.se",   obs, ply, xlim=xlim, ylim=ylim, pal=pal.se,
-           rm.idxs=which(is.rm.site))
+  PlotRaster(kr, "var1.pred", obs, ply, xlim=xlim, ylim=ylim, pal=pal.var1,
+             rm.idxs=which(is.rm.site))
+  PlotRaster(kr, "var1.se",   obs, ply, xlim=xlim, ylim=ylim, pal=pal.se,
+             rm.idxs=which(is.rm.site))
 }

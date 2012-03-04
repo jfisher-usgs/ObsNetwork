@@ -1,6 +1,6 @@
-PlotGrid <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
-                     pal=terrain.colors, contour=TRUE, label.pts=FALSE, main="",
-                     gr.type="windows", gr.file=NULL) {
+PlotRaster <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
+                       pal=terrain.colors, contour=TRUE, label.pts=FALSE,
+                       main="", gr.type="windows", gr.file=NULL) {
 
   # Initialize layout
   lo <- list()

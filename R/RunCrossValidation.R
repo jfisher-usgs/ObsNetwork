@@ -1,7 +1,8 @@
-RunCrossValidation <- function(fo, obs, grd, vg.model, nmax=Inf, ply=NULL) {
+RunCrossValidation <- function(vg.formula, obs, grd, vg.model, nmax=Inf,
+                               ply=NULL) {
 
   # Cross validation
-  cv <- krige.cv(fo, obs, grd, model=vg.model, nmax=nmax)
+  cv <- krige.cv(vg.formula, obs, grd, model=vg.model, nmax=nmax)
   coordinates(cv) <- ~x+y
   proj4string(cv) <- grd@proj4string
 

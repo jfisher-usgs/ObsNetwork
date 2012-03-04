@@ -9,12 +9,16 @@ Something.
 }
 
 \usage{
-RunCrossValidation(obs, v.fit)
+RunCrossValidation(vg.formula, obs, grd, vg.model, nmax = Inf, ply = NULL)
 }
 
 \arguments{
+\item{vg.formula}{something}
 \item{obs}{something}
-\item{v.fit}{something}
+\item{grd}{something}
+\item{vg.model}{something}
+\item{nmax}{something}
+\item{ply}{something}
 }
 
 \details{

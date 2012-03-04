@@ -1,5 +1,5 @@
 OpenGraphicsDevice <- function(file, type="windows", w=7, h=7, p=12,
-                               res=300, gui.title="Save As") {
+                               res=300, win.title="Save As") {
 # This function opens a graphics device of type:
 #   "windows", "pdf", "png", or "postscript"
 
@@ -14,7 +14,7 @@ OpenGraphicsDevice <- function(file, type="windows", w=7, h=7, p=12,
         ext <- ".eps"
       else
         ext <- paste(".", type, sep="")
-      file <- as.character(tcl("tk_getSaveFile", title=gui.title,
+      file <- as.character(tcl("tk_getSaveFile", title=win.title,
                                defaultextension=ext,
                                initialfile=paste("*", ext, sep=""),
                                initialdir=file.path(getwd(), "..")))

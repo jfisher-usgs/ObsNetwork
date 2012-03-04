@@ -10,15 +10,17 @@ they provide little or no beneficial added information.
 }
 
 \usage{
-RunGA(obs, v.fit, grd, nsites, niters = 200, pop.size = 200,
-      obj.weights = c(1, 1, 1))
+RunGA(obs, network, grd, nsites, vg.model, vg.formula, nmax = Inf,
+      niters = 200, pop.size = 200, obj.weights = c(1, 1, 1, 1))
 }
 
 \arguments{
 \item{obs}{SpatialPointsDataFrame; something.}
-\item{v.fit}{variogramModel; something.}
-\item{grd}{SpatialPixels; something.}
+\item{network}{character; something.}
+\item{grd}{something.}
 \item{nsites}{integer; the desired number of observation sites to remove.}
+\item{vg.model}{something}
+\item{nmax}{something}
 \item{niters}{integer; the number of iterations in the genetic algorithm.}
 \item{pop.size}{integer; the population size in the genetic algorithm.}
 \item{obj.weights}{numeric; something.}
