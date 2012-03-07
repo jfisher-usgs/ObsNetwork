@@ -4,12 +4,14 @@
 
 \docType{data}
 
-\title{Topographic Information on Eastern Snake River Plain}
+\title{Topographic Information on the ESRP}
 
 \description{
 The Eastern Snake River Plain (ESRP) is a geologic feature located in the
-state of Idaho. This data set gives topographic information for the ESRP on
-a 500m by 500m grid.
+state of Idaho. This data set gives topographic information for the ESRP and
+vicinity on a 500 meter (m) by 500 m grid. The west, east, north, and
+south bounding coordinates are -115.25, -111.50, 44.50, and 42.25
+decimal degrees, respectively.
 }
 
 \usage{
@@ -17,12 +19,18 @@ ESRP_NED500m
 }
 
 \format{
-An object of SpatialGridDataFrame-class with 393,600 points (coordinates) and
-a sing data attribute (elevation).
+An object of \code{\link{SpatialGridDataFrame-class}} with 393,600
+points (coordinates) and a single data attribute (elevation).
+Geographic coordinates are in units of decimal degrees, and in conformance
+with the North American Datum of 1983 (NAD 83). All elevation values are
+in meters and are referenced to the North American Vertical Datum of 1988
+(NAVD 88).
 }
 
 \source{
-The National Elevation Dataset (NED) 1/3-arc-second dataset.
+The National Elevation Dataset (\href{http://ned.usgs.gov/}{NED})
+1/3-arc-second raster. Dataset resampled to 500 m using a nearest
+neighbor assignment.
 }
 
 \references{
@@ -38,12 +46,15 @@ Remote Sensing, v. 68, no. 1, p. 5-11.
 
 \examples{
 data(ESRP_NED500m)
+image(ESRP_NED500m)
 summary(ESRP_NED500m)
 
-# Commands used to construct this data set:
+# Commands used to construct this data object:
 f <- system.file("extdata/ESRP_NED500m.tif", package = "ObsNetwork")
-ESRP_NED500m <- rgdal::readGDAL(f, band = 1)
-names(ESRP_NED500m) <- "var2"
+obj <- rgdal::readGDAL(f, band = 1)
+names(obj) <- "var2"
+
+identical(ESRP_NED500m, obj)
 }
 
 \keyword{datasets}
