@@ -15,16 +15,23 @@ RunGA(obs, network, grd, nsites, vg.model, formula, nmax = Inf,
 }
 
 \arguments{
-\item{obs}{SpatialPointsDataFrame; something.}
-\item{network}{character; something.}
-\item{grd}{something.}
+\item{obs}{SpatialPointsDataFrame; spatial data at observation sites.}
+\item{network}{character; only observation sites included in the network
+  will be included in the optimization.}
+\item{grd}{SpatialGridDataFrame; raster data.}
 \item{nsites}{integer; the desired number of observation sites to remove.}
-\item{vg.model}{something}
-\item{formula}{something}
-\item{nmax}{something}
-\item{niters}{integer; the number of iterations in the genetic algorithm.}
-\item{pop.size}{integer; the population size in the genetic algorithm.}
-\item{obj.weights}{numeric; something.}
+\item{vg.model}{variogramModel; variogram model of dependent variable
+  (or its residuals), defined by a call to \code{\link{vgm}}.}
+\item{formula}{formula; defines the dependent variable as a linear model of
+  independent variables.}
+\item{nmax}{numeric; for local kriging, the number of nearest observations
+  that should be used for a kriging prediction or simulation, where nearest
+  is defined in terms of the space of the spatial locations. By default,
+  all observations are used.}
+\item{niters}{integer; the number of iterations used in the genetic algorithm.}
+\item{pop.size}{integer; the population size used in the genetic algorithm.}
+\item{obj.weights}{numeric; vector of length 4 giving the weights for each
+  objective function in the optimzation.}
 }
 
 \details{

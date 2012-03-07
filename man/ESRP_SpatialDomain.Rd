@@ -17,10 +17,16 @@ ESRP_SpatialDomain
 }
 
 \format{
-An object of \code{\link{SpatialPolygonsDataFrame-class}} with 4 polygons.
-The 3 butte polygons are holes in the aquifer outline.
+An object of \code{\link{SpatialPolygonsDataFrame-class}} containing
+4 \code{\link{Polygons}}. Three of the polygons representing buttes
+are set as holes in the much larger aquifer polygon.
 Geographic coordinates are in units of decimal degrees, and in conformance
 with the North American Datum of 1983 (NAD 83).
+}
+
+\source{
+Idaho Department of Water Resources
+(\href{http://www.idwr.idaho.gov/GeographicInfo/GISdata/aquifers.htm}{IDWR}).
 }
 
 \examples{
@@ -34,6 +40,7 @@ obj <- readOGR(dsn = dsn, layer = basename(dsn))
 
 all.equal(ESRP_SpatialDomain, obj)
 
+# Polygons slots
 p <- sapply(slot(obj, 'polygons'), function(i) slot(i, 'Polygons'))
 
 # Generalized boundary of the ESRP aquifer

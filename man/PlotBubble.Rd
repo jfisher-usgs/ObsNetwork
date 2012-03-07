@@ -15,7 +15,7 @@ PlotBubble(pts, zcol, ply, xlim = bbox(ply)[1, ], ylim = bbox(ply)[2, ],
 }
 
 \arguments{
-\item{pts}{SpatialPointsDataFrame; spatial data.}
+\item{pts}{SpatialPointsDataFrame; spatial data at observation sites.}
 \item{zcol}{character; z-variable column name.}
 \item{ply}{SpatialPolygonsDataFrame; polygon to include in layout.}
 \item{xlim}{numeric; vector of length 2 giving left and right limits for

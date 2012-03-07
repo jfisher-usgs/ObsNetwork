@@ -9,7 +9,7 @@
 \description{
 The Eastern Snake River Plain (ESRP) is a geologic feature located in the
 state of Idaho. This data set gives topographic information for the ESRP and
-vicinity on a 500 meter (m) by 500 m grid. The west, east, north, and
+vicinity on a 500 meter by 500 meter grid. The west, east, north, and
 south bounding coordinates are -115.25, -111.50, 44.50, and 42.25
 decimal degrees, respectively.
 }
@@ -29,7 +29,7 @@ in meters and are referenced to the North American Vertical Datum of 1988
 
 \source{
 The National Elevation Dataset (\href{http://ned.usgs.gov/}{NED})
-1/3-arc-second raster. Dataset resampled to 500 m using a nearest
+1/3-arc-second raster. Dataset resampled to 500 meters using a nearest
 neighbor assignment.
 }
 

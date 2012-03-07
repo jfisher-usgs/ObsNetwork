@@ -21,26 +21,28 @@ An object of \code{\link{SpatialPointsDataFrame-class}} with 335 points
 (coordinates) in units of decimal degrees, in conformance with the North
 American Datum of 1983 (NAD 83), and the following attributes:
   \describe{
-    \item{siteno}{unique numerical identifier for well site;}
-    \item{mapid}{numeric identifier used to locate well sites on a figure;}
-    \item{var1}{mean water level for calendar year 2008 in meters above the
-                North American Vertical Datum of 1988 (NAVD 88);}
+    \item{siteno}{unique numerical identifier for well site, for example
+      \href{http://waterdata.usgs.gov/id/nwis/inventory/?site_no=435339112444601}{435339112444601};}
+    \item{mapid}{numeric identifier used to locate well site on a figure;}
+    \item{var1}{median water level for calendar year 2008 in meters above the
+      North American Vertical Datum of 1988 (NAVD 88);}
     \item{var2}{land surface elevation in meters above NAVD 88;}
-    \item{acy}{measurement accuracy of water-level elevation (\code{var1})
-               in meters;}
-    \item{sd}{standard deviation of water level elevations (\code{var1}) for
-              entire period of record, varies for each well site;}
-    \item{net}{identifier for observation network, "State" identifies
-               wells in the state-run 2008 synoptic sampling network (n = 166)
-               and "INL" identifies wells in the U.S. Geological Survey,
-               Idaho National Laboratory monitoring network (n = 169);}
-    \item{sitenm}{local well identifier.}
+    \item{acy}{mean measurement accuracy of water-level (\code{var1}) in meters;}
+    \item{sd}{standard deviation of water level in meters for
+      entire period of record, duration varies for each well site;}
+    \item{net}{identifier for observation network, "State" is used to identify
+      wells in the state-run 2008 synoptic sampling network (166 wells) and
+      "INL" identifies wells in the U.S. Geological Survey, Idaho National
+      Laboratory, 2008 water-level monitoring network (169 wells);}
+    \item{sitenm}{local well identifier, for example
+      "07N 31E 34BDD1 USGS 25".}
   }
 }
 
 \source{
 The National Water Information System
-(\href{http://waterdata.usgs.gov/nwis}{NWIS}); accessed December 2011.
+(\href{http://waterdata.usgs.gov/nwis}{NWIS}); accessed December 2011
+using the \pkg{RNWIS} package.
 \href{http://www.ngs.noaa.gov/PC_PROD/VERTCON/}{VERTCON} (version 2.1) was
 used to convert National Geodetic Vertical Datum of 1929 (NGVD 29) heights
 to NAVD 88. Data attributes \sQuote{acy} and \sQuote{sd} were
@@ -51,23 +53,6 @@ calculated using \code{\link{ProcessObservations}}.
 data(ESRP_WaterLevels_2008)
 plot(coordinates(ESRP_WaterLevels_2008))
 summary(ESRP_WaterLevels_2008)
-
-# Commands used to construct this data object:
-f <- system.file("extdata/ESRP_WaterLevels.csv.gz", package = "ObsNetwork")
-d <- read.table(file = f, sep = ",", header = TRUE, fill = TRUE,
-                strip.white = TRUE, blank.lines.skip = TRUE,
-                allowEscapes = TRUE, flush = TRUE,
-                stringsAsFactors = FALSE)
-projargs <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-dt.lim <- c("2008-01-01 00:00", "2008-12-31 23:59")
-obj <- ProcessObservations(d, x.var = "dec_long_va", y.var = "dec_lat_va",
-                           projargs = projargs, siteno.var = "site_no",
-                           sitenm.var = "station_nm", net.var = "network",
-                           var1.var = "alt_lev_va", var2.var = "alt_va",
-                           acy.var = "lev_acy", dt.var = "lev_dt",
-                           dt.lim = dt.lim)
-
-all.equal(ESRP_WaterLevels_2008, obj)
 }
 
 \keyword{datasets}

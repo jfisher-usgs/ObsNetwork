@@ -14,7 +14,7 @@ OpenGraphicsDevice(file, type = "windows", w = 7, h = 7, p = 12,
 }
 
 \arguments{
-\item{file}{character; the name of a file for writing.}
+\item{file}{character; the name of a file for writing (optional).}
 \item{type}{character; the name of graphics driver, either
   "pdf", "postscript", "png", or "windows".}
 \item{w, h}{numeric; the (nominal) width and height of the canvas of the
@@ -25,7 +25,7 @@ OpenGraphicsDevice(file, type = "windows", w = 7, h = 7, p = 12,
   which will be recorded in the Portable Network Graphics (PNG) file,
   its default is \code{300} ppi to set the size of text and line widths.}
 \item{win.title}{character; a string to display as the title of the dialog box,
-  only used if \code{file} is missing.}
+  only used if \code{file} is not specified.}
 }
 
 \details{

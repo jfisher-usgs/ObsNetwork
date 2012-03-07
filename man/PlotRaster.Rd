@@ -17,7 +17,7 @@ PlotRaster(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
 \arguments{
 \item{grd}{SpatialGridDataFrame; raster data.}
 \item{zcol}{character; z-variable column name.}
-\item{pts}{SpatialPointsDataFrame; points to include in layout.}
+\item{pts}{SpatialPointsDataFrame; point coordinates to include in layout.}
 \item{ply}{SpatialPolygonsDataFrame; polygon to include in layout.}
 \item{rm.idxs}{integer; }
 \item{xlim}{numeric; vector of length 2 giving left and right limits for
@@ -36,7 +36,7 @@ PlotRaster(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
 }
 
 \value{
-Something
+Returns (or plots) the raster plot.
 }
 
 \author{J.C. Fisher}
