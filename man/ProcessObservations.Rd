@@ -73,8 +73,8 @@ d <- read.table(file = f, sep = ",", header = TRUE, fill = TRUE, flush = TRUE,
                 allowEscapes = TRUE, stringsAsFactors = FALSE)
 summary(d)
 
-projargs <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-dt.lim <- c("2008-01-01 00:00", "2008-12-31 23:59")
+projargs <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs" # WGS 84
+dt.lim <- c("2008-01-01 00:00", "2008-12-31 23:59") # 2008 calendar year
 obj <- ProcessObservations(d, x.var = "dec_long_va", y.var = "dec_lat_va",
                            projargs = projargs, siteno.var = "site_no",
                            sitenm.var = "station_nm", net.var = "network",
@@ -82,6 +82,14 @@ obj <- ProcessObservations(d, x.var = "dec_long_va", y.var = "dec_lat_va",
                            acy.var = "lev_acy", dt.var = "lev_dt",
                            dt.lim = dt.lim)
 summary(obj)
+
+# Convert geodetic datum from WGS 84 to NAD 83
+projargs <- "+proj=longlat +datum=NAD83 +no_defs +ellps=GRS80" # NAD 83
+obj <- rgdal::spTransform(obj, sp::CRS(projargs))
+
+# Compare with available data set
+data(ESRP_WaterLevels_2008)
+all.equal(ESRP_WaterLevels_2008, obj)
 }
 
 \keyword{manip}

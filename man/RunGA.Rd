@@ -20,8 +20,8 @@ RunGA(obs, network, grd, nsites, vg.model, formula, nmax = Inf,
   will be included in the optimization.}
 \item{grd}{SpatialGridDataFrame; raster data.}
 \item{nsites}{integer; the desired number of observation sites to remove.}
-\item{vg.model}{variogramModel; variogram model of dependent variable
-  (or its residuals), defined by a call to \code{\link{vgm}}.}
+\item{vg.model}{variogramModel; variogram model of dependent variable defined
+  by a call to \code{\link{vgm}}.}
 \item{formula}{formula; defines the dependent variable as a linear model of
   independent variables.}
 \item{nmax}{numeric; for local kriging, the number of nearest observations

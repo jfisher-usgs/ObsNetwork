@@ -153,8 +153,7 @@ OptimizeNetwork <- function() {
 
 
   # Cross-validation
-  cross.validation <- RunCrossValidation(formula, obs, grd, vg.model, nmax,
-                                         ply)
+  cross.validation <- RunCrossValidation(formula, obs, grd, vg.model, nmax)
   PlotBubble(cross.validation$cv, "residual", main="Residuals",
              ply=ply, xlim=xlim, ylim=ylim)
 

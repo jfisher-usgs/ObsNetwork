@@ -45,7 +45,7 @@ The National Water Information System
 using the \pkg{RNWIS} package.
 \href{http://www.ngs.noaa.gov/PC_PROD/VERTCON/}{VERTCON} (version 2.1) was
 used to convert National Geodetic Vertical Datum of 1929 (NGVD 29) heights
-to NAVD 88. Data attributes \sQuote{acy} and \sQuote{sd} were
+to NAVD 88. Data attributes \sQuote{var1}, \sQuote{acy}, and \sQuote{sd} were
 calculated using \code{\link{ProcessObservations}}.
 }
 
