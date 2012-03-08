@@ -14,9 +14,9 @@ OpenGraphicsDevice(file, type = "windows", w = 7, h = 7, p = 12,
 }
 
 \arguments{
-\item{file}{character; the name of a file for writing (optional).}
-\item{type}{character; the name of graphics driver, either
-  "pdf", "postscript", "png", or "windows".}
+\item{file}{character; the path of a file for writing (optional).}
+\item{type}{character; the name of a graphics driver, either
+  "postscript", "pdf", "png", or the default "windows".}
 \item{w, h}{numeric; the (nominal) width and height of the canvas of the
   plotting window in inches. Default is \code{7} and \code{7}, respectively.}
 \item{p}{numeric; the default point size of plotted text, its default is
@@ -40,8 +40,8 @@ A plot device is opened.
 \author{J.C. Fisher}
 
 \seealso{
-\code{\link{windows}}, \code{\link{pdf}}, \code{\link{png}},
-\code{\link{postscript}}
+\code{\link{postscript}}, \code{\link{pdf}}, \code{\link{png}},
+\code{\link{windows}}
 }
 
 \examples{
@@ -50,4 +50,4 @@ plot(1:10)
 dev.off()}
 }
 
-\keyword{misc}
+\keyword{device}

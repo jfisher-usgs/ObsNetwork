@@ -1,5 +1,5 @@
 PlotRaster <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
-                       pal=terrain.colors, contour=TRUE, label.pts=FALSE,
+                       pal=heat.colors, contour=FALSE, label.pts=FALSE,
                        main="", gr.type="windows", gr.file=NULL) {
 
   # Initialize layout

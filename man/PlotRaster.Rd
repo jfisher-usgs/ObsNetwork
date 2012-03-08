@@ -10,28 +10,32 @@ Something.
 
 \usage{
 PlotRaster(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
-           pal = terrain.colors, contour = TRUE, label.pts = FALSE,
+           pal = heat.colors, contour = FALSE, label.pts = FALSE,
            main = "", gr.type = "windows", gr.file = NULL)
 }
 
 \arguments{
 \item{grd}{SpatialGridDataFrame; raster data.}
-\item{zcol}{character; z-variable column name.}
+\item{zcol}{character; z-variable column name or number in attribute table
+  of \code{grd}.}
 \item{pts}{SpatialPointsDataFrame; point coordinates to include in layout.}
-\item{ply}{SpatialPolygonsDataFrame; polygon to include in layout.}
-\item{rm.idxs}{integer; }
+\item{ply}{SpatialPolygonsDataFrame; polygons to include in layout.}
+\item{rm.idxs}{integer; vector of row indexes in \code{pts}, point symbols at
+  these coordinates are drawn as crosses (\code{pch=4}) rather than the
+  default, an open circle symbol (\code{pch=21}).}
 \item{xlim}{numeric; vector of length 2 giving left and right limits for
   the x-axis.}
 \item{ylim}{numeric; vector of length 2 giving lower and upper limits for
   the y-axis.}
-\item{at}{something}
-\item{pal}{something}
-\item{contour}{logical; }
-\item{label.pts}{logical; }
-\item{main}{character; main title to be placed on top.}
+\item{at}{numeric; vector giving breakpoints along the range of z.}
+\item{pal}{function; a color palette to be used to assign colors in the plot.}
+\item{contour}{logical; add contour lines to plot, default is \code{FALSE}.}
+\item{label.pts}{character; column name in \code{pts}, specifies the labels to
+  place at point coordinates (optional).}
+\item{main}{character; main plot title to be placed on top.}
 \item{gr.type}{character; the name of a graphics driver, either
-  "pdf", "postscript", "png", or "windows".}
-\item{gr.file}{character; the name of a file for writing the graphics,
+  "postscript", "pdf", "png", or the default "windows".}
+\item{gr.file}{character; the path of a file for writing the graphics,
                only used if \code{gr.type} is not "windows".}
 }
 
@@ -42,7 +46,7 @@ Returns (or plots) the raster plot.
 \author{J.C. Fisher}
 
 \seealso{
-\code{\link{spplot}}
+\code{\link[sp]{spplot}}
 }
 
 \examples{
@@ -51,12 +55,22 @@ data(ESRP_WaterLevels_2008)
 data(ESRP_SpatialDomain)
 
 PlotRaster(ESRP_NED500m, "var2", ESRP_WaterLevels_2008, ESRP_SpatialDomain,
-           contour = FALSE, pal = heat.colors)
+           contour = TRUE)
 
-obs <- ESRP_WaterLevels_2008[ESRP_WaterLevels_2008$net == "State", ]
-PlotRaster(ESRP_NED500m, "var2", obs, ESRP_SpatialDomain,
-           xlim = c(-115.25, -111.5), ylim = c(42.25, 44.5),
-           contour = FALSE, label.pts = "mapid")
+pts <- ESRP_WaterLevels_2008[ESRP_WaterLevels_2008$net == "State", ]
+xlim <- c(-115.25, -111.5)
+ylim <- c(42.25, 44.5)
+PlotRaster(ESRP_NED500m, "var2", pts, ESRP_SpatialDomain, xlim = xlim,
+           ylim = ylim, pal = terrain.colors, label.pts = "mapid")
+
+# Plot hill shade from slope and aspect layers
+slp <- terrain(raster(ESRP_NED500m), opt = "slope")
+asp <- terrain(raster(ESRP_NED500m), opt = "aspect")
+grd <- as(hillShade(slp, asp, 40, 270), "SpatialGridDataFrame")
+zlim <- range(grd[[1]], na.rm = TRUE)
+at <- seq(zlim[1], zlim[2], length.out = 100)
+pal <- function(n) grey(0:100 / 100)[1:n]
+PlotRaster(grd, 1, xlim = xlim, ylim = ylim, at = at, pal = pal)
 }
 
 \keyword{hplot}

@@ -6,7 +6,7 @@
 
 \description{
 Bubble plot of a spatial points data frame object.
-This is a wrapper around \code{\link{bubble}} in the \pkg{sp} package.
+This is a wrapper around \code{\link[sp]{bubble}} in the \pkg{sp} package.
 }
 
 \usage{
@@ -15,17 +15,17 @@ PlotBubble(pts, zcol, ply, xlim = bbox(ply)[1, ], ylim = bbox(ply)[2, ],
 }
 
 \arguments{
-\item{pts}{SpatialPointsDataFrame; spatial data at observation sites.}
-\item{zcol}{character; z-variable column name.}
+\item{pts}{SpatialPointsDataFrame; data at observation sites.}
+\item{zcol}{character; z-variable column name in attribute table of \code{pts}.}
 \item{ply}{SpatialPolygonsDataFrame; polygon to include in layout.}
 \item{xlim}{numeric; vector of length 2 giving left and right limits for
   the x-axis.}
 \item{ylim}{numeric; vector of length 2 giving lower and upper limits for
   the y-axis.}
-\item{main}{character; main title to be placed on top.}
+\item{main}{character; main plot title to be placed on top.}
 \item{gr.type}{character; the name of a graphics driver, either
-  "pdf", "postscript", "png", or "windows".}
-\item{gr.file}{character; the name of a file for writing the graphics,
+  "postscript", "pdf", "png", or the default "windows".}
+\item{gr.file}{character; the path of a file for writing the graphics,
                only used if \code{gr.type} is not "windows".}
 }
 
@@ -37,7 +37,7 @@ five quantiles: minimum, 25th percentile, median, 75th percentile, and maximum.
 \author{J.C. Fisher}
 
 \seealso{
-\code{\link{bubble}}, \code{\link{OpenGraphicsDevice}}
+\code{\link[sp]{bubble}}, \code{\link{OpenGraphicsDevice}}
 }
 
 \examples{

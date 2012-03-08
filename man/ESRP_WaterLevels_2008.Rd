@@ -30,9 +30,9 @@ American Datum of 1983 (NAD 83), and the following attributes:
     \item{acy}{mean measurement accuracy of water-level (\code{var1}) in meters;}
     \item{sd}{standard deviation of water level in meters for
       entire period of record, duration varies for each well site;}
-    \item{net}{identifier for observation network, "State" is used to identify
+    \item{net}{identifier for observation network, "State" used to identify
       wells in the state-run 2008 synoptic sampling network (166 wells) and
-      "INL" identifies wells in the U.S. Geological Survey, Idaho National
+      "INL" wells in the U.S. Geological Survey, Idaho National
       Laboratory, 2008 water-level monitoring network (169 wells);}
     \item{sitenm}{local well identifier, for example
       "07N 31E 34BDD1 USGS 25".}

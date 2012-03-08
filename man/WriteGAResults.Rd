@@ -37,4 +37,4 @@ print("something")
 }
 }
 
-\keyword{misc}
+\keyword{IO}

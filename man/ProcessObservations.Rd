@@ -5,7 +5,7 @@
 \title{Process Observation Data}
 
 \description{
-Something.
+This function summarizes data records for each observation site in a table.
 }
 
 \usage{
@@ -15,43 +15,64 @@ ProcessObservations(d, x.var, y.var, projargs, siteno.var, sitenm.var,
 }
 
 \arguments{
-\item{d}{data.frame; something}
-\item{x.var, y.var}{something}
+\item{d}{data.frame; data at observation sites.}
+\item{x.var, y.var}{character; x- and y-variable column name in \code{d}.}
 \item{projargs}{character; projection arguments to be entered exactly as in the
   \href{http://trac.osgeo.org/proj/}{PROJ.4} documentation.}
-\item{siteno.var}{something}
-\item{sitenm.var}{something}
-\item{net.var}{something}
-\item{var1.var}{something}
-\item{var2.var}{something}
-\item{acy.var}{something}
-\item{dt.var}{something}
+\item{siteno.var}{character; site-number-variable column name in \code{d}.}
+\item{sitenm.var}{character; site-name-variable column name in \code{d}.}
+\item{net.var}{character; network-variable column name in \code{d}.}
+\item{var1.var}{character; dependent-variable column name in \code{d}.}
+\item{var2.var}{character; independent-variable column name in \code{d}.}
+\item{acy.var}{character; measurement-accuracy-variable column name in
+  \code{d}.}
+\item{dt.var}{character; date-time-variable column name in \code{d}.}
 \item{dt.lim}{character; vector of length 2 giving the starting and ending
-  date-time limits for ...}
-\item{dt.fmt}{character; a date-time format as used by \code{\link{strptime}}.}
+  date-time limits. Observations recorded during this time period are used
+  to calculate the median independent variable \code{var1}
+  and mean measurement accuracy \code{acy}.}
+\item{dt.fmt}{character; a date-time format as used by \code{\link{strptime}}.
+              Date-time values specified in \code{d[[dt.var]]} and
+              \code{dt.lim} must be provided in this format.}
 }
 
 \details{
-Something...
+The site-number variable is used to organize data records and must be unique
+for each observation site and coordinate location. The output table will
+contain one record for each site number.
 }
 
 \value{
-Something
+Returns a data frame with variables:
+\item{siteno}{numeric; unique identifier for observation site.}
+\item{mapid}{numeric; identifier (row number) used to locate observation site
+  on a figure, see \code{label.pts} in \code{\link{PlotRaster}}.}
+\item{var1}{numeric; the median value of the dependent variable
+  (such as the water-table elevation) recorded during the time period defined
+  by \code{dt.lim}.}
+\item{var2}{numeric; independent variable (such as the land-surface elevation).}
+\item{acy}{numeric; mean measurement accuracy during the time period defined
+  by \code{dt.lim}.}
+\item{sd}{numeric; standard deviation of the dependent variable over the entire
+  period of record.}
+\item{net}{character; identifier for observation network.}
+\item{sitenm}{character; local observation site identifier.}
 }
 
 \author{J.C. Fisher}
 
 \seealso{
-\code{\link{as.POSIXct}}, \code{\link{CRS}}, \code{\link{mean}},
-\code{\link{median}}, \code{\link{sd}}
+\code{\link{as.POSIXct}}, \code{\link[sp]{CRS}}, \code{\link{median}},
+\code{\link{mean}}, \code{\link{sd}}
 }
 
 \examples{
 f <- system.file("extdata/ESRP_WaterLevels.csv.gz", package = "ObsNetwork")
-d <- read.table(file = f, sep = ",", header = TRUE, fill = TRUE,
+d <- read.table(file = f, sep = ",", header = TRUE, fill = TRUE, flush = TRUE,
                 strip.white = TRUE, blank.lines.skip = TRUE,
-                allowEscapes = TRUE, flush = TRUE,
-                stringsAsFactors = FALSE)
+                allowEscapes = TRUE, stringsAsFactors = FALSE)
+summary(d)
+
 projargs <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
 dt.lim <- c("2008-01-01 00:00", "2008-12-31 23:59")
 obj <- ProcessObservations(d, x.var = "dec_long_va", y.var = "dec_lat_va",
@@ -63,4 +84,4 @@ obj <- ProcessObservations(d, x.var = "dec_long_va", y.var = "dec_lat_va",
 summary(obj)
 }
 
-\keyword{misc}
+\keyword{manip}

@@ -1,10 +1,9 @@
-RunCrossValidation <- function(formula, obs, grd, vg.model, nmax=Inf,
-                               ply=NULL) {
+RunCrossValidation <- function(formula, obs, vg.model, nmax=Inf,
+                               nfold=nrow(obs)) {
 
   # Cross validation
-  cv <- krige.cv(formula, obs, grd, model=vg.model, nmax=nmax)
-  coordinates(cv) <- ~x+y
-  proj4string(cv) <- grd@proj4string
+  cv <- gstat::krige.cv(formula, obs, model=vg.model, nmax=nmax, nfold=nfold)
+  proj4string(cv) <- obs@proj4string
 
   # Mean error, ideally 0
   me <- mean(cv$residual)
@@ -45,4 +44,3 @@ RunCrossValidation <- function(formula, obs, grd, vg.model, nmax=Inf,
   list(cv=cv, me=me, mspe=mspe, msne=msne, cor.obs.pred=cor.obs.pred,
        cor.pred.res=cor.pred.res)
 }
-

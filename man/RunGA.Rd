@@ -54,4 +54,4 @@ print("something")
 }
 }
 
-\keyword{misc}
+\keyword{optimize}

@@ -14,8 +14,8 @@ PlotBubble <- function(pts, zcol, ply, xlim=bbox(ply)[1, ], ylim=bbox(ply)[2, ],
 
   tcl <- 0.50 / (6 * par("csi"))
 
-  p <- bubble(pts, zcol, main=main, tcl=tcl, xlim=xlim, ylim=ylim,
-              scales=scales, sp.layout=sp.layout, key.space="bottom")
+  p <- sp::bubble(pts, zcol, main=main, tcl=tcl, xlim=xlim, ylim=ylim,
+                  scales=scales, sp.layout=sp.layout, key.space="bottom")
   print(p)
 
   if (gr.type != "windows")
