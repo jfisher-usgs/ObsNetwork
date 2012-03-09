@@ -5,18 +5,21 @@
 \title{Run Crossvalidation}
 
 \description{
-Cross validation function for kriging. This is a wrapper around
+Cross validation function for kriging; a wrapper around
 \code{\link[gstat]{krige.cv}} in the \pkg{gstat} package.
+This function may be used to make an informed decision as to which
+mapped surface provides a more accurate prediction based on
+cross-validation statistics.
 }
 
 \usage{
-RunCrossValidation(formula, obs, vg.model, nmax = Inf, nfold = nrow(obs))
+RunCrossValidation(formula, pts, vg.model, nmax = Inf, nfold = nrow(pts))
 }
 
 \arguments{
 \item{formula}{formula; defines the dependent variable as a linear model of
   independent variables.}
-\item{obs}{SpatialPointsDataFrame; data at observation sites.}
+\item{pts}{SpatialPointsDataFrame; data at observation sites.}
 \item{vg.model}{variogramModel; variogram model of dependent variable defined
   by a call to \code{\link{vgm}}.}
 \item{nmax}{numeric; for local kriging, the number of nearest observations
@@ -24,7 +27,7 @@ RunCrossValidation(formula, obs, vg.model, nmax = Inf, nfold = nrow(obs))
   is defined in terms of the space of the spatial locations. By default,
   all observations are used.}
 \item{nfold}{integer; if larger than 1, then apply n-fold cross validation;
-  if \code{nfold} equals \code{nrow(obs)} (the default), apply leave-one-out
+  if \code{nfold} equals \code{nrow(pts)} (the default), apply leave-one-out
   cross validation.}
 }
 
@@ -35,8 +38,8 @@ Returns a list with components:
   divided by kriging standard error), and fold.}
 \item{me}{numeric; mean error, ideally 0.}
 \item{mspe}{numeric; mean squared prediction error, ideally small.}
-\item{cor.obs.pred}{numeric; correlation of observed and predicted, ideally 1.}
-\item{cor.pred.res}{numeric; correlation of predicted and residual, ideally 0.}
+\item{cor.op}{numeric; correlation of observed and predicted, ideally 1.}
+\item{cor.pr}{numeric; correlation of predicted and residual, ideally 0.}
 }
 
 \author{J.C. Fisher}
@@ -47,39 +50,69 @@ Returns a list with components:
 
 \examples{
 data(ESRP_WaterLevels_2008)
-
-# Linear fitted variogram model
-vg <- variogram(var1 ~ 1, ESRP_WaterLevels_2008)
-vgm.lin <- fit.variogram(vg, vgm(model = "Lin", nugget = 0))
-print(plot(vg, vgm.lin))
-
-# Cross validation: ordinary kriging with linear model
-cv.ok <- RunCrossValidation(var1 ~ 1, ESRP_WaterLevels_2008, vg.model = vgm.lin,
-                            nmax = 20)
-cv.ok$me
-cv.ok$mspe
-cv.ok$cor.obs.pred
-cv.ok$cor.pred.res
-
-# Spherical variogram model
-vg <- variogram(var1 ~ var2, ESRP_WaterLevels_2008)
-vgm.sph <- vgm(psill = 4500, model = "Sph", range = 100, nugget = 0)
-print(plot(vg, vgm.sph))
-
-# Cross validation: universal kriging with spherical model
-cv.uk <- RunCrossValidation(var1 ~ var2, ESRP_WaterLevels_2008,
-                            vg.model = vgm.sph, nmax = 20)
-cv.uk$me
-cv.uk$mspe
-cv.uk$cor.obs.pred
-cv.uk$cor.pred.res
-
-# Plot residuals
 data(ESRP_SpatialDomain)
-PlotBubble(cv.uk$cv, "residual", main = "Residuals", ply = ESRP_SpatialDomain,
-           xlim = c(-115.25, -111.5), ylim = c(42.25, 44.5))
-PlotBubble(cv.uk$cv, "residual", main = "Residuals", ply = ESRP_SpatialDomain,
-           xlim = c(-113.3, -112.2), ylim = c(43.3, 44.0))
+data(ESRP_NED500m)
+
+# Ordinary Kriging (OK):
+vg <- variogram(var1 ~ 1, ESRP_WaterLevels_2008)
+vg.model <- fit.variogram(vg, vgm(model = "Lin", nugget = 0))
+print(plot(vg, vg.model, main = "Linear variogram model"))
+cv <- RunCrossValidation(var1 ~ 1, ESRP_WaterLevels_2008, vg.model = vg.model)
+cat(cv$me, cv$mspe, cv$cor.op, cv$cor.pr, "\n")
+
+# Check for presence of a detectable spatial trend or "drift" in the data
+lm.drift <- lm(var1 ~ x + y, data = ESRP_WaterLevels_2008)
+summary(lm.drift)
+
+# Universal Kriging (UK):
+vg <- variogram(var1 ~ x + y, ESRP_WaterLevels_2008)
+vg.model <- fit.variogram(vg, vgm(model = "Lin", nugget = 0))
+print(plot(vg, vg.model, main = "Residual variogram model"))
+cv <- RunCrossValidation(var1 ~ x + y, ESRP_WaterLevels_2008,
+                         vg.model = vg.model)
+cat(cv$me, cv$mspe, cv$cor.op, cv$cor.pr, "\n")
+
+# Check for correlation with auxiliary predictor
+lm.vars <- lm(var1 ~ var2, data = ESRP_WaterLevels_2008)
+summary(lm.vars)
+plot(var1 ~ var2, ESRP_WaterLevels_2008,
+     main = "Correlation plot and fitted regression model")
+abline(lm.vars)
+
+# Kriging with External Drift (KED):
+vg <- variogram(var1 ~ var2, ESRP_WaterLevels_2008)
+vg.model <- vgm(psill = 4500, model = "Sph", range = 100, nugget = 0)
+print(plot(vg, vg.model, main = "Residual variogram model"))
+cv <- RunCrossValidation(var1 ~ var2, ESRP_WaterLevels_2008,
+                         vg.model = vg.model)
+cat(cv$me, cv$mspe, cv$cor.op, cv$cor.pr, "\n")
+
+# Plot residuals from cross-validation
+PlotBubble(cv$cv, "residual", main = "Residuals", ply = ESRP_SpatialDomain,
+           xlim = c(-115.25, -111.50), ylim = c(42.25, 44.50))
+PlotBubble(cv$cv, "residual", main = "Residuals", ply = ESRP_SpatialDomain,
+           xlim = c(-113.30, -112.20), ylim = c(43.30, 44.00))
+
+# Run kriging with raster data
+newdata <- ESRP_NED500m
+newdata$var2 <- newdata$var2 * sp::overlay(newdata, ESRP_SpatialDomain) # crop
+kr <- krige(formula = var1 ~ var2, locations = ESRP_WaterLevels_2008,
+            newdata = newdata, model = vg.model)
+kr$var1.se <- sqrt(kr$var1.var) # standard error
+
+# Plot prediction and standard error maps
+PlotRaster(kr, "var1.pred", ESRP_WaterLevels_2008 , ESRP_SpatialDomain,
+           xlim = c(-115.25, -111.50), ylim = c(42.25, 44.50),
+           pal = colorRampPalette(c("red", "white", "blue")),
+           main = "Predictions")
+PlotRaster(kr, "var1.se", ESRP_WaterLevels_2008 , ESRP_SpatialDomain,
+           xlim = c(-115.25, -111.50), ylim = c(42.25, 44.50),
+           pal = terrain.colors, main = "Standard errors")
+
+# KED in a local neighbourhood (closest 50 points):
+cv <- RunCrossValidation(var1 ~ var2, ESRP_WaterLevels_2008,
+                         vg.model = vg.model, nmax = 50)
+cat(cv$me, cv$mspe, cv$cor.op, cv$cor.pr, "\n")
 }
 
 \keyword{misc}

@@ -1,23 +1,23 @@
-RunGA <- function(obs, network, grd, nsites, vg.model, formula, nmax=Inf,
+RunGA <- function(pts, network, grd, nsites, vg.model, formula, nmax=Inf,
                   niters=200, pop.size=200, obj.weights=c(1, 1, 1, 1)) {
 
   # Additional functions (subroutines)
 
   # Calculate objective functions
   CalcObj <- function(idxs) {
-    newdata <- rbind(grd.pts, obs[idxs, "var2"])
+    newdata <- rbind(grd.pts, pts[idxs, "var2"])
 
     # Perform kriging
-    kr <- krige(formula=formula, locations=obs[-idxs, ], newdata=newdata,
+    kr <- krige(formula=formula, locations=pts[-idxs, ], newdata=newdata,
                 model=vg.model, nmax=nmax, debug.level=0)
 
     pred <- kr[(ngrd.pts + 1):length(kr), ]$var1.pred
     se <- sqrt(abs(kr[1:ngrd.pts, ]$var1.var))
 
     obj.1 <- mean(se)
-    obj.2 <- sqrt(sum((pred - obs$var1[idxs])^2) / nsites)
-    obj.3 <- mean(obs$sd[idxs])
-    obj.4 <- mean(obs$acy[-idxs])
+    obj.2 <- sqrt(sum((pred - pts$var1[idxs])^2) / nsites)
+    obj.3 <- mean(pts$sd[idxs])
+    obj.4 <- mean(pts$acy[-idxs])
 
     obj.1 <- obj.1 * obj.weights[1]
     obj.2 <- obj.2 * obj.weights[2]
@@ -85,13 +85,13 @@ RunGA <- function(obs, network, grd, nsites, vg.model, formula, nmax=Inf,
 
   # Bring network sites to the front
   if (missing(network)) {
-    nsites.in.network <- length(obs)
+    nsites.in.network <- length(pts)
   } else {
-    is.net <- obs$net == network
+    is.net <- pts$net == network
     nsites.in.network <- sum(is.net)
     if (nsites.in.network == 0)
       stop("network not in observation table")
-    obs <- rbind(obs[is.net, ], obs[!is.net, ])
+    pts <- rbind(pts[is.net, ], pts[!is.net, ])
   }
 
   # Convert grid to data frame
@@ -136,7 +136,7 @@ RunGA <- function(obs, network, grd, nsites, vg.model, formula, nmax=Inf,
   })
   summary.rbga(rbga.ans, echo=TRUE)
   rm.idxs <- GetIdxsForBestSolution(rbga.ans)
-  rm.obs <- obs[rm.idxs, ]
+  rm.pts <- pts[rm.idxs, ]
 
   # Reset graphics parameters
   par(op)
@@ -158,6 +158,6 @@ RunGA <- function(obs, network, grd, nsites, vg.model, formula, nmax=Inf,
   cat(ans.rep)
 
   # Return optimized sites to remove
-  invisible(list(rm.obs=rm.obs, obj.values=obj.values, ans.rep=ans.rep,
+  invisible(list(rm.pts=rm.pts, obj.values=obj.values, ans.rep=ans.rep,
                  elapsed.time=elapsed.time, rbga.ans=rbga.ans))
 }

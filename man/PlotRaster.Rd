@@ -5,7 +5,7 @@
 \title{Create a Filled Contour Plot of Spatial Data}
 
 \description{
-Something.
+Raster plot for spatial data with attributes.
 }
 
 \usage{
@@ -58,8 +58,8 @@ PlotRaster(ESRP_NED500m, "var2", ESRP_WaterLevels_2008, ESRP_SpatialDomain,
            contour = TRUE)
 
 pts <- ESRP_WaterLevels_2008[ESRP_WaterLevels_2008$net == "State", ]
-xlim <- c(-115.25, -111.5)
-ylim <- c(42.25, 44.5)
+xlim <- c(-115.25, -111.50)
+ylim <- c(  42.25,   44.50)
 PlotRaster(ESRP_NED500m, "var2", pts, ESRP_SpatialDomain, xlim = xlim,
            ylim = ylim, pal = terrain.colors, label.pts = "mapid")
 

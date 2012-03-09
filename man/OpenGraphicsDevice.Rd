@@ -46,7 +46,7 @@ A plot device is opened.
 
 \examples{
 \donttest{OpenGraphicsDevice(type = "pdf")
-plot(1:10)
+plot(1:3)
 dev.off()}
 }
 

@@ -54,7 +54,7 @@ f <- system.file("extdata/ESRP_NED500m.tif", package = "ObsNetwork")
 obj <- rgdal::readGDAL(f, band = 1)
 names(obj) <- "var2"
 
-identical(ESRP_NED500m, obj)
+identical(obj, ESRP_NED500m)
 }
 
 \keyword{datasets}

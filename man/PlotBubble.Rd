@@ -5,7 +5,7 @@
 \title{Create a Bubble Plot of Spatial Data}
 
 \description{
-Bubble plot of a spatial points data frame object.
+Bubble plot for spatial data with attributes.
 This is a wrapper around \code{\link[sp]{bubble}} in the \pkg{sp} package.
 }
 
@@ -47,7 +47,7 @@ data(ESRP_SpatialDomain)
 PlotBubble(ESRP_WaterLevels_2008, "acy", ESRP_SpatialDomain,
            main = "Measurment error")
 PlotBubble(ESRP_WaterLevels_2008, "sd", ESRP_SpatialDomain,
-           xlim = c(-113.3, -112.2), ylim = c(43.3, 44.0),
+           xlim = c(-113.30, -112.20), ylim = c(43.30, 44.00),
            main = "Standard deviation")
 }
 

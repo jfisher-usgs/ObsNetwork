@@ -38,7 +38,7 @@ summary(ESRP_SpatialDomain)
 dsn <- system.file("extdata/ESRP_SpatialDomain", package = "ObsNetwork")
 obj <- readOGR(dsn = dsn, layer = basename(dsn))
 
-all.equal(ESRP_SpatialDomain, obj)
+all.equal(obj, ESRP_SpatialDomain)
 
 # Polygons slots
 p <- sapply(slot(obj, 'polygons'), function(i) slot(i, 'Polygons'))

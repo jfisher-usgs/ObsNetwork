@@ -16,7 +16,8 @@ ProcessObservations(d, x.var, y.var, projargs, siteno.var, sitenm.var,
 
 \arguments{
 \item{d}{data.frame; data at observation sites.}
-\item{x.var, y.var}{character; x- and y-variable column name in \code{d}.}
+\item{x.var, y.var}{character; x- and y-variable column name in \code{d},
+  respectively.}
 \item{projargs}{character; projection arguments to be entered exactly as in the
   \href{http://trac.osgeo.org/proj/}{PROJ.4} documentation.}
 \item{siteno.var}{character; site-number-variable column name in \code{d}.}
@@ -32,8 +33,8 @@ ProcessObservations(d, x.var, y.var, projargs, siteno.var, sitenm.var,
   to calculate the median independent variable \code{var1}
   and mean measurement accuracy \code{acy}.}
 \item{dt.fmt}{character; a date-time format as used by \code{\link{strptime}}.
-              Date-time values specified in \code{d[[dt.var]]} and
-              \code{dt.lim} must be provided in this format.}
+              Date-time specified in the \code{dt.var} field and
+              \code{dt.lim} values must be provided in this format.}
 }
 
 \details{
@@ -45,8 +46,8 @@ contain one record for each site number.
 \value{
 Returns a data frame with variables:
 \item{siteno}{numeric; unique identifier for observation site.}
-\item{mapid}{numeric; identifier (row number) used to locate observation site
-  on a figure, see \code{label.pts} in \code{\link{PlotRaster}}.}
+\item{mapid}{numeric; identifier (row index number) used to locate observation
+  site on a figure, see \code{label.pts} in \code{\link{PlotRaster}}.}
 \item{var1}{numeric; the median value of the dependent variable
   (such as the water-table elevation) recorded during the time period defined
   by \code{dt.lim}.}
@@ -89,7 +90,7 @@ obj <- rgdal::spTransform(obj, sp::CRS(projargs))
 
 # Compare with available data set
 data(ESRP_WaterLevels_2008)
-all.equal(ESRP_WaterLevels_2008, obj)
+all.equal(obj, ESRP_WaterLevels_2008)
 }
 
 \keyword{manip}

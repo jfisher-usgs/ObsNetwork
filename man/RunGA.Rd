@@ -10,16 +10,17 @@ they provide little or no beneficial added information.
 }
 
 \usage{
-RunGA(obs, network, grd, nsites, vg.model, formula, nmax = Inf,
+RunGA(pts, network, grd, nsites, vg.model, formula, nmax = Inf,
       niters = 200, pop.size = 200, obj.weights = c(1, 1, 1, 1))
 }
 
 \arguments{
-\item{obs}{SpatialPointsDataFrame; spatial data at observation sites.}
-\item{network}{character; only observation sites included in the network
+\item{pts}{SpatialPointsDataFrame; data at observation sites.}
+\item{network}{character; only observation sites in this network
   will be included in the optimization.}
 \item{grd}{SpatialGridDataFrame; raster data.}
-\item{nsites}{integer; the desired number of observation sites to remove.}
+\item{nsites}{integer; the number of observation sites to remove from the
+  network.}
 \item{vg.model}{variogramModel; variogram model of dependent variable defined
   by a call to \code{\link{vgm}}.}
 \item{formula}{formula; defines the dependent variable as a linear model of
@@ -49,9 +50,15 @@ Something
 }
 
 \examples{
-\donttest{
-print("something")
-}
+data(ESRP_NED500m)
+data(ESRP_WaterLevels_2008)
+data(ESRP_SpatialDomain)
+
+network <- "State"
+xlim <- c(-115.25, -111.50)
+ylim <- c(  42.25,   44.50)
+fo <- var1 ~ var2
+vg.model <- vgm(psill=4500, model = "Sph", range = 100, nugget = 0)
 }
 
 \keyword{optimize}

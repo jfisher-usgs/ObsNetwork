@@ -1,9 +1,9 @@
-RunCrossValidation <- function(formula, obs, vg.model, nmax=Inf,
-                               nfold=nrow(obs)) {
+RunCrossValidation <- function(formula, pts, vg.model, nmax=Inf,
+                               nfold=nrow(pts)) {
 
   # Cross validation
-  cv <- gstat::krige.cv(formula, obs, model=vg.model, nmax=nmax, nfold=nfold)
-  proj4string(cv) <- obs@proj4string
+  cv <- gstat::krige.cv(formula, pts, model=vg.model, nmax=nmax, nfold=nfold)
+  proj4string(cv) <- pts@proj4string
 
   # Mean error
   me <- mean(cv$residual)
@@ -12,9 +12,9 @@ RunCrossValidation <- function(formula, obs, vg.model, nmax=Inf,
   # Mean square normalized error
   msne <- mean(cv$zscore^2)
   # Correlation observed and predicted
-  cor.obs.pred <- cor(cv$observed, cv$observed - cv$residual)
+  cor.op <- cor(cv$observed, cv$observed - cv$residual)
   # Correlation predicted and residual
-  cor.pred.res <- cor(cv$observed - cv$residual, cv$residual)
+  cor.pr <- cor(cv$observed - cv$residual, cv$residual)
 
   # Plot observed versus predicted
   x <- cv$observed
@@ -40,6 +40,5 @@ RunCrossValidation <- function(formula, obs, vg.model, nmax=Inf,
   txt <- paste("Mean error", format(me), sep=" = ")
   mtext(txt, side=3, line=0, adj=1, cex=0.75)
 
-  list(cv=cv, me=me, mspe=mspe, msne=msne, cor.obs.pred=cor.obs.pred,
-       cor.pred.res=cor.pred.res)
+  list(cv=cv, me=me, mspe=mspe, msne=msne, cor.op=cor.op, cor.pr=cor.pr)
 }
