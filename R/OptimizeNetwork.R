@@ -1,6 +1,6 @@
-RunGA <- function(pts, grd, ply, network, nsites, vg.model, formula,
-                  nmax=Inf, grd.fact=1, niters=200,  pop.size=200,
-                  obj.weights=c(1, 1, 1, 1)) {
+OptimizeNetwork <- function(pts, grd, ply, network, nsites, vg.model, formula,
+                            nmax=Inf, grd.fact=1, niters=200,  pop.size=200,
+                            obj.weights=c(1, 1, 1, 1)) {
 
   # Additional functions (subroutines)
 

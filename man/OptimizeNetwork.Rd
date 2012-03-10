@@ -1,6 +1,6 @@
-\name{RunGA}
+\name{OptimizeNetwork}
 
-\alias{RunGA}
+\alias{OptimizeNetwork}
 
 \title{Run Genetic Algorithm}
 
@@ -10,9 +10,9 @@ they provide little or no beneficial added information.
 }
 
 \usage{
-RunGA(pts, grd, ply, network, nsites, vg.model, formula,
-      nmax = Inf, grd.fact = 1, niters = 200, pop.size = 200,
-      obj.weights = c(1, 1, 1, 1))
+OptimizeNetwork(pts, grd, ply, network, nsites, vg.model, formula,
+                nmax = Inf, grd.fact = 1, niters = 200, pop.size = 200,
+                obj.weights = c(1, 1, 1, 1))
 }
 
 \arguments{
@@ -63,10 +63,10 @@ vg.model <- vgm(psill=4500, model = "Sph", range = 100, nugget = 0)
 formula <- var1 ~ var2
 
 # Optimize state network
-ga <- RunGA(ESRP_WaterLevels_2008, ESRP_NED500m, ESRP_SpatialDomain,
-            network = "State", nsites = 20, vg.model = vg.model,
-            formula = formula, nmax = 50, grd.fact = 10, niters = 10,
-            pop.size = 300, obj.weights = c(10, 1, 1, 1))
+ga <- OptimizeNetwork(ESRP_WaterLevels_2008, ESRP_NED500m, ESRP_SpatialDomain,
+                      network = "State", nsites = 20, vg.model = vg.model,
+                      formula = formula, nmax = 50, grd.fact = 10, niters = 10,
+                      pop.size = 300, obj.weights = c(10, 1, 1, 1))
 
 # Crop raster data using polygons
 grd <- ESRP_NED500m
