@@ -56,33 +56,33 @@ data(ESRP_NED500m)
 # Ordinary Kriging (OK):
 vg <- variogram(var1 ~ 1, ESRP_WaterLevels_2008)
 vg.model <- fit.variogram(vg, vgm(model = "Lin", nugget = 0))
-print(plot(vg, vg.model, main = "Linear variogram model"))
+print(plot(vg, vg.model, main = "Linear variogram model (var1 ~ 1)"))
 cv <- RunCrossValidation(var1 ~ 1, ESRP_WaterLevels_2008, vg.model = vg.model)
 cat(cv$me, cv$mspe, cv$cor.op, cv$cor.pr, "\n")
 
 # Check for presence of a detectable spatial trend or "drift" in the data
-lm.drift <- lm(var1 ~ x + y, data = ESRP_WaterLevels_2008)
-summary(lm.drift)
+lm.trend <- lm(var1 ~ x + y, data = ESRP_WaterLevels_2008)
+summary(lm.trend)
 
 # Universal Kriging (UK):
 vg <- variogram(var1 ~ x + y, ESRP_WaterLevels_2008)
 vg.model <- fit.variogram(vg, vgm(model = "Lin", nugget = 0))
-print(plot(vg, vg.model, main = "Residual variogram model"))
+print(plot(vg, vg.model, main = "Residual variogram model (var1 ~ x + y)"))
 cv <- RunCrossValidation(var1 ~ x + y, ESRP_WaterLevels_2008,
                          vg.model = vg.model)
 cat(cv$me, cv$mspe, cv$cor.op, cv$cor.pr, "\n")
 
 # Check for correlation with auxiliary predictor
-lm.vars <- lm(var1 ~ var2, data = ESRP_WaterLevels_2008)
-summary(lm.vars)
+lm.trend <- lm(var1 ~ var2, data = ESRP_WaterLevels_2008)
+summary(lm.trend)
 plot(var1 ~ var2, ESRP_WaterLevels_2008,
      main = "Correlation plot and fitted regression model")
-abline(lm.vars)
+abline(lm.trend)
 
 # Kriging with External Drift (KED):
 vg <- variogram(var1 ~ var2, ESRP_WaterLevels_2008)
 vg.model <- vgm(psill = 4500, model = "Sph", range = 100, nugget = 0)
-print(plot(vg, vg.model, main = "Residual variogram model"))
+print(plot(vg, vg.model, main = "Residual variogram model (var1 ~ var2)"))
 cv <- RunCrossValidation(var1 ~ var2, ESRP_WaterLevels_2008,
                          vg.model = vg.model)
 cat(cv$me, cv$mspe, cv$cor.op, cv$cor.pr, "\n")
@@ -109,7 +109,7 @@ PlotRaster(kr, "var1.se", ESRP_WaterLevels_2008 , ESRP_SpatialDomain,
            xlim = c(-115.25, -111.50), ylim = c(42.25, 44.50),
            pal = terrain.colors, main = "Standard errors")
 
-# KED in a local neighbourhood (closest 50 points):
+# KED in a local neighbourhood:
 cv <- RunCrossValidation(var1 ~ var2, ESRP_WaterLevels_2008,
                          vg.model = vg.model, nmax = 50)
 cat(cv$me, cv$mspe, cv$cor.op, cv$cor.pr, "\n")

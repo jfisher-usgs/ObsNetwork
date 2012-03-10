@@ -1,7 +1,6 @@
 importClassesFrom(sp)
 
 export(OpenGraphicsDevice,
-       OptimizeNetwork,
        PlotBubble,
        PlotRaster,
        ProcessObservations,

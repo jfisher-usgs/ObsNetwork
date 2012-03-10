@@ -1,11 +1,10 @@
 Package: ObsNetwork
 Version: 0.0-2
-Date: 2012-03-04
+Date: 2012-03-09
 Title: Optimisation of Observation Networks
 Author: Jason C. Fisher
 Maintainer: Jason C. Fisher <jfisher@usgs.gov>
 Depends: R (>= 2.14.0), sp, rgdal, gstat, raster, genalg, tcltk
-Suggests: colorspace
 Description: This package evaluates and optimizes observation networks
   using the kriging methodology.
 License: file LICENSE
