@@ -10,15 +10,18 @@ they provide little or no beneficial added information.
 }
 
 \usage{
-RunGA(pts, network, grd, nsites, vg.model, formula, nmax = Inf,
-      niters = 200, pop.size = 200, obj.weights = c(1, 1, 1, 1))
+RunGA(pts, grd, ply, network, nsites, vg.model, formula,
+      nmax = Inf, grd.fact = 1, niters = 200, pop.size = 200,
+      obj.weights = c(1, 1, 1, 1))
 }
 
 \arguments{
 \item{pts}{SpatialPointsDataFrame; data at observation sites.}
-\item{network}{character; only observation sites in this network
-  will be included in the optimization.}
 \item{grd}{SpatialGridDataFrame; raster data.}
+\item{ply}{SpatialPolygonsDataFrame; a polygon used to crop the raster data in
+  \code{grd} (optional).}
+\item{network}{character; only observation sites in this network
+  will be included in the optimization (optional).}
 \item{nsites}{integer; the number of observation sites to remove from the
   network.}
 \item{vg.model}{variogramModel; variogram model of dependent variable defined
@@ -29,6 +32,8 @@ RunGA(pts, network, grd, nsites, vg.model, formula, nmax = Inf,
   that should be used for a kriging prediction or simulation, where nearest
   is defined in terms of the space of the spatial locations. By default,
   all observations are used.}
+\item{grd.fact}{integer; aggregation factor expressed as number of cells in
+  each direction (horizontally and vertically).}
 \item{niters}{integer; the number of iterations used in the genetic algorithm.}
 \item{pop.size}{integer; the population size used in the genetic algorithm.}
 \item{obj.weights}{numeric; vector of length 4 giving the weights for each
@@ -49,16 +54,38 @@ Something
 \code{\link{krige}}, \code{\link{rbga}}
 }
 
-\examples{
-data(ESRP_NED500m)
+\examples{\donttest{data(ESRP_NED500m)
 data(ESRP_WaterLevels_2008)
 data(ESRP_SpatialDomain)
 
-network <- "State"
-xlim <- c(-115.25, -111.50)
-ylim <- c(  42.25,   44.50)
-fo <- var1 ~ var2
+# Set variogram
 vg.model <- vgm(psill=4500, model = "Sph", range = 100, nugget = 0)
-}
+formula <- var1 ~ var2
+
+# Optimize state network
+ga <- RunGA(ESRP_WaterLevels_2008, ESRP_NED500m, ESRP_SpatialDomain,
+            network = "State", nsites = 20, vg.model = vg.model,
+            formula = formula, nmax = 50, grd.fact = 10, niters = 10,
+            pop.size = 300, obj.weights = c(10, 1, 1, 1))
+
+# Crop raster data using polygons
+grd <- ESRP_NED500m
+grd$var2 <- grd$var2 * overlay(grd, ESRP_SpatialDomain)
+
+# Run kriging
+kr <- krige(formula = formula, newdata = grd, model = vg.model,
+            locations = ESRP_WaterLevels_2008[!ga$is.rm.idx, ])
+kr$var1.se <- sqrt(kr$var1.var)
+
+# Plot prediction and standard error maps
+PlotRaster(kr, "var1.pred", ESRP_WaterLevels_2008 , ESRP_SpatialDomain,
+           xlim = c(-115.25, -111.50), ylim = c(42.25, 44.50),
+           pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
+           main = "Predictions", rm.idxs = which(ga$is.rm.idx))
+PlotRaster(kr, "var1.se", ESRP_WaterLevels_2008 , ESRP_SpatialDomain,
+           xlim = c(-115.25, -111.50), ylim = c(42.25, 44.50),
+           pal = terrain.colors, main = "Standard errors",
+           rm.idxs = which(ga$is.rm.idx))
+}}
 
 \keyword{optimize}

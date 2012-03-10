@@ -1,5 +1,6 @@
-RunGA <- function(pts, network, grd, nsites, vg.model, formula, nmax=Inf,
-                  niters=200, pop.size=200, obj.weights=c(1, 1, 1, 1)) {
+RunGA <- function(pts, grd, ply, network, nsites, vg.model, formula,
+                  nmax=Inf, grd.fact=1, niters=200,  pop.size=200,
+                  obj.weights=c(1, 1, 1, 1)) {
 
   # Additional functions (subroutines)
 
@@ -83,7 +84,10 @@ RunGA <- function(pts, network, grd, nsites, vg.model, formula, nmax=Inf,
 
   # Main program
 
-  # Bring network sites to the front
+  # Save original vector of site numbers
+  orig.siteno <- pts$siteno
+
+  # Bring network sites to initial rows of data table
   if (missing(network)) {
     nsites.in.network <- length(pts)
   } else {
@@ -93,6 +97,15 @@ RunGA <- function(pts, network, grd, nsites, vg.model, formula, nmax=Inf,
       stop("network not in observation table")
     pts <- rbind(pts[is.net, ], pts[!is.net, ])
   }
+
+  # Crop grid to polygon
+  if (!missing(ply))
+    grd$var2 <- grd$var2 * overlay(grd, ply)
+
+  # Reduce grid resolution
+   if (grd.fact > 1)
+    grd <- as(aggregate(raster(grd), fact=grd.fact, fun=mean, expand=TRUE,
+                        na.rm=TRUE), 'SpatialGridDataFrame')
 
   # Convert grid to data frame
   grd.pts <- as(grd, "SpatialPointsDataFrame")
@@ -135,8 +148,8 @@ RunGA <- function(pts, network, grd, nsites, vg.model, formula, nmax=Inf,
                      monitorFunc=MonitorFun, evalFunc=EvalFun)
   })
   summary.rbga(rbga.ans, echo=TRUE)
-  rm.idxs <- GetIdxsForBestSolution(rbga.ans)
-  rm.pts <- pts[rm.idxs, ]
+  rm.pts <- pts[GetIdxsForBestSolution(rbga.ans), ]
+  is.rm.idx <- orig.siteno %in% rm.pts$siteno
 
   # Reset graphics parameters
   par(op)
@@ -158,6 +171,6 @@ RunGA <- function(pts, network, grd, nsites, vg.model, formula, nmax=Inf,
   cat(ans.rep)
 
   # Return optimized sites to remove
-  invisible(list(rm.pts=rm.pts, obj.values=obj.values, ans.rep=ans.rep,
-                 elapsed.time=elapsed.time, rbga.ans=rbga.ans))
+  invisible(list(rm.pts=rm.pts, is.rm.idx=is.rm.idx, obj.values=obj.values,
+                 ans.rep=ans.rep, elapsed.time=elapsed.time, rbga.ans=rbga.ans))
 }

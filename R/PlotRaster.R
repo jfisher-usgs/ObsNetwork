@@ -34,9 +34,8 @@ PlotRaster <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
   }
 
   # Define polygon
-  if (!missing(ply)) {
+  if (!missing(ply))
     lo[[length(lo) + 1L]] <- list("sp.polygons", ply, col="black", first=FALSE)
-  }
 
   # Determine axis limits
   bbox.grd <- bbox(grd)
