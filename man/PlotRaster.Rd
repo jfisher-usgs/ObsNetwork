@@ -71,6 +71,21 @@ zlim <- range(grd[[1]], na.rm = TRUE)
 at <- seq(zlim[1], zlim[2], length.out = 100)
 pal <- function(n) grey(0:100 / 100)[1:n]
 PlotRaster(grd, 1, xlim = xlim, ylim = ylim, at = at, pal = pal)
+
+# Plot prediction and standard error maps from kriging
+newdata <- ESRP_NED500m
+newdata$var2 <- newdata$var2 * sp::overlay(newdata, ESRP_SpatialDomain) # crop
+vg.model <- vgm(psill = 4500, model = "Sph", range = 100, nugget = 0)
+kr <- krige(formula = var1 ~ var2, locations = ESRP_WaterLevels_2008,
+            newdata = newdata, model = vg.model)
+kr$var1.se <- sqrt(kr$var1.var) # standard error
+PlotRaster(kr, "var1.pred", ESRP_WaterLevels_2008 , ESRP_SpatialDomain,
+           xlim = c(-115.25, -111.50), ylim = c(42.25, 44.50),
+           pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
+           main = "Predictions")
+PlotRaster(kr, "var1.se", ESRP_WaterLevels_2008 , ESRP_SpatialDomain,
+           xlim = c(-115.25, -111.50), ylim = c(42.25, 44.50),
+           pal = terrain.colors, main = "Standard errors")
 }
 
 \keyword{hplot}

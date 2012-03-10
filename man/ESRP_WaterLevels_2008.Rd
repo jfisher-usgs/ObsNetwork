@@ -42,7 +42,7 @@ American Datum of 1983 (NAD 83), and the following attributes:
 \source{
 The National Water Information System
 (\href{http://waterdata.usgs.gov/nwis}{NWIS}); accessed December 2011
-using the \pkg{RNWIS} package.
+using the \href{https://github.com/jfisher-usgs/RNWIS}{RNWIS} package.
 \href{http://www.ngs.noaa.gov/PC_PROD/VERTCON/}{VERTCON} (version 2.1) was
 used to convert National Geodetic Vertical Datum of 1929 (NGVD 29) heights
 to NAVD 88. Data attributes \sQuote{var1}, \sQuote{acy}, and \sQuote{sd} were

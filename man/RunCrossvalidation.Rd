@@ -51,7 +51,6 @@ Returns a list with components:
 \examples{
 data(ESRP_WaterLevels_2008)
 data(ESRP_SpatialDomain)
-data(ESRP_NED500m)
 
 # Ordinary Kriging (OK):
 vg <- variogram(var1 ~ 1, ESRP_WaterLevels_2008)
@@ -60,7 +59,7 @@ print(plot(vg, vg.model, main = "Linear variogram model (var1 ~ 1)"))
 cv <- RunCrossValidation(var1 ~ 1, ESRP_WaterLevels_2008, vg.model = vg.model)
 cat(cv$me, cv$mspe, cv$cor.op, cv$cor.pr, "\n")
 
-# Check for presence of a detectable spatial trend or "drift" in the data
+# Check for the presence of a detectable spatial trend or "drift" in the data
 lm.trend <- lm(var1 ~ x + y, data = ESRP_WaterLevels_2008)
 summary(lm.trend)
 
@@ -72,7 +71,7 @@ cv <- RunCrossValidation(var1 ~ x + y, ESRP_WaterLevels_2008,
                          vg.model = vg.model)
 cat(cv$me, cv$mspe, cv$cor.op, cv$cor.pr, "\n")
 
-# Check for correlation with auxiliary predictor
+# Check for the presence of a correlation with an auxiliary predictor
 lm.trend <- lm(var1 ~ var2, data = ESRP_WaterLevels_2008)
 summary(lm.trend)
 plot(var1 ~ var2, ESRP_WaterLevels_2008,
@@ -87,32 +86,16 @@ cv <- RunCrossValidation(var1 ~ var2, ESRP_WaterLevels_2008,
                          vg.model = vg.model)
 cat(cv$me, cv$mspe, cv$cor.op, cv$cor.pr, "\n")
 
+# KED in a local neighbourhood:
+cv <- RunCrossValidation(var1 ~ var2, ESRP_WaterLevels_2008,
+                         vg.model = vg.model, nmax = 50)
+cat(cv$me, cv$mspe, cv$cor.op, cv$cor.pr, "\n")
+
 # Plot residuals from cross-validation
 PlotBubble(cv$cv, "residual", main = "Residuals", ply = ESRP_SpatialDomain,
            xlim = c(-115.25, -111.50), ylim = c(42.25, 44.50))
 PlotBubble(cv$cv, "residual", main = "Residuals", ply = ESRP_SpatialDomain,
            xlim = c(-113.30, -112.20), ylim = c(43.30, 44.00))
-
-# Run kriging with raster data
-newdata <- ESRP_NED500m
-newdata$var2 <- newdata$var2 * sp::overlay(newdata, ESRP_SpatialDomain) # crop
-kr <- krige(formula = var1 ~ var2, locations = ESRP_WaterLevels_2008,
-            newdata = newdata, model = vg.model)
-kr$var1.se <- sqrt(kr$var1.var) # standard error
-
-# Plot prediction and standard error maps
-PlotRaster(kr, "var1.pred", ESRP_WaterLevels_2008 , ESRP_SpatialDomain,
-           xlim = c(-115.25, -111.50), ylim = c(42.25, 44.50),
-           pal = colorRampPalette(c("red", "white", "blue")),
-           main = "Predictions")
-PlotRaster(kr, "var1.se", ESRP_WaterLevels_2008 , ESRP_SpatialDomain,
-           xlim = c(-115.25, -111.50), ylim = c(42.25, 44.50),
-           pal = terrain.colors, main = "Standard errors")
-
-# KED in a local neighbourhood:
-cv <- RunCrossValidation(var1 ~ var2, ESRP_WaterLevels_2008,
-                         vg.model = vg.model, nmax = 50)
-cat(cv$me, cv$mspe, cv$cor.op, cv$cor.pr, "\n")
 }
 
 \keyword{misc}
