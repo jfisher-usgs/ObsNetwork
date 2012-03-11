@@ -18,11 +18,13 @@ OptimizeNetwork(pts, grd, ply, network, nsites, vg.model, formula,
 \arguments{
 \item{pts}{SpatialPointsDataFrame; data at observation sites.}
 \item{grd}{SpatialGridDataFrame; raster data.}
-\item{ply}{SpatialPolygonsDataFrame; a polygon used to crop the raster data in
-  \code{grd} (optional).}
-\item{network}{character; only observation sites in this network
-  will be included in the optimization (optional).}
-\item{nsites}{integer; the number of observation sites to remove from the
+\item{ply}{SpatialPolygonsDataFrame; a polygon used to crop raster data
+  (optional).}
+\item{network}{character; the name of an observation network. Only sites
+  included in this network will be recognized as deciscion variables in the
+  optimization problem; this argument is optional and in its absence all
+  sites will be recognized as decision varibles.}
+\item{nsites}{integer; the number of sites to remove from the observation
   network.}
 \item{vg.model}{variogramModel; variogram model of dependent variable defined
   by a call to \code{\link{vgm}}.}
@@ -37,15 +39,21 @@ OptimizeNetwork(pts, grd, ply, network, nsites, vg.model, formula,
 \item{niters}{integer; the number of iterations used in the genetic algorithm.}
 \item{pop.size}{integer; the population size used in the genetic algorithm.}
 \item{obj.weights}{numeric; vector of length 4 giving the weights for each
-  objective function in the optimzation.}
+  objective function in the optimzation, see \sQuote{details} below.}
 }
 
 \details{
-Something...
+Something.
 }
 
 \value{
-Something
+Returns a list with components:
+\item{rm.pts}{numeric; vector of site numbers to remove from the network.}
+\item{is.rm.idx}{logical; vector of something.}
+\item{obj.values}{numeric; vector of length 4 giving something.}
+\item{ans.rep}{integer; something.}
+\item{elapsed.time}{numeric; something.}
+\item{rbga.ans}{rbga; something.}
 }
 
 \author{J.C. Fisher}
@@ -67,6 +75,7 @@ ga <- OptimizeNetwork(ESRP_WaterLevels_2008, ESRP_NED500m, ESRP_SpatialDomain,
                       network = "State", nsites = 20, vg.model = vg.model,
                       formula = formula, nmax = 50, grd.fact = 10, niters = 10,
                       pop.size = 300, obj.weights = c(10, 1, 1, 1))
+cat(summary(ga$rbga.ans))
 
 # Run kriging
 newdata <- ESRP_NED500m
@@ -91,6 +100,7 @@ ga <- OptimizeNetwork(ESRP_WaterLevels_2008, ESRP_NED500m, ESRP_SpatialDomain,
                       network = "INL", nsites = 20, vg.model = vg.model,
                       formula = formula, nmax = 50, grd.fact = 5, niters = 10,
                       pop.size = 300, obj.weights = c(10, 1, 1, 1))
+cat(summary(ga$rbga.ans))
 
 # Run kriging
 locations <- ESRP_WaterLevels_2008[!ga$is.rm.idx, ]
