@@ -2,7 +2,7 @@
 
 \alias{OptimizeNetwork}
 
-\title{Run Genetic Algorithm}
+\title{Optimize Observatin Network}
 
 \description{
 Determine sites to exclude from an existing observation network because
@@ -58,23 +58,22 @@ Something
 data(ESRP_WaterLevels_2008)
 data(ESRP_SpatialDomain)
 
-# Set variogram
+# Variogram
 vg.model <- vgm(psill=4500, model = "Sph", range = 100, nugget = 0)
 formula <- var1 ~ var2
 
-# Optimize state network
+# Optimize "State" network:
 ga <- OptimizeNetwork(ESRP_WaterLevels_2008, ESRP_NED500m, ESRP_SpatialDomain,
                       network = "State", nsites = 20, vg.model = vg.model,
                       formula = formula, nmax = 50, grd.fact = 10, niters = 10,
                       pop.size = 300, obj.weights = c(10, 1, 1, 1))
 
-# Crop raster data using polygons
-grd <- ESRP_NED500m
-grd$var2 <- grd$var2 * overlay(grd, ESRP_SpatialDomain)
-
 # Run kriging
-kr <- krige(formula = formula, newdata = grd, model = vg.model,
-            locations = ESRP_WaterLevels_2008[!ga$is.rm.idx, ])
+newdata <- ESRP_NED500m
+newdata$var2 <- newdata$var2 * overlay(newdata, ESRP_SpatialDomain) # crop
+locations <- ESRP_WaterLevels_2008[!ga$is.rm.idx, ]
+kr <- krige(formula = formula, newdata = newdata, model = vg.model,
+            locations = locations)
 kr$var1.se <- sqrt(kr$var1.var)
 
 # Plot prediction and standard error maps
@@ -84,6 +83,28 @@ PlotRaster(kr, "var1.pred", ESRP_WaterLevels_2008 , ESRP_SpatialDomain,
            main = "Predictions", rm.idxs = which(ga$is.rm.idx))
 PlotRaster(kr, "var1.se", ESRP_WaterLevels_2008 , ESRP_SpatialDomain,
            xlim = c(-115.25, -111.50), ylim = c(42.25, 44.50),
+           pal = terrain.colors, main = "Standard errors",
+           rm.idxs = which(ga$is.rm.idx))
+
+# Optimize "INL" network:
+ga <- OptimizeNetwork(ESRP_WaterLevels_2008, ESRP_NED500m, ESRP_SpatialDomain,
+                      network = "INL", nsites = 20, vg.model = vg.model,
+                      formula = formula, nmax = 50, grd.fact = 5, niters = 10,
+                      pop.size = 300, obj.weights = c(10, 1, 1, 1))
+
+# Run kriging
+locations <- ESRP_WaterLevels_2008[!ga$is.rm.idx, ]
+kr <- krige(formula = formula, newdata = newdata, model = vg.model,
+            locations = locations)
+kr$var1.se <- sqrt(kr$var1.var)
+
+# Plot prediction and standard error maps
+PlotRaster(kr, "var1.pred", ESRP_WaterLevels_2008 , ESRP_SpatialDomain,
+           xlim = c(-113.30, -112.20), ylim = c(43.30, 44.00),
+           pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
+           main = "Predictions", rm.idxs = which(ga$is.rm.idx))
+PlotRaster(kr, "var1.se", ESRP_WaterLevels_2008 , ESRP_SpatialDomain,
+           xlim = c(-113.30, -112.20), ylim = c(43.30, 44.00),
            pal = terrain.colors, main = "Standard errors",
            rm.idxs = which(ga$is.rm.idx))
 }}
