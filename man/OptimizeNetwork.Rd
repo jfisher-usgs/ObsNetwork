@@ -6,7 +6,8 @@
 
 \description{
 Determine sites to exclude from an existing observation network because
-they provide little or no beneficial added information.
+they provide little or no beneficial added information. A kriging-based
+genetic algorithm is used to solve the optimization problem.
 }
 
 \usage{
@@ -16,24 +17,26 @@ OptimizeNetwork(pts, grd, ply, network, nsites, vg.model, formula,
 }
 
 \arguments{
-\item{pts}{SpatialPointsDataFrame; data at observation sites.}
-\item{grd}{SpatialGridDataFrame; raster data.}
-\item{ply}{SpatialPolygonsDataFrame; a polygon used to crop raster data
+\item{pts}{SpatialPointsDataFrame; data at observation sites. A
+  description of the required data frame variables is given in the
+  \sQuote{Value} section of \code{\link{ProcessObservations}}.}
+\item{grd}{SpatialGridDataFrame; raster data with independent variables.}
+\item{ply}{SpatialPolygonsDataFrame; a polygon used to crop the raster grid
   (optional).}
 \item{network}{character; the name of an observation network. Only sites
-  included in this network will be recognized as deciscion variables in the
-  optimization problem; this argument is optional and in its absence all
-  sites will be recognized as decision varibles.}
+  included in this network will be recognized as decision variables in the
+  optimization problem; this argument is optional, in its absence all
+  sites will be recognized as decision variables.}
 \item{nsites}{integer; the number of sites to remove from the observation
-  network.}
-\item{vg.model}{variogramModel; variogram model of dependent variable defined
-  by a call to \code{\link{vgm}}.}
+  network (the number of decision variables in the optimization problem).}
+\item{vg.model}{variogramModel; variogram model of dependent variable
+   defined by a call to \code{\link{vgm}}.}
 \item{formula}{formula; defines the dependent variable as a linear model of
-  independent variables.}
-\item{nmax}{numeric; for local kriging, the number of nearest observations
+  the independent variables.}
+\item{nmax}{numeric; for local kriging, the number of nearest sites
   that should be used for a kriging prediction or simulation, where nearest
   is defined in terms of the space of the spatial locations. By default,
-  all observations are used.}
+  all sites are used.}
 \item{grd.fact}{integer; aggregation factor expressed as number of cells in
   each direction (horizontally and vertically).}
 \item{niters}{integer; the number of iterations used in the genetic algorithm.}
