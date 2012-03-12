@@ -18,7 +18,7 @@ ESRP_SpatialDomain
 
 \format{
 An object of \code{\link{SpatialPolygonsDataFrame-class}} containing
-4 \code{\link{Polygons}}. Three of the polygons representing buttes
+4 \code{\link{Polygons}}. The three polygons representing buttes
 are set as holes in the much larger aquifer polygon.
 Geographic coordinates are in units of decimal degrees, and in conformance
 with the North American Datum of 1983 (NAD 83).

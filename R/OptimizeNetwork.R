@@ -1,6 +1,7 @@
-OptimizeNetwork <- function(pts, grd, ply, network, nsites, vg.model, formula,
-                            nmax=Inf, grd.fact=1, niters=200,  pop.size=200,
-                            obj.weights=c(1, 1, 1, 1)) {
+OptimizeNetwork <- function(pts, grd, ply, network, nsites, vg.model,
+                            formula, nmax=Inf, xlim=bbox(grd)[1, ],
+                            ylim=bbox(grd)[2, ], grd.fact=1, niters=200,
+                            pop.size=200, obj.weights=c(1, 1, 1, 1)) {
 
   # Additional functions (subroutines)
 
@@ -98,17 +99,25 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, vg.model, formula,
     pts <- rbind(pts[is.net, ], pts[!is.net, ])
   }
 
+  # Crop grid to axis limits
+  x <- coordinates(grd)[, "x"]
+  y <- coordinates(grd)[, "y"]
+  is.in.lim <- x >= xlim[1] & x <= xlim[2] & y >= ylim[1] & y <= ylim[2]
+  grd <- grd[is.in.lim, ] # NA's values outside of limits
+
   # Crop grid to polygon
   if (!missing(ply))
     grd$var2 <- grd$var2 * overlay(grd, ply)
 
-  # Reduce grid resolution
-   if (grd.fact > 1)
-    grd <- as(aggregate(raster(grd), fact=grd.fact, fun=mean, expand=TRUE,
-                        na.rm=TRUE), 'SpatialGridDataFrame')
+  # Reduce grid resolution, TODO: raster() removes all but one first field
+  if (grd.fact > 1)
+    grd.mod <- as(aggregate(raster(grd), fact=grd.fact, fun=mean, expand=TRUE,
+                            na.rm=TRUE), 'SpatialGridDataFrame')
+  else
+    grd.mod <- grd
 
   # Convert grid to data frame
-  grd.pts <- as(grd, "SpatialPointsDataFrame")
+  grd.pts <- as(grd.mod, "SpatialPointsDataFrame")
   ngrd.pts <- length(grd.pts)
 
   # Initialize matrix of objective values
@@ -148,29 +157,33 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, vg.model, formula,
                      monitorFunc=MonitorFun, evalFunc=EvalFun)
   })
   summary.rbga(rbga.ans, echo=TRUE)
-  rm.pts <- pts[GetIdxsForBestSolution(rbga.ans), ]
-  is.rm.idx <- orig.siteno %in% rm.pts$siteno
+  rm.idxs <- GetIdxsForBestSolution(rbga.ans) # index from modified points
+  rm.pts <- pts[rm.idxs, ]
+  is.rm.idx <- orig.siteno %in% rm.pts$siteno # index from unmodified points
 
   # Reset graphics parameters
   par(op)
 
+  # Final kriging
+  kr <- krige(formula=formula, locations=pts[-rm.idxs, ], newdata=grd,
+              model=vg.model, debug.level=0)
+  kr$var1.se <- sqrt(kr$var1.var) # standard error
+
   # Report elapsed time for running optimization
-  hrs <- as.numeric(elapsed.time['elapsed']) / 3600
-  elapsed.time <- paste("\nElapsed time:", format(hrs), "hours\n")
-  cat(elapsed.time)
+  elapsed.time <- as.numeric(elapsed.time['elapsed']) / 3600
+  cat("\nElapsed time:", format(elapsed.time), "hours\n")
 
   # Determine how many times the final solution was repeated
-  count <- 0L
+   ans.rep <- 0L
   for (i in niters:1) {
     if (!identical(obj.values[i, ], obj.values[niters, ]))
       break
-    count <- count + 1L
+    ans.rep <-  ans.rep + 1L
   }
-  ans.rep <- paste("\nNumber of times final solution was repeated:",
-                   count, "\n")
-  cat(ans.rep)
+  cat("\nNumber of times final solution was repeated:", ans.rep, "\n")
 
   # Return optimized sites to remove
   invisible(list(rm.pts=rm.pts, is.rm.idx=is.rm.idx, obj.values=obj.values,
-                 ans.rep=ans.rep, elapsed.time=elapsed.time, rbga.ans=rbga.ans))
+                 ans.rep=ans.rep, elapsed.time=elapsed.time, kr=kr,
+                 rbga.ans=rbga.ans))
 }

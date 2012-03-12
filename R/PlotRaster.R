@@ -33,16 +33,24 @@ PlotRaster <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
     }
   }
 
-  # Define polygon
-  if (!missing(ply))
-    lo[[length(lo) + 1L]] <- list("sp.polygons", ply, col="black", first=FALSE)
-
   # Determine axis limits
   bbox.grd <- bbox(grd)
   if (missing(xlim))
     xlim <- range(pretty(extendrange(bbox.grd[1,]), n=7))
   if (missing(ylim))
     ylim <- range(pretty(extendrange(bbox.grd[2,]), n=7))
+
+  # Reduce points to axis limits
+  if (!missing(pts)) {
+    coords <- as.data.frame(coordinates(pts))
+    is.in.bbox <- coords$x >= xlim[1] & coords$x <= xlim[2] &
+                  coords$y >= ylim[1] & coords$y <= ylim[2]
+    pts <- pts[is.in.bbox, ]
+  }
+
+  # Define polygon
+  if (!missing(ply))
+    lo[[length(lo) + 1L]] <- list("sp.polygons", ply, col="black", first=FALSE)
 
   # Calculate aspect ratio, used by default in spplot
   asp <- mapasp(grd, xlim=xlim, ylim=ylim)

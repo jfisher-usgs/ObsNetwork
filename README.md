@@ -1,2 +1,2 @@
-ObsNetwork: Optimisation of Observation Networks
+ObsNetwork: Optimization of Observation Networks
 ================================================
