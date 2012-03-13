@@ -20,9 +20,12 @@ WriteGAResults <- function(ga, file) {
 
   # Answer repeated
   x <- ga$ans.rep
-  cat(x, file=file, append=TRUE)
+  cat("\nNumber of times final solution was repeated:", x, "\n", file=file,
+      append=TRUE)
 
   # Elapsed time
   x <- ga$elapsed.time
-  cat(x, file=file, append=TRUE)
+  cat("\nElapsed time:", format(x), "hours\n", file=file, append=TRUE)
+
+  invisible(NULL)
 }

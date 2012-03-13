@@ -82,7 +82,7 @@ Returns a list with components:
   The matrix has \code{niters} rows and 5 columns, 4 objective values and
   their sum.}
 \item{ans.rep}{numeric; number of times the final solution was repeated.}
-\item{elapsed.time}{numeric; elapsed time for running the GA in hours.}
+\item{elapsed.time}{numeric; elapsed time in hours for running the GA.}
 \item{kr}{SpatialGridDataFrame; a data frame containing the coordinates of
   \code{grd} cropped to the axis limits and polygon. Attributes columns contain
   prediction and standard error from kriging of the optimized observation
@@ -132,11 +132,11 @@ ga <- OptimizeNetwork(ESRP_WaterLevels_2008, ESRP_NED500m, ESRP_SpatialDomain,
                       xlim = xlim, ylim = ylim)
 
 # Plot prediction and standard error maps
-PlotRaster(ga$kr, "var1.pred", ESRP_WaterLevels_2008 , ESRP_SpatialDomain,
+PlotRaster(ga$kr, "var1.pred", ESRP_WaterLevels_2008, ESRP_SpatialDomain,
            pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
            main = "Predictions", rm.idxs = which(ga$is.rm.idx),
            xlim = xlim, ylim = ylim)
-PlotRaster(ga$kr, "var1.se", ESRP_WaterLevels_2008 , ESRP_SpatialDomain,
+PlotRaster(ga$kr, "var1.se", ESRP_WaterLevels_2008, ESRP_SpatialDomain,
            pal = terrain.colors, main = "Standard errors",
            rm.idxs = which(ga$is.rm.idx),
            xlim = xlim, ylim = ylim)

@@ -21,8 +21,8 @@ PlotRaster(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
 \item{pts}{SpatialPointsDataFrame; point coordinates to include in layout.}
 \item{ply}{SpatialPolygonsDataFrame; polygons to include in layout.}
 \item{rm.idxs}{integer; vector of row indexes in \code{pts}, point symbols at
-  these coordinates are drawn as crosses (\code{pch = 4}) rather than the
-  default, an open circle symbol (\code{pch = 21}).}
+  these coordinates are drawn as crosses (\code{pch=4}) rather than the
+  default, an open circle symbol (\code{pch=21}).}
 \item{xlim}{numeric; vector of length 2 giving left and right limits for
   the x-axis.}
 \item{ylim}{numeric; vector of length 2 giving lower and upper limits for

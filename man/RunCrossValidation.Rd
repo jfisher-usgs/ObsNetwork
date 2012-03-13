@@ -2,7 +2,7 @@
 
 \alias{RunCrossValidation}
 
-\title{Run Crossvalidation}
+\title{Run Cross Validation}
 
 \description{
 Cross validation function for kriging; a wrapper around

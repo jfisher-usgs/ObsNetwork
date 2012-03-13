@@ -5,7 +5,7 @@
 \title{Write Results of Genetic Algorithm}
 
 \description{
-Something.
+Prints returned list components from \code{\link{OptimizeNetwork}} to a file.
 }
 
 \usage{
@@ -13,28 +13,25 @@ WriteGAResults(ga, file)
 }
 
 \arguments{
-\item{ga}{something}
-\item{file}{something}
+\item{ga}{list; object returned from \code{\link{OptimizeNetwork}}.}
+\item{file}{character; the path of a file for writing (optional).}
 }
 
 \details{
-Something...
+Printed components of \code{ga} include \code{rm.obs},
+\code{obj.values}, \code{ans.rep}, and \code{elapsed.time}.
 }
 
 \value{
-Something
+None (invisible \code{NULL}).
 }
 
 \author{J.C. Fisher}
 
 \seealso{
-\code{\link{plot}}
+\code{\link{write.table}}, \code{\link{cat}}
 }
 
-\examples{
-\donttest{
-print("something")
-}
-}
+\examples{\dontrun{WriteGAResults(ga)}}
 
 \keyword{IO}
