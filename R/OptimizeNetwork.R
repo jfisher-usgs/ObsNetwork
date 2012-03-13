@@ -109,7 +109,8 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, vg.model,
   if (!missing(ply))
     grd$var2 <- grd$var2 * overlay(grd, ply)
 
-  # Reduce grid resolution, TODO: raster() removes all but first field
+  # Reduce grid resolution
+  # TODO(jfisher): prevent raster() from removing all but first field
   if (grd.fact > 1)
     grd.mod <- as(aggregate(raster(grd), fact=grd.fact, fun=mean, expand=TRUE,
                             na.rm=TRUE), 'SpatialGridDataFrame')

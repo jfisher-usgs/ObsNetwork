@@ -2,7 +2,7 @@ ObsNetwork: Optimization of Observation Networks
 ================================================
 
 This [R](http://www.r-project.org/ "R") package
-evaluates and optimizes observation networks sing a kriging-based genetic
+evaluates and optimizes observation networks using a kriging-based genetic
 algorithm methodology.
 
 The set of standards used for coding **ObsNetwork** is documented in
