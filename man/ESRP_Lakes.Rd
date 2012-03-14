@@ -23,7 +23,7 @@ with the North American Datum of 1983 (NAD 83).
 
 \source{
 Idaho Department of Water Resources
-(\href{http://www.idwr.idaho.gov/GeographicInfo/GISdata/hydrography.htm}{IDWR}).
+(\href{http://www.idwr.idaho.gov/GeographicInfo/GISdata/gis_data.htm}{IDWR}).
 }
 
 \examples{

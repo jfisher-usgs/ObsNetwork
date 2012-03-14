@@ -1,6 +1,6 @@
-\name{ESRP_SpatialDomain}
+\name{ESRP_Boundary}
 
-\alias{ESRP_SpatialDomain}
+\alias{ESRP_Boundary}
 
 \docType{data}
 
@@ -13,7 +13,7 @@ East butte, Middle butte, and Big Southern butte.
 }
 
 \usage{
-ESRP_SpatialDomain
+ESRP_Boundary
 }
 
 \format{
@@ -26,19 +26,19 @@ with the North American Datum of 1983 (NAD 83).
 
 \source{
 Idaho Department of Water Resources
-(\href{http://www.idwr.idaho.gov/GeographicInfo/GISdata/aquifers.htm}{IDWR}).
+(\href{http://www.idwr.idaho.gov/GeographicInfo/GISdata/gis_data.htm}{IDWR}).
 }
 
 \examples{
-data(ESRP_SpatialDomain)
-plot(ESRP_SpatialDomain)
-summary(ESRP_SpatialDomain)
+data(ESRP_Boundary)
+plot(ESRP_Boundary)
+summary(ESRP_Boundary)
 
 # Commands used to construct this data object:
-dsn <- system.file("extdata/ESRP_SpatialDomain", package = "ObsNetwork")
+dsn <- system.file("extdata/ESRP_Boundary", package = "ObsNetwork")
 obj <- readOGR(dsn = dsn, layer = basename(dsn))
 
-all.equal(obj, ESRP_SpatialDomain)
+all.equal(obj, ESRP_Boundary)
 
 # Polygons slots
 p <- sapply(slot(obj, 'polygons'), function(i) slot(i, 'Polygons'))

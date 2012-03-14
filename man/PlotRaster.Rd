@@ -54,17 +54,17 @@ Returns (or plots) the raster plot.
 \examples{
 data(ESRP_NED500m)
 data(ESRP_WaterLevels_2008)
-data(ESRP_SpatialDomain)
+data(ESRP_Boundary)
 data(ESRP_Lakes)
 data(ESRP_Rivers)
-data(INL)
+data(INL_Boundary)
 
-PlotRaster(ESRP_NED500m, "var2", ESRP_WaterLevels_2008, ESRP_SpatialDomain)
+PlotRaster(ESRP_NED500m, "var2", ESRP_WaterLevels_2008, ESRP_Boundary)
 
 pts <- ESRP_WaterLevels_2008[ESRP_WaterLevels_2008$net == "State", ]
 xlim <- c(-115.25, -111.50)
 ylim <- c(  42.25,   44.50)
-PlotRaster(ESRP_NED500m, "var2", pts, ESRP_SpatialDomain, xlim = xlim,
+PlotRaster(ESRP_NED500m, "var2", pts, ESRP_Boundary, xlim = xlim,
            ylim = ylim, pal = terrain.colors, label.pts = "mapid")
 
 # Plot hill shade, lakes, river, and INL boundary
@@ -78,22 +78,22 @@ lo <- list()
 lo[[1]] <- list("sp.polygons", ESRP_Lakes, col = "#1B70E0", fill = "#BAE4E5",
                 first = FALSE)
 lo[[2]] <- list("sp.lines", ESRP_Rivers, col = "#1B70E0", first = FALSE)
-lo[[3]] <- list("sp.polygons", INL, col = "#000000", first = FALSE)
+lo[[3]] <- list("sp.polygons", INL_Boundary, col = "#000000", first = FALSE)
 PlotRaster(grd, 1, xlim = xlim, ylim = ylim, at = at, pal = pal, lo = lo)
 
 # Kriging
 newdata <- ESRP_NED500m
-newdata$var2 <- newdata$var2 * sp::overlay(newdata, ESRP_SpatialDomain)
+newdata$var2 <- newdata$var2 * sp::overlay(newdata, ESRP_Boundary)
 vg.model <- vgm(psill = 4500, model = "Sph", range = 100, nugget = 0)
 kr <- krige(formula = var1 ~ var2, locations = ESRP_WaterLevels_2008,
             newdata = newdata, model = vg.model)
 kr$var1.se <- sqrt(kr$var1.var) # standard error
 
 # Plot prediction and standard error maps
-PlotRaster(kr, "var1.pred", ESRP_WaterLevels_2008 , ESRP_SpatialDomain,
+PlotRaster(kr, "var1.pred", ESRP_WaterLevels_2008 , ESRP_Boundary,
            pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
            main = "Predictions", xlim = xlim, ylim = ylim)
-PlotRaster(kr, "var1.se", ESRP_WaterLevels_2008 , ESRP_SpatialDomain,
+PlotRaster(kr, "var1.se", ESRP_WaterLevels_2008 , ESRP_Boundary,
            pal = terrain.colors, main = "Standard errors",
            xlim = xlim, ylim = ylim)
 
@@ -104,11 +104,11 @@ x <- coordinates(kr)[, "x"]
 y <- coordinates(kr)[, "y"]
 is.in.lim <- x >= xlim[1] & x <= xlim[2] & y >= ylim[1] & y <= ylim[2]
 PlotRaster(kr[is.in.lim, ], "var1.pred", ESRP_WaterLevels_2008 ,
-           ESRP_SpatialDomain, xlim = xlim, ylim = ylim,
+           ESRP_Boundary, xlim = xlim, ylim = ylim,
            pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
            main = "Predictions")
 PlotRaster(kr[is.in.lim, ], "var1.se", ESRP_WaterLevels_2008,
-           ESRP_SpatialDomain, xlim = xlim, ylim = ylim,
+           ESRP_Boundary, xlim = xlim, ylim = ylim,
            pal = terrain.colors, main = "Standard errors")
 }
 

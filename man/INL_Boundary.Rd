@@ -1,18 +1,18 @@
-\name{INL}
+\name{INL_Boundary}
 
-\alias{INL}
+\alias{INL_Boundary}
 
 \docType{data}
 
-\title{Idaho National Laboratory}
+\title{Outline of the Idaho National Laboratory}
 
 \description{
-Political boundary of the Idaho National Laboratory
+The political boundary of the Idaho National Laboratory
 (\href{http://en.wikipedia.org/wiki/Idaho_National_Laboratory}{INL}).
 }
 
 \usage{
-INL
+INL_Boundary
 }
 
 \format{
@@ -28,8 +28,8 @@ U.S. Geological Survey INL Project Office,
 }
 
 \examples{
-data(INL)
-plot(INL)
+data(INL_Boundary)
+plot(INL_Boundary)
 }
 
 \keyword{datasets}

@@ -50,7 +50,7 @@ Returns a list with components:
 
 \examples{
 data(ESRP_WaterLevels_2008)
-data(ESRP_SpatialDomain)
+data(ESRP_Boundary)
 
 # Ordinary Kriging (OK):
 vg <- variogram(var1 ~ 1, ESRP_WaterLevels_2008)
@@ -92,9 +92,9 @@ cv <- RunCrossValidation(var1 ~ var2, ESRP_WaterLevels_2008,
 cat(cv$me, cv$mspe, cv$cor.op, cv$cor.pr, "\n")
 
 # Plot residuals from cross-validation
-PlotBubble(cv$cv, "residual", main = "Residuals", ply = ESRP_SpatialDomain,
+PlotBubble(cv$cv, "residual", main = "Residuals", ply = ESRP_Boundary,
            xlim = c(-115.25, -111.50), ylim = c(42.25, 44.50))
-PlotBubble(cv$cv, "residual", main = "Residuals", ply = ESRP_SpatialDomain,
+PlotBubble(cv$cv, "residual", main = "Residuals", ply = ESRP_Boundary,
            xlim = c(-113.30, -112.20), ylim = c(43.30, 44.00))
 }
 

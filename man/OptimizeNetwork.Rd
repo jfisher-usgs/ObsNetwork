@@ -101,14 +101,14 @@ The status of the objective values after each GA iteration is plotted.
 
 \examples{\donttest{data(ESRP_NED500m)
 data(ESRP_WaterLevels_2008)
-data(ESRP_SpatialDomain)
+data(ESRP_Boundary)
 
 # Variogram
 vg.model <- vgm(psill = 4500, model = "Sph", range = 100, nugget = 0)
 formula <- var1 ~ var2
 
 # Optimize "State" network:
-ga <- OptimizeNetwork(ESRP_WaterLevels_2008, ESRP_NED500m, ESRP_SpatialDomain,
+ga <- OptimizeNetwork(ESRP_WaterLevels_2008, ESRP_NED500m, ESRP_Boundary,
                       network = "State", nsites = 20, vg.model = vg.model,
                       formula = formula, nmax = Inf, grd.fact = 5, niters = 3,
                       pop.size = 300, obj.weights = c(10, 1, 1, 1))
@@ -116,29 +116,29 @@ ga <- OptimizeNetwork(ESRP_WaterLevels_2008, ESRP_NED500m, ESRP_SpatialDomain,
 # Plot prediction and standard error maps
 xlim <- c(-115.25, -111.50)
 ylim <- c(  42.25,   44.50)
-PlotRaster(ga$kr, "var1.pred", ESRP_WaterLevels_2008 , ESRP_SpatialDomain,
+PlotRaster(ga$kr, "var1.pred", ESRP_WaterLevels_2008 , ESRP_Boundary,
            pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
            main = "Predictions", rm.idxs = which(ga$is.rm.idx),
            xlim = xlim, ylim = ylim)
-PlotRaster(ga$kr, "var1.se", ESRP_WaterLevels_2008 , ESRP_SpatialDomain,
+PlotRaster(ga$kr, "var1.se", ESRP_WaterLevels_2008 , ESRP_Boundary,
            pal = terrain.colors, main = "Standard errors",
            rm.idxs = which(ga$is.rm.idx), xlim = xlim, ylim = ylim)
 
 # Optimize "INL" network:
 xlim <- c(-113.30, -112.20)
 ylim <- c(  43.30,   44.00)
-ga <- OptimizeNetwork(ESRP_WaterLevels_2008, ESRP_NED500m, ESRP_SpatialDomain,
+ga <- OptimizeNetwork(ESRP_WaterLevels_2008, ESRP_NED500m, ESRP_Boundary,
                       network = "INL", nsites = 20, vg.model = vg.model,
                       formula = formula, nmax = Inf, grd.fact = 5, niters = 3,
                       pop.size = 300, obj.weights = c(10, 1, 1, 1),
                       xlim = xlim, ylim = ylim)
 
 # Plot prediction and standard error maps
-PlotRaster(ga$kr, "var1.pred", ESRP_WaterLevels_2008, ESRP_SpatialDomain,
+PlotRaster(ga$kr, "var1.pred", ESRP_WaterLevels_2008, ESRP_Boundary,
            pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
            main = "Predictions", rm.idxs = which(ga$is.rm.idx),
            xlim = xlim, ylim = ylim)
-PlotRaster(ga$kr, "var1.se", ESRP_WaterLevels_2008, ESRP_SpatialDomain,
+PlotRaster(ga$kr, "var1.se", ESRP_WaterLevels_2008, ESRP_Boundary,
            pal = terrain.colors, main = "Standard errors",
            rm.idxs = which(ga$is.rm.idx),
            xlim = xlim, ylim = ylim)

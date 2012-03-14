@@ -42,11 +42,11 @@ five quantiles: minimum, 25th percentile, median, 75th percentile, and maximum.
 
 \examples{
 data(ESRP_WaterLevels_2008)
-data(ESRP_SpatialDomain)
+data(ESRP_Boundary)
 
-PlotBubble(ESRP_WaterLevels_2008, "acy", ESRP_SpatialDomain,
+PlotBubble(ESRP_WaterLevels_2008, "acy", ESRP_Boundary,
            main = "Measurment error")
-PlotBubble(ESRP_WaterLevels_2008, "sd", ESRP_SpatialDomain,
+PlotBubble(ESRP_WaterLevels_2008, "sd", ESRP_Boundary,
            xlim = c(-113.30, -112.20), ylim = c(43.30, 44.00),
            main = "Standard deviation")
 }
