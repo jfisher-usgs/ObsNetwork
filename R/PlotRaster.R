@@ -1,9 +1,7 @@
 PlotRaster <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
                        pal=heat.colors, contour=FALSE, label.pts=FALSE,
-                       main="", gr.type="windows", gr.file=NULL) {
-
-  # Initialize layout
-  lo <- list()
+                       main="", gr.type="windows", gr.file=NULL,
+                       lo=list()) {
 
   # Define points
   if (!missing(pts)) {

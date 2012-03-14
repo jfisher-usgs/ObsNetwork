@@ -11,7 +11,7 @@ Raster plot for spatial data with attributes.
 \usage{
 PlotRaster(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
            pal = heat.colors, contour = FALSE, label.pts = FALSE,
-           main = "", gr.type = "windows", gr.file = NULL)
+           main = "", gr.type = "windows", gr.file = NULL, lo = list())
 }
 
 \arguments{
@@ -37,6 +37,8 @@ PlotRaster(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
   "postscript", "pdf", "png", or the default "windows".}
 \item{gr.file}{character; the path of a file for writing the graphics,
                only used if \code{gr.type} is not "windows".}
+\item{lo}{list; a list with more layout items, see \code{sp.layout} argument
+  in \code{\link[sp]{spplot}}.}
 }
 
 \value{
@@ -53,6 +55,9 @@ Returns (or plots) the raster plot.
 data(ESRP_NED500m)
 data(ESRP_WaterLevels_2008)
 data(ESRP_SpatialDomain)
+data(ESRP_Lakes)
+data(ESRP_Rivers)
+data(INL)
 
 PlotRaster(ESRP_NED500m, "var2", ESRP_WaterLevels_2008, ESRP_SpatialDomain)
 
@@ -62,14 +67,19 @@ ylim <- c(  42.25,   44.50)
 PlotRaster(ESRP_NED500m, "var2", pts, ESRP_SpatialDomain, xlim = xlim,
            ylim = ylim, pal = terrain.colors, label.pts = "mapid")
 
-# Plot hill shade from slope and aspect layers
+# Plot hill shade, lakes, river, and INL boundary
 slp <- terrain(raster(ESRP_NED500m), opt = "slope")
 asp <- terrain(raster(ESRP_NED500m), opt = "aspect")
 grd <- as(hillShade(slp, asp, 40, 270), "SpatialGridDataFrame")
 zlim <- range(grd[[1]], na.rm = TRUE)
 at <- seq(zlim[1], zlim[2], length.out = 100)
 pal <- function(n) grey(0:100 / 100)[1:n]
-PlotRaster(grd, 1, xlim = xlim, ylim = ylim, at = at, pal = pal)
+lo <- list()
+lo[[1]] <- list("sp.polygons", ESRP_Lakes, col = "#1B70E0", fill = "#BAE4E5",
+                first = FALSE)
+lo[[2]] <- list("sp.lines", ESRP_Rivers, col = "#1B70E0", first = FALSE)
+lo[[3]] <- list("sp.polygons", INL, col = "#000000", first = FALSE)
+PlotRaster(grd, 1, xlim = xlim, ylim = ylim, at = at, pal = pal, lo = lo)
 
 # Kriging
 newdata <- ESRP_NED500m
