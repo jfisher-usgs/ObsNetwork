@@ -1,7 +1,8 @@
 OptimizeNetwork <- function(pts, grd, ply, network, nsites, vg.model,
                             formula, nmax=Inf, xlim=bbox(grd)[1, ],
                             ylim=bbox(grd)[2, ], grd.fact=1, niters=200,
-                            pop.size=200, obj.weights=c(1, 1, 1, 1)) {
+                            pop.size=200, obj.weights=c(1, 1, 1, 1),
+                            rtn.kr=TRUE) {
 
   # Additional functions (subroutines)
 
@@ -166,9 +167,13 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, vg.model,
   par(op)
 
   # Final kriging
-  kr <- krige(formula=formula, locations=pts[-rm.idxs, ], newdata=grd,
-              model=vg.model, debug.level=0)
-  kr$var1.se <- sqrt(kr$var1.var) # standard error
+  if (rtn.kr) {
+    kr <- krige(formula=formula, locations=pts[-rm.idxs, ], newdata=grd,
+                model=vg.model, debug.level=0)
+    kr$var1.se <- sqrt(kr$var1.var) # standard error
+  } else {
+    kr <- NULL
+  }
 
   # Report elapsed time for running optimization
   elapsed.time <- as.numeric(elapsed.time['elapsed']) / 3600

@@ -14,7 +14,8 @@ problem.
 \usage{
 OptimizeNetwork(pts, grd, ply, network, nsites, vg.model, formula, nmax = Inf,
                 xlim = bbox(grd)[1, ], ylim = bbox(grd)[2, ], grd.fact = 1,
-                niters = 200, pop.size = 200, obj.weights = c(1, 1, 1, 1))
+                niters = 200, pop.size = 200, obj.weights = c(1, 1, 1, 1),
+                rtn.kr = TRUE)
 }
 
 \arguments{
@@ -49,6 +50,7 @@ OptimizeNetwork(pts, grd, ply, network, nsites, vg.model, formula, nmax = Inf,
 \item{obj.weights}{numeric; vector of length 4 giving the weights for each
   objective in the multi-objective optimzation problem,
   see \sQuote{details} section below.}
+\item{rtn.kr}{logical; return kriging results using optimal network.}
 }
 
 \details{
@@ -79,8 +81,8 @@ Returns a list with components:
 \item{is.rm.idx}{logical; vector of length equal to the number of rows in
   \code{pts} specifying sites to remove from the observation network.}
 \item{obj.values}{matrix; objective values after each iteration of the GA.
-  The matrix has \code{niters} rows and 5 columns, 4 objective values and
-  their sum.}
+  The matrix has \code{niters} rows and 5 columns (4 objective values and
+  their sum).}
 \item{ans.rep}{numeric; number of times the final solution was repeated.}
 \item{elapsed.time}{numeric; elapsed time in hours for running the GA.}
 \item{kr}{SpatialGridDataFrame; a data frame containing the coordinates of
@@ -106,14 +108,14 @@ vg.model <- vgm(psill = 4500, model = "Sph", range = 100, nugget = 0)
 formula <- var1 ~ var2
 
 # Optimize "State" network:
-xlim <- c(-115.25, -111.50)
-ylim <- c(  42.25,   44.50)
 ga <- OptimizeNetwork(ESRP_WaterLevels_2008, ESRP_NED500m, ESRP_SpatialDomain,
                       network = "State", nsites = 20, vg.model = vg.model,
-                      formula = formula, nmax = 50, grd.fact = 5, niters = 10,
+                      formula = formula, nmax = Inf, grd.fact = 5, niters = 3,
                       pop.size = 300, obj.weights = c(10, 1, 1, 1))
 
 # Plot prediction and standard error maps
+xlim <- c(-115.25, -111.50)
+ylim <- c(  42.25,   44.50)
 PlotRaster(ga$kr, "var1.pred", ESRP_WaterLevels_2008 , ESRP_SpatialDomain,
            pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
            main = "Predictions", rm.idxs = which(ga$is.rm.idx),
@@ -127,7 +129,7 @@ xlim <- c(-113.30, -112.20)
 ylim <- c(  43.30,   44.00)
 ga <- OptimizeNetwork(ESRP_WaterLevels_2008, ESRP_NED500m, ESRP_SpatialDomain,
                       network = "INL", nsites = 20, vg.model = vg.model,
-                      formula = formula, nmax = Inf, grd.fact = 5, niters = 10,
+                      formula = formula, nmax = Inf, grd.fact = 5, niters = 3,
                       pop.size = 300, obj.weights = c(10, 1, 1, 1),
                       xlim = xlim, ylim = ylim)
 
