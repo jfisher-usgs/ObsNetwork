@@ -4,7 +4,7 @@
 
 \docType{data}
 
-\title{ESRP Rivers}
+\title{Traces of the ESRP Rivers}
 
 \description{
 Major rivers of the Eastern Snake River Plain (ESRP) and surrounding areas.

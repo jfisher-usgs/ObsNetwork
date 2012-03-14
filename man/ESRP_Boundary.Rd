@@ -41,7 +41,7 @@ obj <- readOGR(dsn = dsn, layer = basename(dsn))
 all.equal(obj, ESRP_Boundary)
 
 # Polygons slots
-p <- sapply(slot(obj, 'polygons'), function(i) slot(i, 'Polygons'))
+p <- sapply(slot(obj, "polygons"), function(i) slot(i, "Polygons"))
 
 # Generalized boundary of the ESRP aquifer
 plot(SpatialPolygons(list(Polygons(list(p[[1]]), 1))))
