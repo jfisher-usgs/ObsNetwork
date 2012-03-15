@@ -8,7 +8,7 @@ WriteGAResults <- function(ga, file) {
                                     initialdir=file.path(getwd(), "..")))
 
   # Removed observations
-  x <- ga$rm.obs
+  x <- ga$rm.pts
   write.table(x, file=file, append=FALSE, quote=FALSE, sep="\t",
               row.names=FALSE)
   cat("\n", file=file, append=TRUE)
