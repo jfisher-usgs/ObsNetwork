@@ -9,7 +9,7 @@
 \description{
 This data set gives locations and 2008 water-level measurements,
 along with a number of well site variables at the observed locations,
-collected in the Eastern Snake River Plain (ESRP) aquifer, Idaho.
+collected in the eastern Snake River Plain (ESRP) aquifer, Idaho.
 }
 
 \usage{

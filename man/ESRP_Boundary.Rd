@@ -8,7 +8,7 @@
 
 \description{
 An outline of the generalized boundary of the
-Eastern Snake River Plain (ESRP) aquifer,
+eastern Snake River Plain (ESRP) aquifer,
 East butte, Middle butte, and Big Southern butte.
 }
 

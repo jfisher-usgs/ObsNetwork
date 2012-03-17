@@ -7,7 +7,7 @@
 \title{Traces of the ESRP Rivers}
 
 \description{
-Major rivers of the Eastern Snake River Plain (ESRP) and surrounding areas.
+Major rivers of the eastern Snake River Plain (ESRP) and surrounding areas.
 }
 
 \usage{

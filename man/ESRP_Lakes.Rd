@@ -7,7 +7,7 @@
 \title{Outlines of the ESRP Lakes}
 
 \description{
-Major lakes of the Eastern Snake River Plain (ESRP) and surrounding areas.
+Major lakes of the eastern Snake River Plain (ESRP) and surrounding areas.
 }
 
 \usage{
