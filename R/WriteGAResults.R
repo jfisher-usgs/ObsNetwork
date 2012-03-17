@@ -1,11 +1,15 @@
 WriteGAResults <- function(ga, file) {
 
-  if (missing(file))
+  if (missing(file)) {
     file <- as.character(tcltk::tcl("tk_getSaveFile",
                                     title="Save GA Results As",
                                     defaultextension="txt",
                                     initialfile="*.txt",
                                     initialdir=file.path(getwd(), "..")))
+    if (!nzchar(file))
+      return()
+    file <- paste(file, collapse=" ")
+  }
 
   # Removed observations
   x <- ga$rm.pts
