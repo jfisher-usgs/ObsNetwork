@@ -11,7 +11,8 @@ Raster plot for spatial data with attributes.
 \usage{
 PlotRaster(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
            pal = heat.colors, contour = FALSE, label.pts = FALSE,
-           main = "", gr.type = "windows", gr.file = NULL, lo = list())
+           main = "", gr.type = "windows", gr.file = NULL,
+           width = 7, height = NA, lo = list())
 }
 
 \arguments{
@@ -37,6 +38,8 @@ PlotRaster(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
   "postscript", "pdf", "png", or the default "windows".}
 \item{gr.file}{character; the path of a file for writing the graphics,
                only used if \code{gr.type} is not "windows".}
+\item{width, height}{numeric; the (nominal) width and height of the canvas
+                     of the plotting window in inches.}
 \item{lo}{list; a list with more layout items, see \code{sp.layout} argument
   in \code{\link[sp]{spplot}}.}
 }

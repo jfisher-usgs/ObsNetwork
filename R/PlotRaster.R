@@ -1,7 +1,7 @@
 PlotRaster <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
                        pal=heat.colors, contour=FALSE, label.pts=FALSE,
                        main="", gr.type="windows", gr.file=NULL,
-                       lo=list()) {
+                       width=7, height=NA, lo=list()) {
 
   # Define points
   if (!missing(pts)) {
@@ -53,9 +53,11 @@ PlotRaster <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
   # Calculate aspect ratio, used by default in spplot
   asp <- mapasp(grd, xlim=xlim, ylim=ylim)
 
-  # Set width and height of graphics device
-  dev.width <- 7
-  dev.height <- dev.width * asp
+  # Set height of graphics device
+  if (is.na(height))
+    height <- 7
+  if (inherits(asp, "numeric"))
+    height <- width * asp
 
   # Set generic plot arguments
   colorkey <- list(width=1, space="right", labels=list(rot=-90))
@@ -90,7 +92,7 @@ PlotRaster <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
   lo[[length(lo) + 1L]] <- scale.txt2
 
   # Open graphics device
-  OpenGraphicsDevice(gr.file, type=gr.type, w=dev.width, h=dev.height)
+  OpenGraphicsDevice(gr.file, type=gr.type, w=width, h=height)
 
   # Draw plots
   p <- spplot(grd, zcol=zcol, outer=FALSE, aspect=asp,
