@@ -1,7 +1,38 @@
 PlotRaster <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
                        pal=heat.colors, contour=FALSE, label.pts=FALSE,
                        main="", gr.type="windows", gr.file=NULL,
-                       width=7, height=NA, lo=list()) {
+                       width=7, height=NA, lo=list(),
+                       projargs=proj4string(grd), add.llgridlines=FALSE,
+                       crop.grid=FALSE) {
+
+# Transform map projection and datum
+  if (!missing(pts))
+    pts <- spTransform(pts, CRS(projargs))
+  if (!missing(ply))
+    ply <- spTransform(ply, CRS(projargs))
+  if (proj4string(grd) != projargs) {
+    grd.pts <- suppressWarnings(spTransform(grd, CRS(projargs)))
+    x <- coordinates(grd.pts)[, "x"]
+    y <- coordinates(grd.pts)[, "y"]
+    cells.dim <- as.data.frame(slot(grd, "grid"))$cells.dim
+    cellsize <- c(abs(diff(range(x))) / cells.dim[1],
+                  abs(diff(range(y))) / cells.dim[2])
+    cellcentre.offset <- c(min(x), min(y))
+    newdata <- GridTopology(cellcentre.offset=cellcentre.offset,
+                            cellsize=cellsize, cells.dim=cells.dim)
+    newdata <- SpatialGrid(newdata, proj4string=CRS(projargs))
+    grd <- idw(as.formula(paste(zcol, "~", 1)), grd.pts, newdata,
+               idp=2.0, nmax=5)
+    chull.idxs <- chull(coordinates(grd.pts))
+    p <- Polygon(coordinates(grd.pts[c(chull.idxs, chull.idxs[1]), ]))
+    p <- Polygons(list(p), "1")
+    p <- SpatialPolygons(list(p), proj4string=CRS(projargs))
+    grd[[zcol]] <- grd$var1.pred * overlay(grd, p)
+  }
+
+  # Exclude raster data outside of polygon
+  if (crop.grid && !missing(ply))
+    grd[[zcol]]  <- grd[[zcol]] * overlay(grd, ply)
 
   # Define points
   if (!missing(pts)) {
@@ -72,24 +103,33 @@ PlotRaster <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
   cols <- pal(n)
 
   # Add spatial scale legend
-  lng <- xlim[1] + diff(xlim) * 0.02
-  lat <- ylim[2] - diff(ylim) * 0.06
+  x <- xlim[1] + diff(xlim) * 0.02
+  y <- ylim[2] - diff(ylim) * 0.06
   dx.1 <- 1
-  dm.1 <- spDistsN1(cbind(dx.1, lat), c(0, lat), longlat=TRUE)
+  dm.1 <- spDistsN1(cbind(dx.1, y), c(0, y), longlat=!is.projected(grd))
   xseq <- pretty(xlim)[1:2]
-  dm <- spDistsN1(cbind(xseq[2], lat), c(xseq[1], lat), longlat=TRUE)
+  dm <- spDistsN1(cbind(xseq[2], y), c(xseq[1], y), longlat=!is.projected(grd))
   dm.2 <- pretty(c(0, dm), n=1)[2]
   dx.2 <- dm.2 / dm.1
   leg.scale <- list("SpatialPolygonsRescale", layout.scale.bar(),
-                    offset=c(lng, lat), scale=dx.2,
-                    fill=c("white", "black"))
-  scale.txt1 <- list("sp.text", loc=c(lng, lat - dx.2 * 0.05),
-                     txt="0", cex=0.75)
-  scale.txt2 <- list("sp.text", loc=c(lng + dx.2, lat - dx.2 * 0.05),
-                     txt=paste(dm.2, "km"), cex=0.75)
+                    offset=c(x, y), scale=dx.2, fill=c("white", "black"))
+  scale.txt1 <- list("sp.text", loc=c(x, y - dx.2 * 0.05), txt="0", cex=0.75)
+  scale.txt2 <- list("sp.text", loc=c(x + dx.2, y - dx.2 * 0.05),
+                     txt=dm.2, cex=0.75)
   lo[[length(lo) + 1L]] <- leg.scale
   lo[[length(lo) + 1L]] <- scale.txt1
   lo[[length(lo) + 1L]] <- scale.txt2
+
+  # Add long-alt grid over projected data
+  if (add.llgridlines && is.projected(grd)) {
+    obj <- as(grd, "SpatialPointsDataFrame")
+    obj.ll <- spTransform(obj, CRS("+proj=longlat +datum=WGS84"))
+    easts <- pretty(bbox(obj.ll)[1, ])
+    norths <- pretty(bbox(obj.ll)[2, ])
+    grd.ll <- gridlines(obj.ll, easts=easts, norths=norths, ndiscr=50)
+    grd.xy <- spTransform(grd.ll, CRS(proj4string(obj)))
+    lo[[length(lo) + 1L]] <- list("sp.lines", grd.xy, lty=3, first=FALSE)
+  }
 
   # Open graphics device
   OpenGraphicsDevice(gr.file, type=gr.type, w=width, h=height)

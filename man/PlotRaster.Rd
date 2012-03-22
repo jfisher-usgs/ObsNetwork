@@ -12,7 +12,9 @@ Raster plot for spatial data with attributes.
 PlotRaster(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
            pal = heat.colors, contour = FALSE, label.pts = FALSE,
            main = "", gr.type = "windows", gr.file = NULL,
-           width = 7, height = NA, lo = list())
+           width = 7, height = NA, lo = list(),
+           projargs = proj4string(grd), add.llgridlines = FALSE,
+           crop.grid = FALSE)
 }
 
 \arguments{
@@ -42,6 +44,12 @@ PlotRaster(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
                      of the plotting window in inches.}
 \item{lo}{list; a list with more layout items, see \code{sp.layout} argument
   in \code{\link[sp]{spplot}}.}
+\item{projargs}{character; the projection arguments entered exactly as in the
+  PROJ.4 documentation.}
+\item{add.llgridlines}{logical; plot long-lat grid over projected data,
+  default is \code{FALSE}.}
+\item{crop.grid}{logical; exclude raster data outside of \code{ply},
+  default is \code{FALSE}.}
 }
 
 \value{
@@ -64,6 +72,14 @@ data(INL_Boundary)
 
 PlotRaster(ESRP_NED500m, "var2", ESRP_WaterLevels_2008, ESRP_Boundary)
 
+# Replot using albers equal area projection
+projargs <- paste("+proj=aea +lat_1=42.83333333333333 +lat_2=44.16666666666666",
+                  "+lat_0=41.5 +lon_0=-113 +x_0=200000 +y_0=0 +ellps=clrk66",
+                  "+datum=NAD27 +units=m +no_defs")
+PlotRaster(ESRP_NED500m, "var2", ESRP_WaterLevels_2008, ESRP_Boundary,
+           projargs = projargs, add.llgridlines = TRUE)
+
+# Add points to plot layout and set axis limits
 pts <- ESRP_WaterLevels_2008[ESRP_WaterLevels_2008$net == "State", ]
 xlim <- c(-115.25, -111.50)
 ylim <- c(  42.25,   44.50)
