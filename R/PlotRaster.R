@@ -103,22 +103,24 @@ PlotRaster <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
   cols <- pal(n)
 
   # Add spatial scale legend
-  x <- xlim[1] + diff(xlim) * 0.02
-  y <- ylim[2] - diff(ylim) * 0.06
-  dx.1 <- 1
-  dm.1 <- spDistsN1(cbind(dx.1, y), c(0, y), longlat=!is.projected(grd))
-  xseq <- pretty(xlim)[1:2]
-  dm <- spDistsN1(cbind(xseq[2], y), c(xseq[1], y), longlat=!is.projected(grd))
-  dm.2 <- pretty(c(0, dm), n=1)[2]
-  dx.2 <- dm.2 / dm.1
-  leg.scale <- list("SpatialPolygonsRescale", layout.scale.bar(),
-                    offset=c(x, y), scale=dx.2, fill=c("white", "black"))
-  scale.txt1 <- list("sp.text", loc=c(x, y - dx.2 * 0.05), txt="0", cex=0.75)
-  scale.txt2 <- list("sp.text", loc=c(x + dx.2, y - dx.2 * 0.05),
-                     txt=dm.2, cex=0.75)
-  lo[[length(lo) + 1L]] <- leg.scale
-  lo[[length(lo) + 1L]] <- scale.txt1
-  lo[[length(lo) + 1L]] <- scale.txt2
+  if (!is.projected(grd)) {
+    x <- xlim[1] + diff(xlim) * 0.02
+    y <- ylim[2] - diff(ylim) * 0.06
+    dx.1 <- 1
+    dm.1 <- spDistsN1(cbind(dx.1, y), c(0, y), longlat=TRUE)
+    xseq <- pretty(xlim)[1:2]
+    dm <- spDistsN1(cbind(xseq[2], y), c(xseq[1], y), longlat=TRUE)
+    dm.2 <- pretty(c(0, dm), n=1)[2]
+    dx.2 <- dm.2 / dm.1
+    leg.scale <- list("SpatialPolygonsRescale", layout.scale.bar(),
+                      offset=c(x, y), scale=dx.2, fill=c("white", "black"))
+    txt1 <- list("sp.text", loc=c(x, y - dx.2 * 0.05), txt="0", cex=0.75)
+    txt2 <- list("sp.text", loc=c(x + dx.2, y - dx.2 * 0.05),
+                 txt=paste(dm.2, "km"), cex=0.75)
+    lo[[length(lo) + 1L]] <- leg.scale
+    lo[[length(lo) + 1L]] <- txt1
+    lo[[length(lo) + 1L]] <- txt2
+  }
 
   # Add long-alt grid over projected data
   if (add.llgridlines && is.projected(grd)) {
