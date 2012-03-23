@@ -80,7 +80,7 @@ abline(lm.trend)
 
 # Kriging with External Drift (KED):
 vg <- variogram(var1 ~ var2, ESRP_WaterLevels_2008)
-vg.model <- vgm(psill = 4500, model = "Sph", range = 100, nugget = 0)
+vg.model <- vgm(psill = 4500, model = "Sph", range = 100000, nugget = 0)
 print(plot(vg, vg.model, main = "Residual variogram model (var1 ~ var2)"))
 cv <- RunCrossValidation(var1 ~ var2, ESRP_WaterLevels_2008,
                          vg.model = vg.model)
@@ -93,9 +93,9 @@ cat(cv$me, cv$mspe, cv$cor.op, cv$cor.pr, "\n")
 
 # Plot residuals from cross-validation
 PlotBubble(cv$cv, "residual", main = "Residuals", ply = ESRP_Boundary,
-           xlim = c(-115.25, -111.50), ylim = c(42.25, 44.50))
+           xlim = c( 10000, 328000), ylim = c( 81200, 335700))
 PlotBubble(cv$cv, "residual", main = "Residuals", ply = ESRP_Boundary,
-           xlim = c(-113.30, -112.20), ylim = c(43.30, 44.00))
+           xlim = c(178000, 257500), ylim = c(202000, 272000))
 }
 
 \keyword{misc}

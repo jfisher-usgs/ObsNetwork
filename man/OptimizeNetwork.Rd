@@ -99,23 +99,23 @@ The status of the objective values after each GA iteration is plotted.
 \code{\link{krige}}, \code{\link{rbga}}
 }
 
-\examples{\donttest{data(ESRP_NED500m)
+\examples{\donttest{data(ESRP_NED)
 data(ESRP_WaterLevels_2008)
 data(ESRP_Boundary)
 
 # Variogram
-vg.model <- vgm(psill = 4500, model = "Sph", range = 100, nugget = 0)
+vg.model <- vgm(psill = 4500, model = "Sph", range = 100000, nugget = 0)
 formula <- var1 ~ var2
 
 # Optimize "State" network:
-ga <- OptimizeNetwork(ESRP_WaterLevels_2008, ESRP_NED500m, ESRP_Boundary,
+ga <- OptimizeNetwork(ESRP_WaterLevels_2008, ESRP_NED, ESRP_Boundary,
                       network = "State", nsites = 20, vg.model = vg.model,
                       formula = formula, nmax = Inf, grd.fact = 5, niters = 3,
                       pop.size = 300, obj.weights = c(10, 1, 1, 1))
 
 # Plot prediction and standard error maps
-xlim <- c(-115.25, -111.50)
-ylim <- c(  42.25,   44.50)
+xlim <- c(10000, 328000)
+ylim <- c(81200, 335700)
 PlotRaster(ga$kr, "var1.pred", ESRP_WaterLevels_2008 , ESRP_Boundary,
            pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
            main = "Predictions", rm.idxs = which(ga$is.rm.idx),
@@ -125,9 +125,9 @@ PlotRaster(ga$kr, "var1.se", ESRP_WaterLevels_2008 , ESRP_Boundary,
            rm.idxs = which(ga$is.rm.idx), xlim = xlim, ylim = ylim)
 
 # Optimize "INL" network:
-xlim <- c(-113.30, -112.20)
-ylim <- c(  43.30,   44.00)
-ga <- OptimizeNetwork(ESRP_WaterLevels_2008, ESRP_NED500m, ESRP_Boundary,
+xlim <- c(178000, 257500)
+ylim <- c(202000, 272000)
+ga <- OptimizeNetwork(ESRP_WaterLevels_2008, ESRP_NED, ESRP_Boundary,
                       network = "INL", nsites = 20, vg.model = vg.model,
                       formula = formula, nmax = Inf, grd.fact = 5, niters = 3,
                       pop.size = 300, obj.weights = c(10, 1, 1, 1),

@@ -84,8 +84,10 @@ obj <- ProcessObservations(d, x.var = "dec_long_va", y.var = "dec_lat_va",
                            dt.lim = dt.lim)
 summary(obj)
 
-# Convert geodetic datum from WGS 84 to NAD 83
-projargs <- "+proj=longlat +datum=NAD83 +no_defs +ellps=GRS80" # NAD 83
+# Transform coordinates to Albers Equal-Area Conic projection; NAD 27
+projargs <- paste("+proj=aea +lat_1=42.83333333333333 +lat_2=44.16666666666666",
+                  "+lat_0=41.5 +lon_0=-113 +x_0=200000 +y_0=0 +ellps=clrk66",
+                  "+datum=NAD27 +units=m +no_defs")
 obj <- rgdal::spTransform(obj, sp::CRS(projargs))
 
 # Compare with available data set

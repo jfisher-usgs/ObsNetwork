@@ -2,33 +2,14 @@ PlotRaster <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
                        pal=heat.colors, contour=FALSE, label.pts=FALSE,
                        main="", gr.type="windows", gr.file=NULL,
                        width=7, height=NA, lo=list(),
-                       projargs=proj4string(grd), add.llgridlines=FALSE,
-                       crop.grid=FALSE) {
+                       add.llgridlines=FALSE, crop.grid=FALSE) {
 
-# Transform map projection and datum
+  # Transform points and polygon projection and datum
+  crs <- CRS(proj4string(grd))
   if (!missing(pts))
-    pts <- spTransform(pts, CRS(projargs))
+    pts <- spTransform(pts, crs)
   if (!missing(ply))
-    ply <- spTransform(ply, CRS(projargs))
-  if (proj4string(grd) != projargs) {
-    grd.pts <- suppressWarnings(spTransform(grd, CRS(projargs)))
-    x <- coordinates(grd.pts)[, "x"]
-    y <- coordinates(grd.pts)[, "y"]
-    cells.dim <- as.data.frame(slot(grd, "grid"))$cells.dim
-    cellsize <- c(abs(diff(range(x))) / cells.dim[1],
-                  abs(diff(range(y))) / cells.dim[2])
-    cellcentre.offset <- c(min(x), min(y))
-    newdata <- GridTopology(cellcentre.offset=cellcentre.offset,
-                            cellsize=cellsize, cells.dim=cells.dim)
-    newdata <- SpatialGrid(newdata, proj4string=CRS(projargs))
-    grd <- idw(as.formula(paste(zcol, "~", 1)), grd.pts, newdata,
-               idp=2.0, nmax=5)
-    chull.idxs <- chull(coordinates(grd.pts))
-    p <- Polygon(coordinates(grd.pts[c(chull.idxs, chull.idxs[1]), ]))
-    p <- Polygons(list(p), "1")
-    p <- SpatialPolygons(list(p), proj4string=CRS(projargs))
-    grd[[zcol]] <- grd$var1.pred * overlay(grd, p)
-  }
+    ply <- spTransform(ply, crs)
 
   # Exclude raster data outside of polygon
   if (crop.grid && !missing(ply))

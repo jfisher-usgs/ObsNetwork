@@ -47,7 +47,7 @@ data(ESRP_Boundary)
 PlotBubble(ESRP_WaterLevels_2008, "acy", ESRP_Boundary,
            main = "Measurment error")
 PlotBubble(ESRP_WaterLevels_2008, "sd", ESRP_Boundary,
-           xlim = c(-113.30, -112.20), ylim = c(43.30, 44.00),
+           xlim = c(178000, 257500), ylim = c(202000, 272000),
            main = "Standard deviation")
 }
 

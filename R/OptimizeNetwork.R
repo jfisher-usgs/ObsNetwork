@@ -86,6 +86,12 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, vg.model,
 
   # Main program
 
+  # Transform points and polygon projection and datum
+  crs <- CRS(proj4string(grd))
+  pts <- spTransform(pts, crs)
+  if (!missing(ply))
+    ply <- spTransform(ply, crs)
+
   # Save original vector of site numbers
   orig.siteno <- pts$siteno
 
@@ -101,8 +107,8 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, vg.model,
   }
 
   # Crop grid to axis limits
-  x <- coordinates(grd)[, "x"]
-  y <- coordinates(grd)[, "y"]
+  x <- coordinates(grd)[, 1]
+  y <- coordinates(grd)[, 2]
   is.in.lim <- x >= xlim[1] & x <= xlim[2] & y >= ylim[1] & y <= ylim[2]
   grd <- grd[is.in.lim, ] # NA's values outside of limits
 

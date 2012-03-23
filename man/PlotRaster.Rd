@@ -13,8 +13,7 @@ PlotRaster(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
            pal = heat.colors, contour = FALSE, label.pts = FALSE,
            main = "", gr.type = "windows", gr.file = NULL,
            width = 7, height = NA, lo = list(),
-           projargs = proj4string(grd), add.llgridlines = FALSE,
-           crop.grid = FALSE)
+           add.llgridlines = FALSE, crop.grid = FALSE)
 }
 
 \arguments{
@@ -44,8 +43,6 @@ PlotRaster(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
                      of the plotting window in inches.}
 \item{lo}{list; a list with more layout items, see \code{sp.layout} argument
   in \code{\link[sp]{spplot}}.}
-\item{projargs}{character; the projection arguments entered exactly as in the
-  PROJ.4 documentation.}
 \item{add.llgridlines}{logical; plot long-lat grid over projected data,
   default is \code{FALSE}.}
 \item{crop.grid}{logical; exclude raster data outside of \code{ply},
@@ -63,36 +60,30 @@ Returns (or plots) the raster plot.
 }
 
 \examples{
-data(ESRP_NED500m)
+data(ESRP_NED)
 data(ESRP_WaterLevels_2008)
 data(ESRP_Boundary)
 data(ESRP_Lakes)
 data(ESRP_Rivers)
 data(INL_Boundary)
 
-PlotRaster(ESRP_NED500m, "var2", ESRP_WaterLevels_2008, ESRP_Boundary)
+PlotRaster(ESRP_NED, "var2", ESRP_WaterLevels_2008, ESRP_Boundary)
 
-# Replot using albers equal area projection
-projargs <- paste("+proj=aea +lat_1=42.83333333333333 +lat_2=44.16666666666666",
-                  "+lat_0=41.5 +lon_0=-113 +x_0=200000 +y_0=0 +ellps=clrk66",
-                  "+datum=NAD27 +units=m +no_defs")
-PlotRaster(ESRP_NED500m, "var2", ESRP_WaterLevels_2008, ESRP_Boundary,
-           projargs = projargs, add.llgridlines = TRUE)
-
-# Add points to plot layout and set axis limits
+# Add points to plot layout, set axis limits, and plot long-lat grid
 pts <- ESRP_WaterLevels_2008[ESRP_WaterLevels_2008$net == "State", ]
-xlim <- c(-115.25, -111.50)
-ylim <- c(  42.25,   44.50)
-PlotRaster(ESRP_NED500m, "var2", pts, ESRP_Boundary, xlim = xlim,
-           ylim = ylim, pal = terrain.colors, label.pts = "mapid")
+xlim <- c(10000, 328000)
+ylim <- c(81200, 335700)
+PlotRaster(ESRP_NED, "var2", pts, ESRP_Boundary, xlim = xlim,
+           ylim = ylim, pal = terrain.colors, label.pts = "mapid",
+           add.llgridlines = TRUE)
 
 # Plot hill shade, lakes, river, and INL boundary
-slp <- terrain(raster(ESRP_NED500m), opt = "slope")
-asp <- terrain(raster(ESRP_NED500m), opt = "aspect")
+slp <- terrain(raster(ESRP_NED), opt = "slope")
+asp <- terrain(raster(ESRP_NED), opt = "aspect")
 grd <- as(hillShade(slp, asp, 40, 270), "SpatialGridDataFrame")
 zlim <- range(grd[[1]], na.rm = TRUE)
-at <- seq(zlim[1], zlim[2], length.out = 100)
-pal <- function(n) grey(0:100 / 100)[1:n]
+at <- seq(zlim[1], zlim[2], length.out = 50)
+pal <- function(n) grey(0:50 / 50)[1:n]
 lo <- list()
 lo[[1]] <- list("sp.polygons", ESRP_Lakes, col = "#1B70E0", fill = "#BAE4E5",
                 first = FALSE)
@@ -101,9 +92,9 @@ lo[[3]] <- list("sp.polygons", INL_Boundary, col = "#000000", first = FALSE)
 PlotRaster(grd, 1, xlim = xlim, ylim = ylim, at = at, pal = pal, lo = lo)
 
 # Kriging
-newdata <- ESRP_NED500m
+newdata <- ESRP_NED
 newdata$var2 <- newdata$var2 * sp::overlay(newdata, ESRP_Boundary)
-vg.model <- vgm(psill = 4500, model = "Sph", range = 100, nugget = 0)
+vg.model <- vgm(psill = 4500, model = "Sph", range = 100000, nugget = 0)
 kr <- krige(formula = var1 ~ var2, locations = ESRP_WaterLevels_2008,
             newdata = newdata, model = vg.model)
 kr$var1.se <- sqrt(kr$var1.var) # standard error
@@ -117,10 +108,10 @@ PlotRaster(kr, "var1.se", ESRP_WaterLevels_2008 , ESRP_Boundary,
            xlim = xlim, ylim = ylim)
 
 # Reduce axis limits and replot maps
-xlim <- c(-113.30, -112.20)
-ylim <- c(  43.30,   44.00)
-x <- coordinates(kr)[, "x"]
-y <- coordinates(kr)[, "y"]
+xlim <- c(178000, 257500)
+ylim <- c(202000, 272000)
+x <- coordinates(kr)[, 1]
+y <- coordinates(kr)[, 2]
 is.in.lim <- x >= xlim[1] & x <= xlim[2] & y >= ylim[1] & y <= ylim[2]
 PlotRaster(kr[is.in.lim, ], "var1.pred", ESRP_WaterLevels_2008 ,
            ESRP_Boundary, xlim = xlim, ylim = ylim,
