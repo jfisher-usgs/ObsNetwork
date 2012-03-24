@@ -10,6 +10,14 @@ PlotRaster <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
     pts <- spTransform(pts, crs)
   if (!missing(ply))
     ply <- spTransform(ply, crs)
+  for (i in seq(along=lo)) {
+    if (is.list(lo[[i]]) && length(lo[[i]]) > 1) {
+      obj <- lo[[i]][[2]]
+      ans <- try(proj4string(obj), silent=TRUE)
+      if (!inherits(ans, "try-error"))
+        lo[[i]][[2]] <- spTransform(obj, crs)
+    }
+  }
 
   # Exclude raster data outside of polygon
   if (crop.grid && !missing(ply))

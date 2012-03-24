@@ -6,8 +6,8 @@ WriteGAResults <- function(ga, file) {
                                     defaultextension="txt",
                                     initialfile="*.txt",
                                     initialdir=file.path(getwd(), "..")))
-    if (!nzchar(file))
-      return()
+    if (length(file) == 0 | !nzchar(file[1]))
+      return(NULL)
     file <- paste(file, collapse=" ")
   }
 

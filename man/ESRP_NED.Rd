@@ -9,7 +9,9 @@
 \description{
 The eastern Snake River Plain (ESRP) is a geologic feature located in the
 state of Idaho. This data set gives topographic information for the ESRP and
-vicinity on a 500 meter by 500 meter grid.
+vicinity on a 500 meter by 500 meter grid. The west, east, north, and
+south bounding coordinates are about -115.39, -111.39, 44.52, and 42.21
+decimal degrees, respectively.
 }
 
 \usage{
@@ -21,8 +23,8 @@ An object of \code{\link{SpatialGridDataFrame-class}} with 323,724
 points (coordinates) and a single data attribute (elevation).
 Geographic coordinates are in units of meters, in conformance
 with the North American Datum of 1927 (NAD 27), and placed in a
-Albers Equal-Area Conic projection; standard parellels 42.83N, 44.16N;
-central meridian 113.00W.
+Albers Equal-Area Conic projection; standard parellels 42.83, 44.16;
+central meridian -113.00.
 }
 
 \source{
@@ -52,14 +54,16 @@ f <- system.file("extdata/ESRP_NED.tif", package = "ObsNetwork")
 grd <- rgdal::readGDAL(f, band = 1)
 names(grd) <- "var2"
 grd.attr <- as.data.frame(slot(grd, "grid"))
+summary(grd)
 
-# Transform coordinates to Albers Equal-Area Conic projection; NAD 27
+# Transform coordinates to meters; Albers Equal-Area Conic projection; NAD27
 projargs <- paste("+proj=aea +lat_1=42.83333333333333 +lat_2=44.16666666666666",
                   "+lat_0=41.5 +lon_0=-113 +x_0=200000 +y_0=0 +ellps=clrk66",
                   "+datum=NAD27 +units=m +no_defs")
 pts <- suppressWarnings(spTransform(grd, CRS(projargs)))
+class(pts)
 
-# Resample data using reduced grid size
+# Resample data using reduced grid size of 500 by 500 meters
 dx <- 500
 dy <- 500
 xlim <- c(10000, 328000)
@@ -67,12 +71,12 @@ ylim <- c(81200, 335700)
 cellcentre.offset <- c(min(xlim) + dx / 2, min(ylim) + dy / 2)
 cellsize <- c(dx, dy)
 cells.dim <- c(diff(range(xlim)) / dx, diff(range(ylim)) / dy)
-newdata <- GridTopology(cellcentre.offset=cellcentre.offset,
-                        cellsize=cellsize, cells.dim=cells.dim)
-newdata <- SpatialGrid(newdata, proj4string=CRS(projargs))
+newdata <- GridTopology(cellcentre.offset = cellcentre.offset,
+                        cellsize = cellsize, cells.dim = cells.dim)
+newdata <- SpatialGrid(newdata, proj4string = CRS(projargs))
 
-# Inverse distance weighting interpolation; is computationally demanding
-obj <- idw(var2 ~ 1, pts, newdata, idp=2.0, maxdist=250)
+# Inverse distance weighting interpolation; computationally demanding
+obj <- idw(var2 ~ 1, pts, newdata, idp = 2.0, maxdist = 250)
 obj$var1.var <- NULL
 names(obj) <- "var2"
 

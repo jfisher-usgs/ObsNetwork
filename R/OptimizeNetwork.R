@@ -186,7 +186,7 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, vg.model,
   cat("\nElapsed time:", format(elapsed.time), "hours\n")
 
   # Determine how many times the final solution was repeated
-   ans.rep <- 0L
+  ans.rep <- 0L
   for (i in niters:1) {
     if (!identical(obj.values[i, ], obj.values[niters, ]))
       break
