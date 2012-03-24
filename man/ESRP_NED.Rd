@@ -9,7 +9,7 @@
 \description{
 The eastern Snake River Plain (ESRP) is a geologic feature located in the
 state of Idaho. This data set gives topographic information for the ESRP and
-vicinity on a 500 meter by 500 meter grid. The west, east, north, and
+vicinity on a 500 by 500 meter grid. The west, east, north, and
 south bounding coordinates are about -115.39, -111.39, 44.52, and 42.21
 decimal degrees, respectively.
 }
@@ -48,7 +48,7 @@ Remote Sensing, v. 68, no. 1, p. 5-11.
 data(ESRP_NED)
 image(ESRP_NED)
 summary(ESRP_NED)
-\donttest{
+
 # Commands used to construct this data object:
 f <- system.file("extdata/ESRP_NED.tif", package = "ObsNetwork")
 grd <- rgdal::readGDAL(f, band = 1)
@@ -74,7 +74,7 @@ cells.dim <- c(diff(range(xlim)) / dx, diff(range(ylim)) / dy)
 newdata <- GridTopology(cellcentre.offset = cellcentre.offset,
                         cellsize = cellsize, cells.dim = cells.dim)
 newdata <- SpatialGrid(newdata, proj4string = CRS(projargs))
-
+\donttest{
 # Inverse distance weighting interpolation; computationally demanding
 obj <- idw(var2 ~ 1, pts, newdata, idp = 2.0, maxdist = 250)
 obj$var1.var <- NULL

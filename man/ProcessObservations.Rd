@@ -84,7 +84,7 @@ obj <- ProcessObservations(d, x.var = "dec_long_va", y.var = "dec_lat_va",
                            dt.lim = dt.lim)
 summary(obj)
 
-# Transform coordinates to Albers Equal-Area Conic projection; NAD 27
+# Transform coordinates to meters; Albers Equal-Area Conic projection; NAD27
 projargs <- paste("+proj=aea +lat_1=42.83333333333333 +lat_2=44.16666666666666",
                   "+lat_0=41.5 +lon_0=-113 +x_0=200000 +y_0=0 +ellps=clrk66",
                   "+datum=NAD27 +units=m +no_defs")
