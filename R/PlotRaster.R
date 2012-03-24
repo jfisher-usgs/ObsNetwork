@@ -113,9 +113,9 @@ PlotRaster <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
 
   # Add long-alt grid over projected data
   if (add.llgridlines && is.projected(grd)) {
-    obj <- as(grd, "SpatialPointsDataFrame")
+    obj <- SpatialPoints(cbind(xlim, ylim), proj4string=crs)
     obj.ll <- spTransform(obj, CRS("+proj=longlat +datum=WGS84"))
-    easts <- pretty(bbox(obj.ll)[1, ])
+    easts  <- pretty(bbox(obj.ll)[1, ])
     norths <- pretty(bbox(obj.ll)[2, ])
     grd.ll <- gridlines(obj.ll, easts=easts, norths=norths, ndiscr=50)
     grd.xy <- spTransform(grd.ll, CRS(proj4string(obj)))
