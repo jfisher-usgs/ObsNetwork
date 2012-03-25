@@ -29,6 +29,12 @@ PlotBubble(pts, zcol, ply, xlim = bbox(ply)[1, ], ylim = bbox(ply)[2, ],
                only used if \code{gr.type} is not "windows".}
 }
 
+
+\details{
+The spatial polygon \code{ply} is transformed to the map projection
+and datum of the observation sites, \code{pts}.
+}
+
 \value{
 Returns (or plots) the bubble plot. Values plotted in the key include the
 five quantiles: minimum, 25th percentile, median, 75th percentile, and maximum.

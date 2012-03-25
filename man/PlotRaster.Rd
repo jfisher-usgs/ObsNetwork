@@ -49,6 +49,11 @@ PlotRaster(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
   default is \code{FALSE}.}
 }
 
+\details{
+Spatial data is transformed to the map projection and datum of the
+raster data set, \code{grd}.
+}
+
 \value{
 Returns (or plots) the raster plot.
 }
@@ -67,9 +72,10 @@ data(ESRP_Lakes)
 data(ESRP_Rivers)
 data(INL_Boundary)
 
+# Plot topography
 PlotRaster(ESRP_NED, "var2", ESRP_WaterLevels_2008, ESRP_Boundary)
 
-# Add points to plot layout, set axis limits, and plot long-lat grid
+# Set axis limits, add points and long-lat grid to plot layout
 pts <- ESRP_WaterLevels_2008[ESRP_WaterLevels_2008$net == "State", ]
 xlim <- c(10000, 328000)
 ylim <- c(81200, 335700)
@@ -77,7 +83,7 @@ PlotRaster(ESRP_NED, "var2", pts, ESRP_Boundary, xlim = xlim,
            ylim = ylim, pal = terrain.colors, label.pts = "mapid",
            add.llgridlines = TRUE)
 
-# Plot hill shade, lakes, river, and INL boundary
+# Plot hill shade, add lakes, river, and INL boundary to the plot layout
 slp <- terrain(raster(ESRP_NED), opt = "slope")
 asp <- terrain(raster(ESRP_NED), opt = "aspect")
 grd <- as(hillShade(slp, asp, 40, 270), "SpatialGridDataFrame")
@@ -91,13 +97,13 @@ lo[[2]] <- list("sp.lines", ESRP_Rivers, col = "#1B70E0", first = FALSE)
 lo[[3]] <- list("sp.polygons", INL_Boundary, col = "#000000", first = FALSE)
 PlotRaster(grd, 1, xlim = xlim, ylim = ylim, at = at, pal = pal, lo = lo)
 
-# Kriging
+# Krige water table surface
 newdata <- ESRP_NED
 ply <- spTransform(ESRP_Boundary, CRS(proj4string(newdata)))
 newdata$var2 <- newdata$var2 * sp::overlay(newdata, ply)
 vg.model <- vgm(psill = 4500, model = "Sph", range = 100000, nugget = 0)
-kr <- krige(formula = var1 ~ var2, locations = ESRP_WaterLevels_2008,
-            newdata = newdata, model = vg.model)
+kr <- gstat::krige(formula = var1 ~ var2, locations = ESRP_WaterLevels_2008,
+                   newdata = newdata, model = vg.model)
 kr$var1.se <- sqrt(kr$var1.var) # standard error
 
 # Plot prediction and standard error maps

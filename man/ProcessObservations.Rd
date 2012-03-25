@@ -68,13 +68,15 @@ Returns a data frame with variables:
 }
 
 \examples{
+# Read data from text file
 f <- system.file("extdata/ESRP_WaterLevels.csv.gz", package = "ObsNetwork")
 d <- read.table(file = f, sep = ",", header = TRUE, fill = TRUE, flush = TRUE,
                 strip.white = TRUE, blank.lines.skip = TRUE,
                 allowEscapes = TRUE, stringsAsFactors = FALSE)
 summary(d)
 
-projargs <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs" # WGS 84
+# Establish geographic coordinate system; in decimal degrees, WGS 84
+projargs <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
 dt.lim <- c("2008-01-01 00:00", "2008-12-31 23:59") # 2008 calendar year
 obj <- ProcessObservations(d, x.var = "dec_long_va", y.var = "dec_lat_va",
                            projargs = projargs, siteno.var = "site_no",
@@ -84,7 +86,7 @@ obj <- ProcessObservations(d, x.var = "dec_long_va", y.var = "dec_lat_va",
                            dt.lim = dt.lim)
 summary(obj)
 
-# Transform coordinates to meters; Albers Equal-Area Conic projection; NAD27
+# Transform map projection and datum; in meters, Albers Equal-Area, NAD27
 projargs <- paste("+proj=aea +lat_1=42.83333333333333 +lat_2=44.16666666666666",
                   "+lat_0=41.5 +lon_0=-113 +x_0=200000 +y_0=0 +ellps=clrk66",
                   "+datum=NAD27 +units=m +no_defs")

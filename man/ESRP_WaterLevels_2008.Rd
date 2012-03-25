@@ -18,8 +18,11 @@ ESRP_WaterLevels_2008
 
 \format{
 An object of \code{\link{SpatialPointsDataFrame-class}} with 335 points
-(coordinates) in units of decimal degrees, in conformance with the North
-American Datum of 1983 (NAD 83), and the following attributes:
+(coordinates). Geographic coordinates are in units of meters,
+in conformance with the North American Datum of 1927 (NAD 27),
+and placed in a Albers Equal-Area Conic projection; standard
+parellels 42.83, 44.16; central meridian -113.00.
+This data set has the following attributes:
 \describe{
   \item{siteno}{unique numerical identifier for well site, for example
     \href{http://waterdata.usgs.gov/id/nwis/inventory/?site_no=435339112444601}{435339112444601};}
@@ -42,7 +45,7 @@ American Datum of 1983 (NAD 83), and the following attributes:
 \source{
 The National Water Information System
 (\href{http://waterdata.usgs.gov/nwis}{NWIS}); accessed December 2011
-using the \href{https://github.com/jfisher-usgs/RNWIS}{RNWIS} package.
+using \href{https://github.com/jfisher-usgs/RNWIS}{RNWIS}.
 \href{http://www.ngs.noaa.gov/PC_PROD/VERTCON/}{VERTCON} (version 2.1) was
 used to convert National Geodetic Vertical Datum of 1929 (NGVD 29) heights
 to NAVD 88. Data attributes \sQuote{var1}, \sQuote{acy}, and \sQuote{sd} were

@@ -23,8 +23,8 @@ with the North American Datum of 1983 (NAD 83).
 }
 
 \source{
-U.S. Geological Survey INL Project Office,
-\url{http://id.water.usgs.gov/projects/INL}.
+U.S. Geological Survey
+\href{http://id.water.usgs.gov/projects/INL}{INL Project Office}.
 }
 
 \examples{

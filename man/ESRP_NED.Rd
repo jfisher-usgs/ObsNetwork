@@ -30,7 +30,8 @@ central meridian -113.00.
 \source{
 The National Elevation Dataset (\href{http://ned.usgs.gov/}{NED})
 1-arc-second raster. Dataset resampled to 10 arc-seconds using a
-cubic convolution assignment.
+cubic convolution assignment. All other data processing is shown in
+the \sQuote{Examples} section below.
 }
 
 \references{
@@ -76,10 +77,11 @@ newdata <- GridTopology(cellcentre.offset = cellcentre.offset,
 newdata <- SpatialGrid(newdata, proj4string = CRS(projargs))
 \donttest{
 # Inverse distance weighting interpolation; computationally demanding
-obj <- idw(var2 ~ 1, pts, newdata, idp = 2.0, maxdist = 250)
+obj <- gstat::idw(var2 ~ 1, pts, newdata, idp = 2.0, maxdist = 250)
 obj$var1.var <- NULL
 names(obj) <- "var2"
 
+# Compare with available data set
 identical(obj, ESRP_NED)
 }}
 

@@ -70,6 +70,9 @@ specified, \code{obj.weights}. For example, if a higher weight is specified for
 the mean prediction error, the solution will be one that favors a smaller
 prediction error over a small root-mean squared error, mean standard deviation,
 and mean measurement error.
+
+Spatial data is transformed to the map projection and datum of the
+raster data set, \code{grd}.
 }
 
 \value{
@@ -103,19 +106,17 @@ The status of the objective values after each GA iteration is plotted.
 data(ESRP_WaterLevels_2008)
 data(ESRP_Boundary)
 
-# Variogram
+# Variogram and formula
 vg.model <- vgm(psill = 4500, model = "Sph", range = 100000, nugget = 0)
 formula <- var1 ~ var2
 
-# Optimize "State" network:
+# Optimize "State" network
 xlim <- c(10000, 328000)
 ylim <- c(81200, 335700)
 ga <- OptimizeNetwork(ESRP_WaterLevels_2008, ESRP_NED, ESRP_Boundary,
                       network = "State", nsites = 20, vg.model = vg.model,
                       formula = formula, nmax = Inf, grd.fact = 5, niters = 3,
                       pop.size = 300, obj.weights = c(10, 1, 1, 1))
-
-# Plot prediction and standard error maps
 PlotRaster(ga$kr, "var1.pred", ESRP_WaterLevels_2008 , ESRP_Boundary,
            pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
            main = "Predictions", rm.idxs = which(ga$is.rm.idx),
@@ -124,7 +125,7 @@ PlotRaster(ga$kr, "var1.se", ESRP_WaterLevels_2008 , ESRP_Boundary,
            pal = terrain.colors, main = "Standard errors",
            rm.idxs = which(ga$is.rm.idx), xlim = xlim, ylim = ylim)
 
-# Optimize "INL" network:
+# Optimize "INL" network
 xlim <- c(178000, 257500)
 ylim <- c(202000, 272000)
 ga <- OptimizeNetwork(ESRP_WaterLevels_2008, ESRP_NED, ESRP_Boundary,
@@ -132,8 +133,6 @@ ga <- OptimizeNetwork(ESRP_WaterLevels_2008, ESRP_NED, ESRP_Boundary,
                       formula = formula, nmax = Inf, grd.fact = 5, niters = 3,
                       pop.size = 300, obj.weights = c(10, 1, 1, 1),
                       xlim = xlim, ylim = ylim)
-
-# Plot prediction and standard error maps
 PlotRaster(ga$kr, "var1.pred", ESRP_WaterLevels_2008, ESRP_Boundary,
            pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
            main = "Predictions", rm.idxs = which(ga$is.rm.idx),
