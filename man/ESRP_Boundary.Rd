@@ -38,12 +38,6 @@ summary(ESRP_Boundary)
 dsn <- system.file("extdata/ESRP_Boundary", package = "ObsNetwork")
 obj <- readOGR(dsn = dsn, layer = basename(dsn))
 
-# Transform coordinates to meters; Albers Equal-Area Conic projection; NAD27
-projargs <- paste("+proj=aea +lat_1=42.83333333333333 +lat_2=44.16666666666666",
-                  "+lat_0=41.5 +lon_0=-113 +x_0=200000 +y_0=0 +ellps=clrk66",
-                  "+datum=NAD27 +units=m +no_defs")
-obj <- spTransform(obj, CRS(projargs))
-
 all.equal(obj, ESRP_Boundary)
 
 # Polygons slots

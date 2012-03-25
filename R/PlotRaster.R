@@ -19,11 +19,7 @@ PlotRaster <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
     }
   }
 
-  # Exclude raster data outside of polygon
-  if (crop.grid && !missing(ply))
-    grd[[zcol]]  <- grd[[zcol]] * overlay(grd, ply)
-
-  # Define points
+  # Add points to layout
   if (!missing(pts)) {
     if (missing(rm.idxs)) {
       lo[[length(lo) + 1L]] <- list("sp.points", pts, pch=21, cex=0.5,
@@ -36,7 +32,7 @@ PlotRaster <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
     }
   }
 
-  # Point labels
+  # Add point labels to layout
   labs <- NULL
   if (is.logical(label.pts) && label.pts) {
     labs <- as.character(1:nrow(pts))
@@ -58,15 +54,25 @@ PlotRaster <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
   if (missing(ylim))
     ylim <- range(pretty(extendrange(bbox.grd[2,]), n=7))
 
-  # Reduce points to axis limits
+  # Exclude points outside of axis limits
   if (!missing(pts)) {
     coords <- as.data.frame(coordinates(pts))
-    is.in.bbox <- coords$x >= xlim[1] & coords$x <= xlim[2] &
-                  coords$y >= ylim[1] & coords$y <= ylim[2]
+    is.in.bbox <- coords[, 1] >= xlim[1] & coords[, 1] <= xlim[2] &
+                  coords[, 2] >= ylim[1] & coords[, 2] <= ylim[2]
     pts <- pts[is.in.bbox, ]
   }
 
-  # Define polygon
+  # Exclude raster data outside of axis limits
+  coords <- as.data.frame(coordinates(grd))
+  is.in.bbox <- coords[, 1] >= xlim[1] & coords[, 1] <= xlim[2] &
+                coords[, 2] >= ylim[1] & coords[, 2] <= ylim[2]
+  grd[[zcol]][!is.in.bbox] <- NA
+
+  # Exclude raster data outside of polygon
+  if (crop.grid && !missing(ply))
+    grd[[zcol]]  <- grd[[zcol]] * overlay(grd, ply)
+
+  # Add polygon to layout
   if (!missing(ply))
     lo[[length(lo) + 1L]] <- list("sp.polygons", ply, col="black", first=FALSE)
 
@@ -91,7 +97,7 @@ PlotRaster <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
   n <- length(at) + 1L
   cols <- pal(n)
 
-  # Add spatial scale legend
+  # Add spatial scale legend to layout
   if (!is.projected(grd)) {
     x <- xlim[1] + diff(xlim) * 0.02
     y <- ylim[2] - diff(ylim) * 0.06
@@ -111,7 +117,7 @@ PlotRaster <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
     lo[[length(lo) + 1L]] <- txt2
   }
 
-  # Add long-alt grid over projected data
+  # Add long-alt grid lines to layout
   if (add.llgridlines && is.projected(grd)) {
     obj <- SpatialPoints(cbind(xlim, ylim), proj4string=crs)
     obj.ll <- spTransform(obj, CRS("+proj=longlat +datum=WGS84"))

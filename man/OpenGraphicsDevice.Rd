@@ -45,7 +45,11 @@ A plot device is opened.
 }
 
 \examples{
-\donttest{OpenGraphicsDevice(type = "pdf")
+OpenGraphicsDevice(type = "windows")
+plot(1:3)
+dev.off()
+\donttest{
+OpenGraphicsDevice(type = "pdf")
 plot(1:3)
 dev.off()}
 }

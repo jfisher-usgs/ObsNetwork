@@ -93,7 +93,8 @@ PlotRaster(grd, 1, xlim = xlim, ylim = ylim, at = at, pal = pal, lo = lo)
 
 # Kriging
 newdata <- ESRP_NED
-newdata$var2 <- newdata$var2 * sp::overlay(newdata, ESRP_Boundary)
+ply <- spTransform(ESRP_Boundary, CRS(proj4string(newdata)))
+newdata$var2 <- newdata$var2 * sp::overlay(newdata, ply)
 vg.model <- vgm(psill = 4500, model = "Sph", range = 100000, nugget = 0)
 kr <- krige(formula = var1 ~ var2, locations = ESRP_WaterLevels_2008,
             newdata = newdata, model = vg.model)
@@ -110,15 +111,12 @@ PlotRaster(kr, "var1.se", ESRP_WaterLevels_2008 , ESRP_Boundary,
 # Reduce axis limits and replot maps
 xlim <- c(178000, 257500)
 ylim <- c(202000, 272000)
-x <- coordinates(kr)[, 1]
-y <- coordinates(kr)[, 2]
-is.in.lim <- x >= xlim[1] & x <= xlim[2] & y >= ylim[1] & y <= ylim[2]
-PlotRaster(kr[is.in.lim, ], "var1.pred", ESRP_WaterLevels_2008 ,
-           ESRP_Boundary, xlim = xlim, ylim = ylim,
+PlotRaster(kr, "var1.pred", ESRP_WaterLevels_2008 , ESRP_Boundary,
+           xlim = xlim, ylim = ylim,  crop.grid = TRUE,
            pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
-           main = "Predictions")
-PlotRaster(kr[is.in.lim, ], "var1.se", ESRP_WaterLevels_2008,
-           ESRP_Boundary, xlim = xlim, ylim = ylim,
+           main = "Predictions", add.llgridlines = TRUE)
+PlotRaster(kr, "var1.se", ESRP_WaterLevels_2008, ESRP_Boundary,
+           xlim = xlim, ylim = ylim, crop.grid = TRUE,
            pal = terrain.colors, main = "Standard errors")
 }
 
