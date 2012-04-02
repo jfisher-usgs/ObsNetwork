@@ -1,8 +1,7 @@
 PlotRaster <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
                        pal=heat.colors, contour=FALSE, label.pts=FALSE,
                        main="", gr.type="windows", gr.file=NULL,
-                       width=7, height=NA, lo=list(),
-                       add.llgridlines=FALSE, crop.grid=FALSE) {
+                       width=7, height=NA, lo=list(), ll.lines=FALSE) {
 
   # Transform points and polygon projection and datum
   crs <- CRS(proj4string(grd))
@@ -34,16 +33,18 @@ PlotRaster <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
 
   # Add point labels to layout
   labs <- NULL
-  if (is.logical(label.pts) && label.pts) {
-    labs <- as.character(1:nrow(pts))
-  } else if (is.character(label.pts) && label.pts %in% names(pts)) {
-    labs <- as.character(pts[[label.pts]])
-  }
-  if (!is.null(labs)) {
-    xy <- coordinates(pts)
-    n <- length(lo)
-    for (i in 1:nrow(xy)) {
-      lo[[n + i]] <- list("sp.text", loc=xy[i, ], txt=labs[i], cex=0.5)
+  if (!missing(pts)) {
+    if (is.logical(label.pts) && label.pts) {
+      labs <- as.character(1:nrow(pts))
+    } else if (is.character(label.pts) && label.pts %in% names(pts)) {
+      labs <- as.character(pts[[label.pts]])
+    }
+    if (!is.null(labs)) {
+      xy <- coordinates(pts)
+      n <- length(lo)
+      for (i in 1:nrow(xy)) {
+        lo[[n + i]] <- list("sp.text", loc=xy[i, ], txt=labs[i], cex=0.5)
+      }
     }
   }
 
@@ -54,14 +55,6 @@ PlotRaster <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
   if (missing(ylim))
     ylim <- range(pretty(extendrange(bbox.grd[2,]), n=7))
 
-  # Exclude points outside of axis limits
-  if (!missing(pts)) {
-    coords <- as.data.frame(coordinates(pts))
-    is.in.bbox <- coords[, 1] >= xlim[1] & coords[, 1] <= xlim[2] &
-                  coords[, 2] >= ylim[1] & coords[, 2] <= ylim[2]
-    pts <- pts[is.in.bbox, ]
-  }
-
   # Exclude raster data outside of axis limits
   coords <- as.data.frame(coordinates(grd))
   is.in.bbox <- coords[, 1] >= xlim[1] & coords[, 1] <= xlim[2] &
@@ -69,7 +62,7 @@ PlotRaster <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
   grd[[zcol]][!is.in.bbox] <- NA
 
   # Exclude raster data outside of polygon
-  if (crop.grid && !missing(ply))
+  if (!missing(ply))
     grd[[zcol]]  <- grd[[zcol]] * overlay(grd, ply)
 
   # Add polygon to layout
@@ -118,7 +111,7 @@ PlotRaster <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
   }
 
   # Add long-alt grid lines to layout
-  if (add.llgridlines && is.projected(grd)) {
+  if (ll.lines && is.projected(grd)) {
     obj <- SpatialPoints(cbind(xlim, ylim), proj4string=crs)
     obj.ll <- spTransform(obj, CRS("+proj=longlat +datum=WGS84"))
     easts  <- pretty(bbox(obj.ll)[1, ])
@@ -127,6 +120,10 @@ PlotRaster <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
     grd.xy <- spTransform(grd.ll, CRS(proj4string(obj)))
     lo[[length(lo) + 1L]] <- list("sp.lines", grd.xy, lty=3, first=FALSE)
   }
+
+  # Final check on layout components
+  if (length(lo) == 0)
+    lo <- NULL
 
   # Open graphics device
   OpenGraphicsDevice(gr.file, type=gr.type, w=width, h=height)

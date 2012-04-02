@@ -18,10 +18,8 @@ ESRP_WaterLevels_2008
 
 \format{
 An object of \code{\link{SpatialPointsDataFrame-class}} with 335 points
-(coordinates). Geographic coordinates are in units of meters,
-in conformance with the North American Datum of 1927 (NAD 27),
-and placed in a Albers Equal-Area Conic projection; standard
-parellels 42.83, 44.16; central meridian -113.00.
+(coordinates). Geographic coordinates are in units of decimal degrees,
+and in conformance with the North American Datum of 1983 (NAD 83).
 This data set has the following attributes:
 \describe{
   \item{siteno}{unique numerical identifier for well site, for example

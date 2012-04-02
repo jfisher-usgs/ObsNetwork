@@ -1,5 +1,9 @@
 RunCrossValidation <- function(formula, pts, vg.model, nmax=Inf,
-                               nfold=nrow(pts)) {
+                               nfold=nrow(pts), projargs=proj4string(pts)) {
+
+  # Transform projection and datum
+  crs <- CRS(projargs)
+  pts <- spTransform(pts, crs)
 
   # Cross validation
   cv <- gstat::krige.cv(formula, pts, model=vg.model, nmax=nmax, nfold=nfold)

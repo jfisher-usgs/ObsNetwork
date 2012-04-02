@@ -1,9 +1,12 @@
 PlotBubble <- function(pts, zcol, ply, xlim=bbox(ply)[1, ], ylim=bbox(ply)[2, ],
-                       main="", gr.type="windows", gr.file=NULL) {
+                       main="", gr.type="windows", gr.file=NULL,
+                       projargs=proj4string(pts)) {
 
-  # Transform polygon projection and datum
+  # Transform projection and datum
+  crs <- CRS(projargs)
+  pts <- spTransform(pts, crs)
   if (!missing(ply))
-    ply <- spTransform(ply, CRS(proj4string(pts)))
+    ply <- spTransform(ply, crs)
 
   coords <- as.data.frame(coordinates(pts))
   is.in.bbox <- coords[, 1] >= xlim[1] & coords[, 1] <= xlim[2] &

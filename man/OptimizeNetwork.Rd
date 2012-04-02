@@ -117,11 +117,11 @@ ga <- OptimizeNetwork(ESRP_WaterLevels_2008, ESRP_NED, ESRP_Boundary,
                       network = "State", nsites = 20, vg.model = vg.model,
                       formula = formula, nmax = Inf, grd.fact = 5, niters = 3,
                       pop.size = 300, obj.weights = c(10, 1, 1, 1))
-PlotRaster(ga$kr, "var1.pred", ESRP_WaterLevels_2008 , ESRP_Boundary,
+PlotRaster(ga$kr, "var1.pred", ESRP_WaterLevels_2008 ,
            pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
            main = "Predictions", rm.idxs = which(ga$is.rm.idx),
            xlim = xlim, ylim = ylim)
-PlotRaster(ga$kr, "var1.se", ESRP_WaterLevels_2008 , ESRP_Boundary,
+PlotRaster(ga$kr, "var1.se", ESRP_WaterLevels_2008,
            pal = terrain.colors, main = "Standard errors",
            rm.idxs = which(ga$is.rm.idx), xlim = xlim, ylim = ylim)
 
@@ -133,13 +133,12 @@ ga <- OptimizeNetwork(ESRP_WaterLevels_2008, ESRP_NED, ESRP_Boundary,
                       formula = formula, nmax = Inf, grd.fact = 5, niters = 3,
                       pop.size = 300, obj.weights = c(10, 1, 1, 1),
                       xlim = xlim, ylim = ylim)
-PlotRaster(ga$kr, "var1.pred", ESRP_WaterLevels_2008, ESRP_Boundary,
+PlotRaster(ga$kr, "var1.pred", ESRP_WaterLevels_2008,
            pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
            main = "Predictions", rm.idxs = which(ga$is.rm.idx),
            xlim = xlim, ylim = ylim)
-PlotRaster(ga$kr, "var1.se", ESRP_WaterLevels_2008, ESRP_Boundary,
-           pal = terrain.colors, main = "Standard errors",
-           rm.idxs = which(ga$is.rm.idx),
+PlotRaster(ga$kr, "var1.se", ESRP_WaterLevels_2008, pal = terrain.colors,
+           main = "Standard errors", rm.idxs = which(ga$is.rm.idx),
            xlim = xlim, ylim = ylim)
 }}
 

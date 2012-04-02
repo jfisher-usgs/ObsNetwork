@@ -13,7 +13,8 @@ cross-validation statistics.
 }
 
 \usage{
-RunCrossValidation(formula, pts, vg.model, nmax = Inf, nfold = nrow(pts))
+RunCrossValidation(formula, pts, vg.model, nmax = Inf, nfold = nrow(pts),
+                   projargs = proj4string(pts))
 }
 
 \arguments{
@@ -29,6 +30,8 @@ RunCrossValidation(formula, pts, vg.model, nmax = Inf, nfold = nrow(pts))
 \item{nfold}{integer; if larger than 1, then apply n-fold cross validation;
   if \code{nfold} equals \code{nrow(pts)} (the default), apply leave-one-out
   cross validation.}
+\item{projargs}{character; projection arguments; the arguments must be entered
+  exactly as in the PROJ.4 documentation.}
 }
 
 \value{
@@ -51,44 +54,44 @@ Returns a list with components:
 \examples{
 data(ESRP_WaterLevels_2008)
 data(ESRP_Boundary)
+data(ESRP_NED)
+
+# Datum and projection
+pts <- spTransform(ESRP_WaterLevels_2008, CRS(proj4string(ESRP_NED)))
 
 # Ordinary Kriging (OK):
-vg <- variogram(var1 ~ 1, ESRP_WaterLevels_2008)
+vg <- variogram(var1 ~ 1, pts)
 vg.model <- fit.variogram(vg, vgm(model = "Lin", nugget = 0))
 print(plot(vg, vg.model, main = "Linear variogram model (var1 ~ 1)"))
-cv <- RunCrossValidation(var1 ~ 1, ESRP_WaterLevels_2008, vg.model = vg.model)
+cv <- RunCrossValidation(var1 ~ 1, pts, vg.model = vg.model)
 cat(cv$me, cv$mspe, cv$cor.op, cv$cor.pr, "\n")
 
 # Check for the presence of a detectable spatial trend or "drift" in the data
-lm.trend <- lm(var1 ~ x + y, data = ESRP_WaterLevels_2008)
+lm.trend <- lm(var1 ~ x + y, data = pts)
 summary(lm.trend)
 
 # Universal Kriging (UK):
-vg <- variogram(var1 ~ x + y, ESRP_WaterLevels_2008)
+vg <- variogram(var1 ~ x + y, pts)
 vg.model <- fit.variogram(vg, vgm(model = "Lin", nugget = 0))
 print(plot(vg, vg.model, main = "Residual variogram model (var1 ~ x + y)"))
-cv <- RunCrossValidation(var1 ~ x + y, ESRP_WaterLevels_2008,
-                         vg.model = vg.model)
+cv <- RunCrossValidation(var1 ~ x + y, pts, vg.model = vg.model)
 cat(cv$me, cv$mspe, cv$cor.op, cv$cor.pr, "\n")
 
 # Check for the presence of a correlation with an auxiliary predictor
-lm.trend <- lm(var1 ~ var2, data = ESRP_WaterLevels_2008)
+lm.trend <- lm(var1 ~ var2, data = pts)
 summary(lm.trend)
-plot(var1 ~ var2, ESRP_WaterLevels_2008,
-     main = "Correlation plot and fitted regression model")
+plot(var1 ~ var2, pts, main = "Correlation plot and fitted regression model")
 abline(lm.trend)
 
 # Kriging with External Drift (KED):
-vg <- variogram(var1 ~ var2, ESRP_WaterLevels_2008)
+vg <- variogram(var1 ~ var2, pts)
 vg.model <- vgm(psill = 4500, model = "Sph", range = 100000, nugget = 0)
 print(plot(vg, vg.model, main = "Residual variogram model (var1 ~ var2)"))
-cv <- RunCrossValidation(var1 ~ var2, ESRP_WaterLevels_2008,
-                         vg.model = vg.model)
+cv <- RunCrossValidation(var1 ~ var2, pts, vg.model = vg.model)
 cat(cv$me, cv$mspe, cv$cor.op, cv$cor.pr, "\n")
 
 # KED in a local neighbourhood:
-cv <- RunCrossValidation(var1 ~ var2, ESRP_WaterLevels_2008,
-                         vg.model = vg.model, nmax = 50)
+cv <- RunCrossValidation(var1 ~ var2, pts, vg.model = vg.model, nmax = 50)
 cat(cv$me, cv$mspe, cv$cor.op, cv$cor.pr, "\n")
 
 # Plot residuals from cross-validation

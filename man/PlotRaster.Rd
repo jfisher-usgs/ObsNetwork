@@ -12,8 +12,7 @@ Raster plot for spatial data with attributes.
 PlotRaster(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
            pal = heat.colors, contour = FALSE, label.pts = FALSE,
            main = "", gr.type = "windows", gr.file = NULL,
-           width = 7, height = NA, lo = list(),
-           add.llgridlines = FALSE, crop.grid = FALSE)
+           width = 7, height = NA, lo = list(), ll.lines = FALSE)
 }
 
 \arguments{
@@ -21,7 +20,9 @@ PlotRaster(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
 \item{zcol}{character; z-variable column name or number in attribute table
   of \code{grd}.}
 \item{pts}{SpatialPointsDataFrame; point coordinates to include in layout.}
-\item{ply}{SpatialPolygonsDataFrame; polygons to include in layout.}
+\item{ply}{SpatialPolygonsDataFrame; a polygon defining the spatial domain
+  of the raster data; data outside this domain is excluded. Polygon is
+  included in the layout.}
 \item{rm.idxs}{integer; vector of row indexes in \code{pts}, point symbols at
   these coordinates are drawn as crosses (\code{pch=4}) rather than the
   default, an open circle symbol (\code{pch=21}).}
@@ -43,10 +44,8 @@ PlotRaster(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
                      of the plotting window in inches.}
 \item{lo}{list; a list with more layout items, see \code{sp.layout} argument
   in \code{\link[sp]{spplot}}.}
-\item{add.llgridlines}{logical; plot long-lat grid over projected data,
-  default is \code{FALSE}.}
-\item{crop.grid}{logical; exclude raster data outside of \code{ply},
-  default is \code{FALSE}.}
+\item{ll.lines}{logical; plot long-lat grid over projected data, default is
+  \code{FALSE}.}
 }
 
 \details{
@@ -73,15 +72,14 @@ data(ESRP_Rivers)
 data(INL_Boundary)
 
 # Plot topography
-PlotRaster(ESRP_NED, "var2", ESRP_WaterLevels_2008, ESRP_Boundary)
+PlotRaster(ESRP_NED, "var2")
 
 # Set axis limits, add points and long-lat grid to plot layout
 pts <- ESRP_WaterLevels_2008[ESRP_WaterLevels_2008$net == "State", ]
 xlim <- c(10000, 328000)
 ylim <- c(81200, 335700)
-PlotRaster(ESRP_NED, "var2", pts, ESRP_Boundary, xlim = xlim,
-           ylim = ylim, pal = terrain.colors, label.pts = "mapid",
-           add.llgridlines = TRUE)
+PlotRaster(ESRP_NED, "var2", pts, xlim = xlim, ylim = ylim,
+           pal = terrain.colors, label.pts = "mapid", ll.lines = TRUE)
 
 # Plot hill shade, add lakes, river, and INL boundary to the plot layout
 slp <- terrain(raster(ESRP_NED), opt = "slope")
@@ -99,31 +97,30 @@ PlotRaster(grd, 1, xlim = xlim, ylim = ylim, at = at, pal = pal, lo = lo)
 
 # Krige water table surface
 newdata <- ESRP_NED
-ply <- spTransform(ESRP_Boundary, CRS(proj4string(newdata)))
+crs <- CRS(proj4string(newdata))
+pts <- spTransform(ESRP_WaterLevels_2008, crs)
+ply <- spTransform(ESRP_Boundary, crs)
 newdata$var2 <- newdata$var2 * sp::overlay(newdata, ply)
 vg.model <- vgm(psill = 4500, model = "Sph", range = 100000, nugget = 0)
-kr <- gstat::krige(formula = var1 ~ var2, locations = ESRP_WaterLevels_2008,
-                   newdata = newdata, model = vg.model)
+kr <- gstat::krige(formula = var1 ~ var2, locations = pts, newdata = newdata,
+                   model = vg.model)
 kr$var1.se <- sqrt(kr$var1.var) # standard error
 
 # Plot prediction and standard error maps
-PlotRaster(kr, "var1.pred", ESRP_WaterLevels_2008 , ESRP_Boundary,
-           pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
-           main = "Predictions", xlim = xlim, ylim = ylim)
-PlotRaster(kr, "var1.se", ESRP_WaterLevels_2008 , ESRP_Boundary,
-           pal = terrain.colors, main = "Standard errors",
-           xlim = xlim, ylim = ylim)
+lo <- list(list("sp.polygons", ESRP_Boundary, first = FALSE))
+PlotRaster(kr, "var1.pred", main = "Predictions", xlim = xlim, ylim = ylim,
+           pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")), lo = lo)
+PlotRaster(kr, "var1.se", ESRP_WaterLevels_2008, main = "Standard errors",
+           xlim = xlim, ylim = ylim, pal = terrain.colors, lo = lo)
 
 # Reduce axis limits and replot maps
 xlim <- c(178000, 257500)
 ylim <- c(202000, 272000)
-PlotRaster(kr, "var1.pred", ESRP_WaterLevels_2008 , ESRP_Boundary,
-           xlim = xlim, ylim = ylim,  crop.grid = TRUE,
+PlotRaster(kr, "var1.pred", xlim = xlim, ylim = ylim,
            pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
-           main = "Predictions", add.llgridlines = TRUE)
-PlotRaster(kr, "var1.se", ESRP_WaterLevels_2008, ESRP_Boundary,
-           xlim = xlim, ylim = ylim, crop.grid = TRUE,
-           pal = terrain.colors, main = "Standard errors")
+           main = "Predictions", ll.lines = TRUE, lo = lo)
+PlotRaster(kr, "var1.se", ESRP_WaterLevels_2008, xlim = xlim, ylim = ylim,
+           pal = terrain.colors, main = "Standard errors", lo = lo)
 }
 
 \keyword{hplot}

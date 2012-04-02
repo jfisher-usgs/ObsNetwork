@@ -11,7 +11,8 @@ This is a wrapper around \code{\link[sp]{bubble}} in the \pkg{sp} package.
 
 \usage{
 PlotBubble(pts, zcol, ply, xlim = bbox(ply)[1, ], ylim = bbox(ply)[2, ],
-           main = "", gr.type = "windows", gr.file = NULL)
+           main = "", gr.type = "windows", gr.file = NULL,
+           projargs = proj4string(pts))
 }
 
 \arguments{
@@ -27,12 +28,8 @@ PlotBubble(pts, zcol, ply, xlim = bbox(ply)[1, ], ylim = bbox(ply)[2, ],
   "postscript", "pdf", "png", or the default "windows".}
 \item{gr.file}{character; the path of a file for writing the graphics,
                only used if \code{gr.type} is not "windows".}
-}
-
-
-\details{
-The spatial polygon \code{ply} is transformed to the map projection
-and datum of the observation sites, \code{pts}.
+\item{projargs}{character; projection arguments; the arguments must be entered
+  exactly as in the PROJ.4 documentation.}
 }
 
 \value{
@@ -49,12 +46,13 @@ five quantiles: minimum, 25th percentile, median, 75th percentile, and maximum.
 \examples{
 data(ESRP_WaterLevels_2008)
 data(ESRP_Boundary)
+data(ESRP_NED)
 
 PlotBubble(ESRP_WaterLevels_2008, "acy", ESRP_Boundary,
            main = "Measurment error")
 PlotBubble(ESRP_WaterLevels_2008, "sd", ESRP_Boundary,
            xlim = c(178000, 257500), ylim = c(202000, 272000),
-           main = "Standard deviation")
+           main = "Standard deviation", projargs = proj4string(ESRP_NED))
 }
 
 \keyword{hplot}
