@@ -2,7 +2,8 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, vg.model,
                             formula, nmax=Inf, xlim=bbox(grd)[1, ],
                             ylim=bbox(grd)[2, ], grd.fact=1, niters=200,
                             pop.size=200, obj.weights=c(1, 1, 1, 1),
-                            rtn.kr=TRUE) {
+                            rtn.kr=TRUE, mutation.chance=NA, elitism=NA,
+                            zero.to.one.ratio=10, suggestions=NULL) {
 
   # Additional functions (subroutines)
 
@@ -31,28 +32,28 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, vg.model,
 
   # Evaluate objective function in GA
   EvalFun <- function(string) {
-    idxs <- round(string, digits=0)
-    if (length(unique(idxs)) < length(idxs))
+    if (sum(string) != nsites)
       return(1e15)
+    idxs <- which(as.logical(string))
     objs <- CalcObj(idxs)
     sum(objs, na.rm=TRUE)
   }
 
-  # Get indexes for best GA solution
-  GetIdxsForBestSolution <- function(rbga.results) {
+  # Get best GA solution
+  GetBestSolution <- function(rbga.results) {
     filter <- rbga.results$evaluations == min(rbga.results$evaluations)
     best.obj.count <- sum(rep(1, rbga.results$popSize)[filter])
     if (best.obj.count > 1)
       best.solution <- rbga.results$population[filter, ][1, ]
     else
       best.solution <- rbga.results$population[filter, ]
-    idxs <- sort(round(best.solution, digits=0))
-    idxs
+    best.solution
   }
 
   # Monitor progress at end of each GA iteration
   MonitorFun <- function(obj) {
-    idxs <- GetIdxsForBestSolution(obj)
+    best.solution <- GetBestSolution(obj)
+    idxs <- which(as.logical(best.solution))
     objs <- CalcObj(idxs)
     obj.values[obj$iter, ] <<- c(objs, sum(objs, na.rm=TRUE))
     PlotObjValues()
@@ -159,13 +160,21 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, vg.model,
 
   # Run GA
   elapsed.time <- system.time({
-    rbga.ans <- rbga(stringMin=rep(1, nsites),
-                     stringMax=rep(nsites.in.network, nsites),
-                     popSize=pop.size, iters=niters, verbose=TRUE,
-                     monitorFunc=MonitorFun, evalFunc=EvalFun)
+    rbga.ans <- rbga.bin(size=nsites.in.network,
+                         popSize=pop.size,
+                         iters=niters,
+                         mutationChance=mutation.chance,
+                         elitism=elitism,
+                         zeroToOneRatio=zero.to.one.ratio,
+                         monitorFunc=MonitorFun,
+                         evalFunc=EvalFun,
+                         showSettings=FALSE,
+                         verbose=TRUE,
+                         suggestions=suggestions)
   })
   summary.rbga(rbga.ans, echo=TRUE)
-  rm.idxs <- GetIdxsForBestSolution(rbga.ans) # index from modified points
+  best.solution <- GetBestSolution(rbga.ans)
+  rm.idxs <- which(as.logical(best.solution)) # index from modified points
   rm.pts <- pts[rm.idxs, ]
   is.rm.idx <- orig.siteno %in% rm.pts$siteno # index from unmodified points
 
@@ -197,5 +206,5 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, vg.model,
   # Return optimized sites to remove
   invisible(list(rm.pts=rm.pts, is.rm.idx=is.rm.idx, obj.values=obj.values,
                  ans.rep=ans.rep, elapsed.time=elapsed.time, kr=kr,
-                 rbga.ans=rbga.ans))
+                 rbga.ans=rbga.ans, best.solution=t(best.solution)))
 }

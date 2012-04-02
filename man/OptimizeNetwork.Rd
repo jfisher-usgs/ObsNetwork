@@ -15,7 +15,8 @@ problem.
 OptimizeNetwork(pts, grd, ply, network, nsites, vg.model, formula, nmax = Inf,
                 xlim = bbox(grd)[1, ], ylim = bbox(grd)[2, ], grd.fact = 1,
                 niters = 200, pop.size = 200, obj.weights = c(1, 1, 1, 1),
-                rtn.kr = TRUE)
+                rtn.kr = TRUE, mutation.chance = NA, elitism = NA,
+                zero.to.one.ratio = 10, suggestions = NULL)
 }
 
 \arguments{
@@ -51,6 +52,14 @@ OptimizeNetwork(pts, grd, ply, network, nsites, vg.model, formula, nmax = Inf,
   objective in the multi-objective optimzation problem,
   see \sQuote{details} section below.}
 \item{rtn.kr}{logical; return kriging results using optimal network.}
+\item{mutation.chance}{numeric; the chance that a gene in the chromosome
+  mutates. By default \code{1/(size+1)}.}
+\item{elitism}{integer; the number of chromosomes that are kept into the
+  next generation. By default is about 20\% of the population size.}
+\item{zero.to.one.ratio}{numeric; the change for a zero for mutations and
+  initialization.}
+\item{suggestions}{matrix; suggested chromosomes. Number of columns equal to
+  the number of observation sites in network.}
 }
 
 \details{
@@ -92,14 +101,15 @@ Returns a list with components:
   \code{grd} cropped to the axis limits and polygon. Attributes columns contain
   prediction and standard error from kriging of the optimized observation
   network.}
-\item{rbga.ans}{rbga; the returned value of \code{\link{rbga}}.}
+\item{rbga.ans}{rbga; the returned value of \code{\link{rbga.bin}}.}
+\item{best.solution}{matrix; best GA solution.}
 The status of the objective values after each GA iteration is plotted.
 }
 
 \author{J.C. Fisher}
 
 \seealso{
-\code{\link{krige}}, \code{\link{rbga}}
+\code{\link{krige}}, \code{\link{rbga.bin}}
 }
 
 \examples{\donttest{data(ESRP_NED)
@@ -115,8 +125,9 @@ xlim <- c(10000, 328000)
 ylim <- c(81200, 335700)
 ga <- OptimizeNetwork(ESRP_WaterLevels_2008, ESRP_NED, ESRP_Boundary,
                       network = "State", nsites = 20, vg.model = vg.model,
-                      formula = formula, nmax = Inf, grd.fact = 5, niters = 3,
-                      pop.size = 300, obj.weights = c(10, 1, 1, 1))
+                      formula = formula, nmax = Inf, grd.fact = 5,
+                      pop.size = 200, obj.weights = c(10, 1, 1, 1),
+                      niters = 3)
 PlotRaster(ga$kr, "var1.pred", ESRP_WaterLevels_2008 ,
            pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
            main = "Predictions", rm.idxs = which(ga$is.rm.idx),
@@ -130,9 +141,9 @@ xlim <- c(178000, 257500)
 ylim <- c(202000, 272000)
 ga <- OptimizeNetwork(ESRP_WaterLevels_2008, ESRP_NED, ESRP_Boundary,
                       network = "INL", nsites = 20, vg.model = vg.model,
-                      formula = formula, nmax = Inf, grd.fact = 5, niters = 3,
-                      pop.size = 300, obj.weights = c(10, 1, 1, 1),
-                      xlim = xlim, ylim = ylim)
+                      formula = formula, nmax = Inf, grd.fact = 5,
+                      pop.size = 200, obj.weights = c(10, 1, 1, 1),
+                      xlim = xlim, ylim = ylim, niters = 3)
 PlotRaster(ga$kr, "var1.pred", ESRP_WaterLevels_2008,
            pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
            main = "Predictions", rm.idxs = which(ga$is.rm.idx),
