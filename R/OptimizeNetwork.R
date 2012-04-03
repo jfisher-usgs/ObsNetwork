@@ -107,6 +107,14 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, vg.model,
     pts <- rbind(pts[is.net, ], pts[!is.net, ])
   }
 
+  # Initialize chromosome
+  if (is.null(suggestions)) {
+    idxs <- sample(1:nsites.in.network, nsites, replace=FALSE)
+    suggestions <- rep(0L, nsites.in.network)
+    suggestions[idxs] <- 1L
+    suggestions <- t(suggestions)
+  }
+
   # Crop grid to axis limits
   x <- coordinates(grd)[, 1]
   y <- coordinates(grd)[, 2]
@@ -169,7 +177,7 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, vg.model,
                          monitorFunc=MonitorFun,
                          evalFunc=EvalFun,
                          showSettings=FALSE,
-                         verbose=TRUE,
+                         verbose=FALSE,
                          suggestions=suggestions)
   })
   summary.rbga(rbga.ans, echo=TRUE)
@@ -206,5 +214,5 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, vg.model,
   # Return optimized sites to remove
   invisible(list(rm.pts=rm.pts, is.rm.idx=is.rm.idx, obj.values=obj.values,
                  ans.rep=ans.rep, elapsed.time=elapsed.time, kr=kr,
-                 rbga.ans=rbga.ans, best.solution=t(best.solution)))
+                 best.solution=t(best.solution), rbga.ans=rbga.ans))
 }

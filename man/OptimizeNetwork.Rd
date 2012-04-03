@@ -53,11 +53,14 @@ OptimizeNetwork(pts, grd, ply, network, nsites, vg.model, formula, nmax = Inf,
   see \sQuote{details} section below.}
 \item{rtn.kr}{logical; return kriging results using optimal network.}
 \item{mutation.chance}{numeric; the chance that a gene in the chromosome
-  mutates. By default \code{1/(size+1)}.}
+  mutates. By default \code{1/(nsites+1)}. It affects the convergence rate
+  and the probing of search space: a low chance results in quicker convergence,
+  while a high chance increases the span of the search space.}
 \item{elitism}{integer; the number of chromosomes that are kept into the
-  next generation. By default is about 20\% of the population size.}
-\item{zero.to.one.ratio}{numeric; the change for a zero for mutations and
-  initialization.}
+  next generation. By default is about 20 percent of the population size.}
+\item{zero.to.one.ratio}{numeric; the chance for a zero for mutations and
+  initialization. This option is used to control the number of set genes in
+  the chromosome.}
 \item{suggestions}{matrix; suggested chromosomes. Number of columns equal to
   the number of observation sites in network.}
 }
@@ -101,8 +104,8 @@ Returns a list with components:
   \code{grd} cropped to the axis limits and polygon. Attributes columns contain
   prediction and standard error from kriging of the optimized observation
   network.}
-\item{rbga.ans}{rbga; the returned value of \code{\link{rbga.bin}}.}
 \item{best.solution}{matrix; best GA solution.}
+\item{rbga.ans}{rbga; the returned value of \code{\link{rbga.bin}}.}
 The status of the objective values after each GA iteration is plotted.
 }
 
