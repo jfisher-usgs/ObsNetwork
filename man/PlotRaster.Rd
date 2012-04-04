@@ -78,7 +78,7 @@ PlotRaster(ESRP_NED, "var2")
 pts <- ESRP_WaterLevels_2008[ESRP_WaterLevels_2008$net == "State", ]
 xlim <- c(10000, 328000)
 ylim <- c(81200, 335700)
-PlotRaster(ESRP_NED, "var2", pts, xlim = xlim, ylim = ylim,
+PlotRaster(ESRP_NED, "var2", pts, ESRP_Boundary, xlim = xlim, ylim = ylim,
            pal = terrain.colors, label.pts = "mapid", ll.lines = TRUE)
 
 # Plot hill shade, add lakes, river, and INL boundary to the plot layout
@@ -95,32 +95,12 @@ lo[[2]] <- list("sp.lines", ESRP_Rivers, col = "#1B70E0", first = FALSE)
 lo[[3]] <- list("sp.polygons", INL_Boundary, col = "#000000", first = FALSE)
 PlotRaster(grd, 1, xlim = xlim, ylim = ylim, at = at, pal = pal, lo = lo)
 
-# Krige water table surface
-newdata <- ESRP_NED
-crs <- CRS(proj4string(newdata))
-pts <- spTransform(ESRP_WaterLevels_2008, crs)
-ply <- spTransform(ESRP_Boundary, crs)
-newdata$var2 <- newdata$var2 * sp::overlay(newdata, ply)
-vg.model <- vgm(psill = 4500, model = "Sph", range = 100000, nugget = 0)
-kr <- gstat::krige(formula = var1 ~ var2, locations = pts, newdata = newdata,
-                   model = vg.model)
-kr$var1.se <- sqrt(kr$var1.var) # standard error
-
-# Plot prediction and standard error maps
-lo <- list(list("sp.polygons", ESRP_Boundary, first = FALSE))
-PlotRaster(kr, "var1.pred", main = "Predictions", xlim = xlim, ylim = ylim,
-           pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")), lo = lo)
-PlotRaster(kr, "var1.se", ESRP_WaterLevels_2008, main = "Standard errors",
-           xlim = xlim, ylim = ylim, pal = terrain.colors, lo = lo)
-
-# Reduce axis limits and replot maps
+# Set new axis limits
+pts <- ESRP_WaterLevels_2008[ESRP_WaterLevels_2008$net == "INL", ]
 xlim <- c(178000, 257500)
 ylim <- c(202000, 272000)
-PlotRaster(kr, "var1.pred", xlim = xlim, ylim = ylim,
-           pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
-           main = "Predictions", ll.lines = TRUE, lo = lo)
-PlotRaster(kr, "var1.se", ESRP_WaterLevels_2008, xlim = xlim, ylim = ylim,
-           pal = terrain.colors, main = "Standard errors", lo = lo)
+PlotRaster(ESRP_NED, "var2", pts, ESRP_Boundary, xlim = xlim, ylim = ylim,
+           pal = terrain.colors, ll.lines = TRUE)
 }
 
 \keyword{hplot}

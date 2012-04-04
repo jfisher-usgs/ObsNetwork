@@ -135,6 +135,7 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, vg.model,
 
   # Convert grid to data frame
   grd.pts <- as(grd.mod, "SpatialPointsDataFrame")
+  coordnames(grd.pts) <- c("x", "y")
   ngrd.pts <- length(grd.pts)
 
   # Initialize matrix of objective values

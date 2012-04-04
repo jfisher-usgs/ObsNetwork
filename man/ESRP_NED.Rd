@@ -24,7 +24,7 @@ points (coordinates) and a single data attribute (elevation).
 Geographic coordinates are in units of meters, in conformance
 with the North American Datum of 1927 (NAD 27), and placed in a
 Albers Equal-Area Conic projection; standard parellels 42.83, 44.16;
-central meridian -113.00.
+central meridian -113.00, false easting 200,000 meters; false northing 0.
 }
 
 \source{
@@ -75,6 +75,7 @@ cells.dim <- c(diff(range(xlim)) / dx, diff(range(ylim)) / dy)
 newdata <- GridTopology(cellcentre.offset = cellcentre.offset,
                         cellsize = cellsize, cells.dim = cells.dim)
 newdata <- SpatialGrid(newdata, proj4string = CRS(projargs))
+coordnames(newdata) <- c("x", "y")
 \donttest{
 # Inverse distance weighting interpolation; computationally demanding
 obj <- gstat::idw(var2 ~ 1, pts, newdata, idp = 2.0, maxdist = 250)

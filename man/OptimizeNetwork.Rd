@@ -119,9 +119,9 @@ The status of the objective values after each GA iteration is plotted.
 data(ESRP_WaterLevels_2008)
 data(ESRP_Boundary)
 
-# Variogram and formula
-vg.model <- vgm(psill = 4500, model = "Sph", range = 100000, nugget = 0)
-formula <- var1 ~ var2
+# Formula and variogram and formula
+formula <- var1 ~ x + y
+vg.model <- vgm(psill = 0.01546379, model = "Lin", nugget = 0)
 
 # Optimize "State" network
 xlim <- c(10000, 328000)
