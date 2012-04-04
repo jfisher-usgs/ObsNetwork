@@ -100,7 +100,7 @@ pts <- ESRP_WaterLevels_2008[ESRP_WaterLevels_2008$net == "INL", ]
 xlim <- c(178000, 257500)
 ylim <- c(202000, 272000)
 PlotRaster(ESRP_NED, "var2", pts, ESRP_Boundary, xlim = xlim, ylim = ylim,
-           pal = terrain.colors, ll.lines = TRUE)
+           pal = terrain.colors, ll.lines = TRUE, contour = TRUE)
 }
 
 \keyword{hplot}

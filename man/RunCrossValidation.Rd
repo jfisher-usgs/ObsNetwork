@@ -77,7 +77,7 @@ Krige <- function(fo, vg.model, xlim, ylim) {
   pal1 <- colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9"))
   pal2 <- terrain.colors
   PlotRaster(kr, "var1.pred", pts, xlim = xlim, ylim = ylim, pal = pal1,
-             main = "Predictions")
+             main = "Predictions", contour = TRUE)
   PlotRaster(kr, "var1.se",   pts, xlim = xlim, ylim = ylim, pal = pal2,
              main = "Standard errors")
 }

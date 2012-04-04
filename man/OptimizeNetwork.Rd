@@ -115,7 +115,8 @@ The status of the objective values after each GA iteration is plotted.
 \code{\link{krige}}, \code{\link{rbga.bin}}
 }
 
-\examples{\donttest{data(ESRP_NED)
+\examples{
+data(ESRP_NED)
 data(ESRP_WaterLevels_2008)
 data(ESRP_Boundary)
 
@@ -146,7 +147,7 @@ ga <- OptimizeNetwork(ESRP_WaterLevels_2008, ESRP_NED, ESRP_Boundary,
                       network = "INL", nsites = 20, vg.model = vg.model,
                       formula = formula, nmax = Inf, grd.fact = 5,
                       pop.size = 200, obj.weights = c(10, 1, 1, 1),
-                      xlim = xlim, ylim = ylim, niters = 3)
+                      xlim = xlim, ylim = ylim, niters = 10)
 PlotRaster(ga$kr, "var1.pred", ESRP_WaterLevels_2008,
            pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
            main = "Predictions", rm.idxs = which(ga$is.rm.idx),
@@ -154,6 +155,14 @@ PlotRaster(ga$kr, "var1.pred", ESRP_WaterLevels_2008,
 PlotRaster(ga$kr, "var1.se", ESRP_WaterLevels_2008, pal = terrain.colors,
            main = "Standard errors", rm.idxs = which(ga$is.rm.idx),
            xlim = xlim, ylim = ylim)
-}}
+
+# Restart GA using previous best solution
+ga <- OptimizeNetwork(ESRP_WaterLevels_2008, ESRP_NED, ESRP_Boundary,
+                      network = "INL", nsites = 20, vg.model = vg.model,
+                      formula = formula, nmax = Inf, grd.fact = 5,
+                      pop.size = 200, obj.weights = c(10, 1, 1, 1),
+                      xlim = xlim, ylim = ylim, niters = 10,
+                      suggestions = ga$best.solution)
+}
 
 \keyword{optimize}
