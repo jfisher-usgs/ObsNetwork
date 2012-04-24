@@ -28,8 +28,12 @@ WriteGAResults <- function(ga, file) {
       append=TRUE)
 
   # Elapsed time
-  x <- ga$elapsed.time
-  cat("\nElapsed time:", format(x), "hours\n", file=file, append=TRUE)
-
+  x <- format(ga$elapsed.time)
+  cat("\nElapsed time:", x, "hours\n", file=file, append=TRUE)
+  
+  # Best solution
+  x <- paste(deparse((as.vector(ga$best.solution))), collapse="\n")
+  cat("\nBest solution:\n", x, file=file, append=TRUE)
+  
   invisible(NULL)
 }
