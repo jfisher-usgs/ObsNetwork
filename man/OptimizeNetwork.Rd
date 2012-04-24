@@ -112,7 +112,7 @@ The status of the objective values after each GA iteration is plotted.
 \author{J.C. Fisher}
 
 \seealso{
-\code{\link{krige}}, \code{\link{rbga.bin}}
+\code{\link{krige}}, \code{\link{rbga.bin}}, \code{\link{WriteGAResults}}
 }
 
 \examples{
