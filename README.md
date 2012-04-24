@@ -14,9 +14,9 @@ Install
 If R is not already installed on your
 computer, download and install the latest binary distribution from
 [CRAN](http://cran.r-project.org/ "The Comprehensive R Archive Network").
-It is suggested that Windows users should set R to operate as an SDI application 
-during installation by choosing to customize the startup options and specifying 
-the SDI interface (not the default).
+Windows users should set R to operate as an SDI application during installation 
+by choosing to customize the startup options and specifying the SDI interface 
+(not the default).
 
 Install required R packages from CRAN using a call to `install.packages`:
 
