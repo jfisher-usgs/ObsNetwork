@@ -18,8 +18,7 @@ Windows users should set R to operate as an SDI application during installation
 by choosing to customize the startup options and specifying the SDI interface
 (not the default).
 
-Install required R packages from CRAN using a simple call to
-`install.packages`:
+Install required R packages from CRAN using a call to `install.packages`:
 
     > install.packages(c('sp', 'rgdal', 'gstat', 'raster', 'genalg'))
 
@@ -33,6 +32,10 @@ Run
 Load **ObsNetwork** in the current R session:
 
     > library(ObsNetwork)
+    
+See examples in help documentation:
+
+    > help(package='ObsNetwork')
 
 Update
 ------
