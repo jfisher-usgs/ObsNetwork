@@ -121,17 +121,16 @@ data(ESRP_WaterLevels_2008)
 data(ESRP_Boundary)
 
 # Formula and variogram and formula
-formula <- var1 ~ x + y
-vg.model <- vgm(psill = 0.01546379, model = "Lin", nugget = 0)
+fo <- var1 ~ var2
+vg.model <- vgm(psill = 4600, model = "Sph", range = 90308, nugget = 0)
 
 # Optimize "State" network
 xlim <- c(10000, 328000)
 ylim <- c(81200, 335700)
 ga <- OptimizeNetwork(ESRP_WaterLevels_2008, ESRP_NED, ESRP_Boundary,
                       network = "State", nsites = 20, vg.model = vg.model,
-                      formula = formula, nmax = Inf, grd.fact = 5,
-                      pop.size = 200, obj.weights = c(10, 1, 1, 1),
-                      niters = 3)
+                      formula = fo, nmax = Inf, grd.fact = 5, pop.size = 200, 
+                      obj.weights = c(10, 1, 1, 1), niters = 3)
 PlotRaster(ga$kr, "var1.pred", ESRP_WaterLevels_2008 ,
            pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
            main = "Predictions", rm.idxs = which(ga$is.rm.idx),
@@ -145,9 +144,9 @@ xlim <- c(178000, 257500)
 ylim <- c(202000, 272000)
 ga <- OptimizeNetwork(ESRP_WaterLevels_2008, ESRP_NED, ESRP_Boundary,
                       network = "INL", nsites = 20, vg.model = vg.model,
-                      formula = formula, nmax = Inf, grd.fact = 5,
-                      pop.size = 200, obj.weights = c(10, 1, 1, 1),
-                      xlim = xlim, ylim = ylim, niters = 10)
+                      formula = fo, nmax = Inf, grd.fact = 5, pop.size = 200, 
+                      obj.weights = c(10, 1, 1, 1), xlim = xlim, ylim = ylim, 
+                      niters = 10)
 PlotRaster(ga$kr, "var1.pred", ESRP_WaterLevels_2008,
            pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
            main = "Predictions", rm.idxs = which(ga$is.rm.idx),
@@ -159,10 +158,9 @@ PlotRaster(ga$kr, "var1.se", ESRP_WaterLevels_2008, pal = terrain.colors,
 # Restart GA using previous best solution
 ga <- OptimizeNetwork(ESRP_WaterLevels_2008, ESRP_NED, ESRP_Boundary,
                       network = "INL", nsites = 20, vg.model = vg.model,
-                      formula = formula, nmax = Inf, grd.fact = 5,
-                      pop.size = 200, obj.weights = c(10, 1, 1, 1),
-                      xlim = xlim, ylim = ylim, niters = 10,
-                      suggestions = ga$best.solution)
+                      formula = fo, nmax = Inf, grd.fact = 5, pop.size = 200, 
+                      obj.weights = c(10, 1, 1, 1), xlim = xlim, ylim = ylim, 
+                      niters = 10, suggestions = ga$best.solution)
 }
 
 \keyword{optimize}

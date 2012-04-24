@@ -85,35 +85,36 @@ Krige <- function(fo, vg.model, xlim, ylim) {
 # Ordinary Kriging (OK):
 fo <- var1 ~ 1
 vg <- variogram(fo, pts)
+plot(variogram(fo, pts, cloud = TRUE), pch = 3)
 vg.model <- fit.variogram(vg, vgm(model = "Lin", nugget = 0))
 plot(vg, vg.model, main = "Linear variogram model (var1 ~ 1)")
 cv <- RunCrossValidation(fo, pts, vg.model = vg.model)
 cat(cv$me, cv$mspe, cv$cor.op, cv$cor.pr, "\n")
 
 # Check for the presence of a detectable spatial trend or "drift" in the data
-lm.trend <- lm(var1 ~ x + y, data = pts)
+fo <- var1 ~ x + y
+lm.trend <- lm(fo, data = pts)
 summary(lm.trend)
 
 # Universal Kriging (UK):
-fo <- var1 ~ x + y
 vg <- variogram(fo, pts)
 vg.model <- fit.variogram(vg, vgm(model = "Lin", nugget = 0))
 plot(vg, vg.model, main = "Residual variogram model (var1 ~ x + y)")
 Krige(fo, vg.model, xlim, ylim)
 cv <- RunCrossValidation(fo, pts, vg.model = vg.model)
 cat(cv$me, cv$mspe, cv$cor.op, cv$cor.pr, "\n")
-PlotBubble(cv$cv, "residual", ply , xlim , ylim, main = "Residuals")
 
 # Check for the presence of a correlation with an auxiliary predictor
-lm.trend <- lm(var1 ~ var2, data = pts)
+fo <- var1 ~ var2
+lm.trend <- lm(fo, data = pts)
 summary(lm.trend)
-plot(var1 ~ var2, pts, main = "Correlation plot and fitted regression model")
+plot(fo, pts, main = "Correlation plot and fitted regression model")
 abline(lm.trend)
 
 # Kriging with External Drift (KED):
-fo <- var1 ~ var2
-vg <- variogram(fo, pts)
-vg.model <- vgm(psill = 4500, model = "Sph", range = 100000, nugget = 0)
+vg <- variogram(fo, pts) 
+vg.model <- fit.variogram(vg, vgm(psill = 4500, model = "Sph", range = 100000, 
+                                  nugget = 0), fit.method = 1)
 plot(vg, vg.model, main = "Residual variogram model (var1 ~ var2)")
 Krige(fo, vg.model, xlim, ylim)
 cv <- RunCrossValidation(fo, pts, vg.model = vg.model)
