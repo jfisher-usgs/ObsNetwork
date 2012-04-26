@@ -32,7 +32,7 @@ This data set has the following attributes:
   \item{sd}{standard deviation of water level in meters for
     entire period of record, duration varies for each well site;}
   \item{net}{identifier for observation network, "State" used to identify
-    wells in the state-run 2008 synoptic sampling network (166 wells) and
+    wells in the state-run 2008 water-level monitoring network (166 wells) and
     "INL" wells in the U.S. Geological Survey, Idaho National
     Laboratory, 2008 water-level monitoring network (169 wells);}
   \item{sitenm}{local well identifier, for example
