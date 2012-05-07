@@ -46,7 +46,6 @@ ProcessObservations <- function(d, x.var, y.var, projargs, siteno.var,
   # Build output data frame
   siteno <- unique(d$siteno)
   obs <- as.data.frame(siteno, stringsAsFactors=FALSE)
-# n <- nrow(obs)
 
   var.names <- c("x", "y", "sitenm", "mapid")
   if (!is.null(net.var))
