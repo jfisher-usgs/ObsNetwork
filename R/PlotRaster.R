@@ -1,7 +1,8 @@
 PlotRaster <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
-                       pal=heat.colors, contour=FALSE, label.pts=FALSE,
-                       main="", gr.type="windows", gr.file=NULL,
-                       width=7, height=NA, lo=list(), ll.lines=FALSE) {
+                       pal=heat.colors, contour=FALSE, label.contours=FALSE,
+                       label.pts=FALSE, main="", gr.type="windows",
+                       gr.file=NULL, width=7, height=NA, lo=list(),
+                       ll.lines=FALSE) {
 
   # Transform points and polygon projection and datum
   crs <- CRS(proj4string(grd))
@@ -133,7 +134,7 @@ PlotRaster <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
               scales=scales, xlim=xlim, ylim=ylim,
               col.regions=cols, at=at, main=main,
               colorkey=colorkey, sp.layout=lo,
-              contour=contour, labels=FALSE,
+              contour=contour, labels=label.contours,
               pretty=TRUE, col="gray")
   print(p)
 
