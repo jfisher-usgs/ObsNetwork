@@ -10,9 +10,10 @@ Raster plot for spatial data with attributes.
 
 \usage{
 PlotRaster(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
-           pal = heat.colors, contour = FALSE, label.pts = FALSE,
-           main = "", gr.type = "windows", gr.file = NULL,
-           width = 7, height = NA, lo = list(), ll.lines = FALSE)
+           pal = heat.colors, contour = FALSE, label.contours = FALSE,
+           label.pts = FALSE, main = "", gr.type = "windows",
+           gr.file = NULL, width = 7, height = NA, lo = list(),
+           ll.lines = FALSE)
 }
 
 \arguments{
@@ -33,8 +34,10 @@ PlotRaster(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
 \item{at}{numeric; vector giving breakpoints along the range of z.}
 \item{pal}{function; a color palette to be used to assign colors in the plot.}
 \item{contour}{logical; add contour lines to plot, default is \code{FALSE}.}
-\item{label.pts}{character; column name in \code{pts}, specifies the labels to
-  place at point coordinates (optional).}
+\item{label.contours}{logical; label contour lines, default is \code{FALSE}.}
+\item{label.pts}{character or logical; column name in \code{pts} specifying the
+  labels to place at point coordinates. If \code{TRUE}, points are labeled with
+  index numbers.}
 \item{main}{character; main plot title to be placed on top.}
 \item{gr.type}{character; the name of a graphics driver, either
   "postscript", "pdf", "png", or the default "windows".}

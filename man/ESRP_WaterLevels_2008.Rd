@@ -33,7 +33,7 @@ This data set has the following attributes:
     entire period of record, duration varies for each well site;}
   \item{net}{identifier for observation network, "State" used to identify
     wells in the state-run 2008 water-level monitoring network (166 wells) and
-    "INL" wells in the U.S. Geological Survey, Idaho National
+    "INL" for wells in the U.S. Geological Survey, Idaho National
     Laboratory, 2008 water-level monitoring network (169 wells);}
   \item{sitenm}{local well identifier, for example
     "07N 31E 34BDD1 USGS 25".}

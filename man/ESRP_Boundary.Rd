@@ -38,9 +38,6 @@ summary(ESRP_Boundary)
 dsn <- system.file("extdata/ESRP_Boundary", package = "ObsNetwork")
 obj <- readOGR(dsn = dsn, layer = basename(dsn))
 
-# Compare with available data set
-all.equal(obj, ESRP_Boundary)
-
 # Polygons slots
 p <- sapply(slot(obj, "polygons"), function(i) slot(i, "Polygons"))
 
