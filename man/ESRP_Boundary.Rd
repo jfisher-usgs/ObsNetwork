@@ -4,11 +4,11 @@
 
 \docType{data}
 
-\title{Outlines of the ESRP Aquifer and Buttes}
+\title{Outlines of the ESRP and Buttes}
 
 \description{
 An outline of the generalized boundary of the
-eastern Snake River Plain (ESRP) aquifer,
+eastern Snake River Plain (ESRP),
 East butte, Middle butte, and Big Southern butte.
 }
 

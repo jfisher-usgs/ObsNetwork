@@ -7,7 +7,7 @@
 \description{
 Determine sites to exclude from an existing observation network because
 they provide little or no beneficial added information. A kriging-based
-genetic algorithm (GA) is used to solve the multiobjective optimization
+genetic algorithm (GA) is used to solve the multi-objective optimization
 problem.
 }
 
@@ -81,7 +81,8 @@ The optimal solution obtained will depend on the relative values of the weights
 specified, \code{obj.weights}. For example, if a higher weight is specified for
 the mean prediction error, the solution will be one that favors a smaller
 prediction error over a small root-mean squared error, mean standard deviation,
-and mean measurement error.
+and mean measurement error. Setting a weight equal to zero results in the 
+removal of an objective from the multi-objective function.
 
 Spatial data is transformed to the map projection and datum of the
 raster data set, \code{grd}.
@@ -91,12 +92,12 @@ raster data set, \code{grd}.
 Returns a list with components:
 \item{rm.pts}{SpatialPointsDataFrame; a subset of \code{pts} giving the
   optimal values for the decision variables. This data frame consists of
-  \code{nsites} rows, each row corresponds to a site that is to be
-  removed from the observation network.}
+  \code{nsites} rows, each row corresponds to a site that is suggested
+  for removal from the observation network.}
 \item{is.rm.idx}{logical; vector of length equal to the number of rows in
   \code{pts} specifying sites to remove from the observation network.}
 \item{obj.values}{matrix; objective values after each iteration of the GA.
-  The matrix has \code{niters} rows and 5 columns (4 objective values and
+  This matrix has \code{niters} rows and 5 columns (4 objective values and
   their sum).}
 \item{ans.rep}{numeric; number of times the final solution was repeated.}
 \item{elapsed.time}{numeric; elapsed time in hours for running the GA.}

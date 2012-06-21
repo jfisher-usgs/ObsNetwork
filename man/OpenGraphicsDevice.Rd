@@ -30,7 +30,7 @@ OpenGraphicsDevice(file, type = "windows", w = 7, h = 7, p = 12,
 
 \details{
 A \code{"postscript"} graphics device produces an Encapsulated PostScript
-(EPS) file and is recommended for figures of publication quality.
+(eps) file and is recommended for figures of publication quality.
 }
 
 \value{

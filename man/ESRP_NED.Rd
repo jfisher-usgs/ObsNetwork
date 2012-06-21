@@ -31,7 +31,7 @@ central meridian -113.00, false easting 200,000 meters; false northing 0.
 The National Elevation Dataset (\href{http://ned.usgs.gov/}{NED})
 1-arc-second raster. Dataset resampled to 10 arc-seconds using a
 cubic convolution assignment. All other data processing is shown in
-the \sQuote{Examples} section below.
+\sQuote{Examples} section.
 }
 
 \references{
