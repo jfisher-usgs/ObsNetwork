@@ -122,10 +122,10 @@ data(ESRP_WaterLevels_2008)
 data(ESRP_Boundary)
 
 # Formula and variogram
-fo <- var1 ~ var2
-vg.model <- vgm(psill = 4600, model = "Sph", range = 90308, nugget = 0)
+fo <- var1 ~ x + y
+vg.model <- vgm(psill = 0.01546379, model = "Lin", nugget = 0)
 
-# Optimize "State" network (number of iteratins should be much larger)
+# Optimize "State" network; number of iterations should be much larger
 xlim <- c(10000, 328000)
 ylim <- c(81200, 335700)
 ga <- OptimizeNetwork(ESRP_WaterLevels_2008, ESRP_NED, ESRP_Boundary,
@@ -140,7 +140,7 @@ PlotRaster(ga$kr, "var1.se", ESRP_WaterLevels_2008,
            pal = terrain.colors, main = "Standard errors",
            rm.idxs = which(ga$is.rm.idx), xlim = xlim, ylim = ylim)
 
-# Optimize "INL" network (number of iteratins should be much larger)
+# Optimize "INL" network; number of iterations should be much larger
 xlim <- c(178000, 257500)
 ylim <- c(202000, 272000)
 ga <- OptimizeNetwork(ESRP_WaterLevels_2008, ESRP_NED, ESRP_Boundary,

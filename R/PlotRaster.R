@@ -111,7 +111,7 @@ PlotRaster <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
     lo[[length(lo) + 1L]] <- txt2
   }
 
-  # Add long-alt grid lines to layout
+  # Add long-lat grid lines to layout
   if (ll.lines && is.projected(grd)) {
     obj <- SpatialPoints(cbind(xlim, ylim), proj4string=crs)
     obj.ll <- spTransform(obj, CRS("+proj=longlat +datum=WGS84"))

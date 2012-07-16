@@ -82,7 +82,7 @@ Krige <- function(fo, vg.model, xlim, ylim) {
              main = "Standard errors")
 }
 
-# Ordinary Kriging (OK):
+### Ordinary Kriging (OK):
 fo <- var1 ~ 1
 vg <- variogram(fo, pts)
 plot(variogram(fo, pts, cloud = TRUE), pch = 3)
@@ -91,12 +91,11 @@ plot(vg, vg.model, main = "Linear variogram model (var1 ~ 1)")
 cv <- RunCrossValidation(fo, pts, vg.model = vg.model)
 cat(cv$me, cv$mspe, cv$cor.op, cv$cor.pr, "\n")
 
-# Check for the presence of a detectable spatial trend or "drift" in the data
+### Universal Kriging (UK), accounts for spatial trend:
 fo <- var1 ~ x + y
 lm.trend <- lm(fo, data = pts)
 summary(lm.trend)
 
-# Universal Kriging (UK):
 vg <- variogram(fo, pts)
 vg.model <- fit.variogram(vg, vgm(model = "Lin", nugget = 0))
 plot(vg, vg.model, main = "Residual variogram model (var1 ~ x + y)")
@@ -104,14 +103,13 @@ Krige(fo, vg.model, xlim, ylim)
 cv <- RunCrossValidation(fo, pts, vg.model = vg.model)
 cat(cv$me, cv$mspe, cv$cor.op, cv$cor.pr, "\n")
 
-# Check for the presence of a correlation with an auxiliary predictor
+### Kriging with External Drift (KED); assumes var1 forms a subdued replica of var2:
 fo <- var1 ~ var2
 lm.trend <- lm(fo, data = pts)
 summary(lm.trend)
 plot(fo, pts, main = "Correlation plot and fitted regression model")
 abline(lm.trend)
 
-# Kriging with External Drift (KED):
 vg <- variogram(fo, pts) 
 vg.model <- fit.variogram(vg, vgm(psill = 4500, model = "Sph", range = 100000, 
                                   nugget = 0), fit.method = 1)
