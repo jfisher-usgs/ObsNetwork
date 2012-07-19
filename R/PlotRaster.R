@@ -86,9 +86,9 @@ PlotRaster <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
   # Set axis breakpoints
   if (missing(at))
     at <- pretty(grd[[zcol]], n=20)
-
+  
   # Set color palettes
-  n <- length(at) + 1L
+  n <- length(at) - 1L
   cols <- pal(n)
 
   # Add spatial scale legend to layout

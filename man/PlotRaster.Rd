@@ -31,7 +31,8 @@ PlotRaster(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
   the x-axis.}
 \item{ylim}{numeric; vector of length 2 giving lower and upper limits for
   the y-axis.}
-\item{at}{numeric; vector giving breakpoints along the range of z.}
+\item{at}{numeric; vector giving breakpoints along the range of z (including 
+  upper and lower limits).}
 \item{pal}{function; a color palette to be used to assign colors in the plot.}
 \item{contour}{logical; add contour lines to plot, default is \code{FALSE}.}
 \item{label.contours}{logical; label contour lines, default is \code{FALSE}.}
