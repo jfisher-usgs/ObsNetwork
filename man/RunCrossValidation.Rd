@@ -7,9 +7,8 @@
 \description{
 Cross validation function for kriging; a wrapper around
 \code{\link[gstat]{krige.cv}} in the \pkg{gstat} package.
-This function may be used to make an informed decision as to which
-mapped surface provides a more accurate prediction based on
-cross-validation statistics.
+This function may be used to identify negative aspects of a kriging
+model, such as the worst errors or the areas with consistent bias.
 }
 
 \usage{
