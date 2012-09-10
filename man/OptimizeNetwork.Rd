@@ -53,7 +53,8 @@ OptimizeNetwork(pts, grd, ply, network, nsites, vg.model, formula, nmax = Inf,
   see \sQuote{details} section below.}
 \item{rtn.kr}{logical; return kriging results using optimal network.}
 \item{mutation.chance}{numeric; the chance that a gene in the chromosome
-  mutates. By default \code{1/(nsites+1)}. It affects the convergence rate
+  mutates. By default \code{1/(nnetsites+1)}, where \code{nnetsites} is the
+  number of sites in the network. It affects the convergence rate
   and the probing of search space: a low chance results in quicker convergence,
   while a high chance increases the span of the search space.}
 \item{elitism}{integer; the number of chromosomes that are kept into the
