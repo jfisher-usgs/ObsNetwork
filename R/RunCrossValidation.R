@@ -31,6 +31,8 @@ RunCrossValidation <- function(formula, pts, vg.model, nmax=Inf,
   plot(x, y, xaxs="i", yaxs="i", xlim=xlim, ylim=ylim, asp=1, tcl=tcl,
        xlab="Observed value", ylab="Predicted value")
   lines(x=lim, y=lim, col="blue")
+  res <- lm(y ~ x)
+  abline(res)
 
   # Plot predicted versus residual
   x <- cv$var1.pred
