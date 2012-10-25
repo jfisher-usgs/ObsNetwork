@@ -3,7 +3,7 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, vg.model,
                             ylim=bbox(grd)[2, ], grd.fact=1, niters=200,
                             pop.size=200, obj.weights=c(1, 1, 1, 1),
                             rtn.kr=TRUE, mutation.chance=NA, elitism=NA,
-                            zero.to.one.ratio=10, suggestions=NULL) {
+                            zero.to.one.ratio=NA, suggestions=NULL) {
 
   # Additional functions (subroutines)
 
@@ -114,7 +114,11 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, vg.model,
     suggestions[idxs] <- 1L
     suggestions <- t(suggestions)
   }
-
+  
+  # Set default for zero to one ratio
+  if(is.na(zero.to.one.ratio))
+    zero.to.one.ratio <- floor(nsites.in.network / nsites) - 1
+  
   # Crop grid to axis limits
   x <- coordinates(grd)[, 1]
   y <- coordinates(grd)[, 2]

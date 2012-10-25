@@ -16,7 +16,7 @@ OptimizeNetwork(pts, grd, ply, network, nsites, vg.model, formula, nmax = Inf,
                 xlim = bbox(grd)[1, ], ylim = bbox(grd)[2, ], grd.fact = 1,
                 niters = 200, pop.size = 200, obj.weights = c(1, 1, 1, 1),
                 rtn.kr = TRUE, mutation.chance = NA, elitism = NA,
-                zero.to.one.ratio = 10, suggestions = NULL)
+                zero.to.one.ratio = NA, suggestions = NULL)
 }
 
 \arguments{
@@ -61,7 +61,8 @@ OptimizeNetwork(pts, grd, ply, network, nsites, vg.model, formula, nmax = Inf,
   next generation. By default is about 20 percent of the population size.}
 \item{zero.to.one.ratio}{numeric; the chance for a zero for mutations and
   initialization. This option is used to control the number of set genes in
-  the chromosome.}
+  the chromosome. By default \code{floor(nnetsites/nsites)-1}, where 
+  \code{nnetsites} is the number of sites in the network.}
 \item{suggestions}{matrix; suggested chromosomes. Number of columns equal to
   the number of observation sites in network.}
 }
