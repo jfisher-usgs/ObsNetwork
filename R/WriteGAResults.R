@@ -30,6 +30,10 @@ WriteGAResults <- function(ga, file) {
   # Elapsed time
   x <- format(ga$elapsed.time)
   cat("\nElapsed time:", x, "hours\n", file=file, append=TRUE)
+
+  # Penalty calls
+  x <- format(ga$ncalls.penalty)
+  cat("\nNumber of calls to penalty function:", x, "\n", file=file, append=TRUE)
   
   # Best solution
   x <- paste(deparse((as.vector(ga$best.solution))), collapse="\n")

@@ -32,8 +32,10 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, vg.model,
 
   # Evaluate objective function in GA
   EvalFun <- function(string) {
-    if (sum(string) != nsites)
+    if (sum(string) != nsites) {
+      ncalls.penalty <<- ncalls.penalty + 1L
       return(1e15)
+    }
     idxs <- which(as.logical(string))
     objs <- CalcObj(idxs)
     sum(objs, na.rm=TRUE)
@@ -115,6 +117,9 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, vg.model,
     suggestions <- t(suggestions)
   }
   
+  # Initialize number of calls to penalty function
+  ncalls.penalty <- 0L
+  
   # Set default for zero to one ratio
   if(is.na(zero.to.one.ratio))
     zero.to.one.ratio <- floor(nsites.in.network / nsites) - 1
@@ -156,20 +161,15 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, vg.model,
 
   # Set plot attributes
   windows(width=8, height=(nobjs + 1) * 2)
-  op <- par(mfrow=c(nobjs + 1, 1), oma=c(3, 2, 2, 2), mar=c(1, 6, 0, 2))
+  op <- par(mfrow=c(nobjs + 1, 1), oma=c(3, 2, 2, 2), mar=c(1, 4, 0, 2))
   tcl <- 0.50 / (6 * par("csi"))
   pal <- c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#A6D854")
   labs <- NULL
-  labs[1] <- paste("Mean prediction error,",
-                   "from the application of Kriging", sep="\n")
-  labs[2] <- paste("Root-mean-square error,",
-                   "difference between predicted and",
-                   "measured values at removed sites", sep="\n")
-  labs[3] <- paste("Mean standard deviaiton,",
-                   "variability of measurement",
-                   "over time at removed sites", sep="\n")
+  labs[1] <- "Mean standard error"
+  labs[2] <- "Root-mean-square error"
+  labs[3] <- "Mean standard deviaiton"
   labs[4] <- "Mean measurement error"
-  labs[5] <- "Solution to objective function"
+  labs[5] <- "Fitness score"
 
   # Run GA
   elapsed.time <- system.time({
@@ -207,7 +207,7 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, vg.model,
   elapsed.time <- as.numeric(elapsed.time['elapsed']) / 3600
   cat("\nElapsed time:", format(elapsed.time), "hours\n")
 
-  # Determine how many times the final solution was repeated
+  # Determine and report how many times the final solution was repeated
   ans.rep <- 0L
   for (i in niters:1) {
     if (!identical(obj.values[i, ], obj.values[niters, ]))
@@ -215,9 +215,13 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, vg.model,
     ans.rep <-  ans.rep + 1L
   }
   cat("\nNumber of times final solution was repeated:", ans.rep, "\n")
+  
+  # Report number of calls to penalty function
+  cat("\nNumber of calls to penalty function:", format(ncalls.penalty), "\n")
 
   # Return optimized sites to remove
   invisible(list(rm.pts=rm.pts, is.rm.idx=is.rm.idx, obj.values=obj.values,
-                 ans.rep=ans.rep, elapsed.time=elapsed.time, kr=kr,
+                 ans.rep=ans.rep, elapsed.time=elapsed.time, 
+                 ncalls.penalty=ncalls.penalty, kr=kr,
                  best.solution=t(best.solution), rbga.ans=rbga.ans))
 }

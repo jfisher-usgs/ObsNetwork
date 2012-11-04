@@ -72,7 +72,7 @@ A solution to the multiobjective optimization problem is found by minimizing
 the aggregate objective function, the weighted linear sum of 4 objectives. The
 objectives are given as:
 \enumerate{
-  \item Mean prediction error from the application of kriging.
+  \item Mean standard error from the application of kriging.
   \item Root-mean-square error, difference between predicted and measured
         values at removed sites.
   \item Mean standard deviation, variability of measurement over time at
@@ -103,6 +103,7 @@ Returns a list with components:
   their sum).}
 \item{ans.rep}{numeric; number of times the final solution was repeated.}
 \item{elapsed.time}{numeric; elapsed time in hours for running the GA.}
+\item{ncalls.penalty}{integer; number of calls to penalty function.}
 \item{kr}{SpatialGridDataFrame; a data frame containing the coordinates of
   \code{grd} cropped to the axis limits and polygon. Attributes columns contain
   prediction and standard error from kriging of the optimized observation
