@@ -2,8 +2,8 @@ ObsNetwork: Optimize Observation Networks
 =========================================
 
 This [R](http://www.r-project.org/ "R") package
-evaluates and optimizes observation networks using a kriging-based genetic
-algorithm methodology.
+evaluates and optimizes long-term monitoring networks using a kriging-based 
+genetic algorithm methodology.
 
 The set of standards used for coding **ObsNetwork** is documented in
 [Google's R Style Guide](http://google-styleguide.googlecode.com/svn/trunk/google-r-style.html "Google's R Style Guide").
@@ -18,7 +18,7 @@ Windows users should set R to operate as an SDI application during installation
 by choosing to customize the startup options and specifying the SDI interface 
 (not the default).
 
-Install required R packages from CRAN using a call to `install.packages`:
+Install required R packages from CRAN:
 
     > install.packages(c('sp', 'rgdal', 'gstat', 'raster', 'genalg'))
 
