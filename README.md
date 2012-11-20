@@ -18,7 +18,7 @@ Windows users should set R to operate as an SDI application during installation
 by choosing to customize the startup options and specifying the SDI interface 
 (not the default).
 
-Install required R packages from CRAN:
+Open an R session and install the required packages from CRAN:
 
     > install.packages(c('sp', 'rgdal', 'gstat', 'raster', 'genalg'))
 
