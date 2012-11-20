@@ -118,7 +118,7 @@ cv <- RunCrossValidation(fo, pts, vg.model = vg.model)
 cat(cv$me, cv$mspe, cv$cor.op, cv$cor.pr, "\n")
 PlotBubble(cv$cv, "residual", ply , xlim , ylim, main = "Residuals")
 
-# KED in a local neighbourhood:
+# KED in a local neighborhood:
 cv <- RunCrossValidation(fo, pts, vg.model = vg.model, nmax = 50)
 cat(cv$me, cv$mspe, cv$cor.op, cv$cor.pr, "\n")
 }

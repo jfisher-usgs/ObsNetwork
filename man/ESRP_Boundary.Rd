@@ -9,7 +9,7 @@
 \description{
 An outline of the generalized boundary of the
 eastern Snake River Plain (ESRP),
-East butte, Middle butte, and Big Southern butte.
+East Butte, Middle Butte, and Big Southern Butte.
 }
 
 \usage{
@@ -44,13 +44,13 @@ p <- sapply(slot(obj, "polygons"), function(i) slot(i, "Polygons"))
 # Generalized boundary of the ESRP aquifer
 plot(SpatialPolygons(list(Polygons(list(p[[1]]), 1))))
 
-# Generalized boundary of the East butte
+# Generalized boundary of the East Butte
 plot(SpatialPolygons(list(Polygons(list(p[[2]]), 1))), add = TRUE)
 
-# Generalized boundary of the Middle butte
+# Generalized boundary of the Middle Butte
 plot(SpatialPolygons(list(Polygons(list(p[[3]]), 1))), add = TRUE)
 
-# Generalized boundary of the Big Southern butte
+# Generalized boundary of the Big Southern Butte
 plot(SpatialPolygons(list(Polygons(list(p[[4]]), 1))), add = TRUE)
 }
 

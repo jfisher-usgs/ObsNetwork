@@ -53,7 +53,7 @@ Returns a data frame with variables:
 \item{sitenm}{character; local observation site identifier.}
 \item{mapid}{numeric; identifier (row index number) used to locate observation
   site on a figure, see \code{label.pts} in \code{\link{PlotRaster}}.}
-\item{net}{character; identifier for observation network.}
+\item{net}{character; identifier for monitoring network.}
 \item{var1}{numeric; the median value of the dependent variable
   (such as the water-table elevation) recorded during the time period defined
   by \code{dt.lim}.}

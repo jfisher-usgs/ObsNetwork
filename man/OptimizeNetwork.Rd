@@ -5,7 +5,7 @@
 \title{Optimize Observation Network}
 
 \description{
-Determine sites to exclude from an existing observation network because
+Determine sites to exclude from an existing monitoring network because
 they provide little or no beneficial added information. A kriging-based
 genetic algorithm (GA) is used to solve the multi-objective optimization
 problem.
@@ -22,7 +22,10 @@ OptimizeNetwork(pts, grd, ply, network, nsites, vg.model, formula, nmax = Inf,
 \arguments{
 \item{pts}{SpatialPointsDataFrame; data at observation sites. A
   description of the required data frame variables is given in the
-  \sQuote{Value} section of \code{\link{ProcessObservations}}.}
+  \sQuote{Value} section of \code{\link{ProcessObservations}}.
+  Duplicate site numbers and (or) spatial coordinates are currently not 
+  permitted.
+  }
 \item{grd}{SpatialGridDataFrame; raster data with independent variables.}
 \item{ply}{SpatialPolygonsDataFrame; a polygon used to crop the raster grid
   (optional).}
@@ -95,9 +98,9 @@ Returns a list with components:
 \item{rm.pts}{SpatialPointsDataFrame; a subset of \code{pts} giving the
   optimal values for the decision variables. This data frame consists of
   \code{nsites} rows, each row corresponds to a site that is suggested
-  for removal from the observation network.}
+  for removal from the monitoring network.}
 \item{is.rm.idx}{logical; vector of length equal to the number of rows in
-  \code{pts} specifying sites to remove from the observation network.}
+  \code{pts} specifying sites to remove from the monitoring network.}
 \item{obj.values}{matrix; objective values after each iteration of the GA.
   This matrix has \code{niters} rows and 5 columns (4 objective values and
   their sum).}
