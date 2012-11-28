@@ -22,7 +22,7 @@ Open an R session and install the required packages from CRAN:
 
     > install.packages(c('sp', 'rgdal', 'gstat', 'raster', 'genalg'))
 
-Install the **ObsNetwork** package:
+Install the **ObsNetwork** package from a USGS internal FTP site:
 
     > install.packages('ObsNetwork', repos='ftp://ftpint.usgs.gov/private/wr/id/scoville/Fisher/ObsNetwork')
 
