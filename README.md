@@ -38,10 +38,3 @@ Load **ObsNetwork** in the current R session:
 See examples in help documentation:
 
     > help(package='ObsNetwork')
-
-Update
-------
-
-Install **ObsNetwork** package updates:
-
-    > update.packages(repos='ftp://ftpint.usgs.gov/private/wr/id/scoville/Fisher/ObsNetwork')
