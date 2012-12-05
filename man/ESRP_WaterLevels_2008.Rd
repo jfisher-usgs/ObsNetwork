@@ -32,10 +32,10 @@ This data set has the following attributes:
   \item{sd}{standard deviation of water-table elevations for
     entire period of record, duration varies for each well site, in meters;}
   \item{net}{unique identifier for observation network. For this data set 
-    "State" is used to identify wells in the 2008 state-run water-table 
-    monitoring network (166 wells), and "INL" for wells in the 2008 U.S. 
-    Geological Survey, Idaho National Laboratory, water-table monitoring 
-    network (169 wells);}
+    "State" is used to identify wells in the 2008 Federal-State Cooperative 
+    water-table monitoring network (166 wells), and "INL" for wells in the 
+    2008 U.S. Geological Survey-Idaho National Laboratory water-table 
+    monitoring network (169 wells);}
   \item{sitenm}{local well identifier, for example
     "07N 31E 34BDD1 USGS 25".}
 }
