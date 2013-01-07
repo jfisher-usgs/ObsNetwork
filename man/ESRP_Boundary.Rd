@@ -37,6 +37,7 @@ summary(ESRP_Boundary)
 # Commands used to construct this data object:
 dsn <- system.file("extdata/ESRP_Boundary", package = "ObsNetwork")
 obj <- readOGR(dsn = dsn, layer = basename(dsn))
+identical(obj, ESRP_Boundary)
 
 # Polygons slots
 p <- sapply(slot(obj, "polygons"), function(i) slot(i, "Polygons"))

@@ -92,7 +92,7 @@ summary(obj)
 
 # Compare with available data set
 data(ESRP_WaterLevels_2008)
-all.equal(obj, ESRP_WaterLevels_2008)
+identical(obj, ESRP_WaterLevels_2008)
 }
 
 \keyword{manip}
