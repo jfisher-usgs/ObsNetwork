@@ -12,8 +12,8 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, vg.model,
     newdata <- rbind(grd.pts, pts[idxs, "var2"])
 
     # Perform kriging
-    kr <- krige(formula=formula, locations=pts[-idxs, ], newdata=newdata,
-                model=vg.model, nmax=nmax, debug.level=0)
+    kr <- gstat::krige(formula=formula, locations=pts[-idxs, ], newdata=newdata,
+                       model=vg.model, nmax=nmax, debug.level=0)
 
     pred <- kr[(ngrd.pts + 1):length(kr), ]$var1.pred
     se <- sqrt(abs(kr[1:ngrd.pts, ]$var1.var))

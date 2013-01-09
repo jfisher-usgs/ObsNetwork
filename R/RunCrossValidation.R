@@ -1,12 +1,15 @@
-RunCrossValidation <- function(formula, pts, vg.model, nmax=Inf,
-                               nfold=nrow(pts), projargs=proj4string(pts)) {
+RunCrossValidation <- function(formula, pts, model, nfold=nrow(pts), ..., 
+                               projargs=proj4string(pts)) {
 
   # Transform projection and datum
   crs <- CRS(projargs)
   pts <- spTransform(pts, crs)
-
+  
+  # Create object of class gstat
+  obj <- gstat::gstat(formula=formula, data=pts, model=model)
+  
   # Cross validation
-  cv <- gstat::krige.cv(formula, pts, model=vg.model, nmax=nmax, nfold=nfold)
+  cv <- gstat::gstat.cv(obj, verbose=FALSE, ...)
   proj4string(cv) <- pts@proj4string
 
   # Mean error

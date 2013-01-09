@@ -12,7 +12,7 @@ model, such as the worst errors or the areas with consistent bias.
 }
 
 \usage{
-RunCrossValidation(formula, pts, vg.model, nmax = Inf, nfold = nrow(pts),
+RunCrossValidation(formula, pts, model, nfold = nrow(pts), ..., 
                    projargs = proj4string(pts))
 }
 
@@ -20,15 +20,13 @@ RunCrossValidation(formula, pts, vg.model, nmax = Inf, nfold = nrow(pts),
 \item{formula}{formula; defines the dependent variable as a linear model of
   independent variables.}
 \item{pts}{SpatialPointsDataFrame; data at observation sites.}
-\item{vg.model}{variogramModel; variogram model of dependent variable defined
+\item{model}{variogramModel; variogram model of dependent variable defined 
   by a call to \code{\link{vgm}}.}
-\item{nmax}{numeric; for local kriging, the number of nearest observations
-  that should be used for a kriging prediction or simulation, where nearest
-  is defined in terms of the space of the spatial locations. By default,
-  all observations are used.}
-\item{nfold}{integer; if larger than 1, then apply n-fold cross validation;
-  if \code{nfold} equals \code{nrow(pts)} (the default), apply leave-one-out
-  cross validation.}
+\item{nfold}{numeric; for local kriging, the number of nearest observations 
+  that should be used for a kriging prediction or simulation, where nearest 
+  is defined in terms of the space of the spatial locations. By default, all 
+  observations are used.}
+\item{...}{other arguments that will be passed to \code{\link{predict.gstat}}.}
 \item{projargs}{character; projection arguments; the arguments must be entered
   exactly as in the PROJ.4 documentation.}
 }
@@ -69,9 +67,9 @@ xlim <- c(10000, 328000)
 ylim <- c(81200, 335700)
 
 # Kriging function
-Krige <- function(fo, vg.model, xlim, ylim) {
+Krige <- function(fo, vg.model, xlim, ylim, ...) {
   kr <- gstat::krige(formula = fo, locations = pts, newdata = grd,
-                     model = vg.model)
+                     model = vg.model, ...)
   kr$var1.se <- sqrt(kr$var1.var)
   pal1 <- colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9"))
   pal2 <- terrain.colors
@@ -87,19 +85,27 @@ vg <- variogram(fo, pts)
 plot(variogram(fo, pts, cloud = TRUE), pch = 3)
 vg.model <- fit.variogram(vg, vgm(model = "Lin", nugget = 0))
 plot(vg, vg.model, main = "Linear variogram model (var1 ~ 1)")
-cv <- RunCrossValidation(fo, pts, vg.model = vg.model)
+cv <- RunCrossValidation(fo, pts, model = vg.model)
 cat(cv$me, cv$mspe, cv$cor.op, cv$cor.pr, "\n")
 
-### Universal Kriging (UK), accounts for spatial trend:
+### Universal Kriging (UK) with block estimates, accounts for linear spatial trend:
 fo <- var1 ~ x + y
 lm.trend <- lm(fo, data = pts)
 summary(lm.trend)
 
-vg <- variogram(fo, pts)
-vg.model <- fit.variogram(vg, vgm(model = "Lin", nugget = 0))
+vg <- variogram(fo, pts, cutoff = 150000)
+vg.model <- fit.variogram(vg, vgm(psill = 1500, model = "Sph", range = 100000, 
+                                  nugget = 0), fit.method = 1)
 plot(vg, vg.model, main = "Residual variogram model (var1 ~ x + y)")
+
 Krige(fo, vg.model, xlim, ylim)
-cv <- RunCrossValidation(fo, pts, vg.model = vg.model)
+cv <- RunCrossValidation(fo, pts, model = vg.model)
+cat(cv$me, cv$mspe, cv$cor.op, cv$cor.pr, "\n")
+
+# UK with block estimates
+block <- grd@grid@cellsize
+Krige(fo, vg.model, xlim, ylim, block = block)
+cv <- RunCrossValidation(fo, pts, model = vg.model, block = block)
 cat(cv$me, cv$mspe, cv$cor.op, cv$cor.pr, "\n")
 
 ### Kriging with External Drift (KED); assumes var1 forms a subdued replica of var2:
@@ -114,12 +120,12 @@ vg.model <- fit.variogram(vg, vgm(psill = 4500, model = "Sph", range = 100000,
                                   nugget = 0), fit.method = 1)
 plot(vg, vg.model, main = "Residual variogram model (var1 ~ var2)")
 Krige(fo, vg.model, xlim, ylim)
-cv <- RunCrossValidation(fo, pts, vg.model = vg.model)
+cv <- RunCrossValidation(fo, pts, model = vg.model)
 cat(cv$me, cv$mspe, cv$cor.op, cv$cor.pr, "\n")
 PlotBubble(cv$cv, "residual", ply , xlim , ylim, main = "Residuals")
 
 # KED in a local neighborhood:
-cv <- RunCrossValidation(fo, pts, vg.model = vg.model, nmax = 50)
+cv <- RunCrossValidation(fo, pts, model = vg.model, nmax = 50)
 cat(cv$me, cv$mspe, cv$cor.op, cv$cor.pr, "\n")
 }
 
