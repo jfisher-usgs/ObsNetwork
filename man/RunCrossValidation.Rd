@@ -49,13 +49,13 @@ Returns a list with components:
 }
 
 \examples{
-data(ESRP_WaterLevels_2008)
+data(ESRP_NWIS)
 data(ESRP_Boundary)
 data(ESRP_NED)
 
 # Set datum and projection
 crs <- CRS(proj4string(ESRP_NED))
-pts <- spTransform(ESRP_WaterLevels_2008, crs)
+pts <- spTransform(ESRP_NWIS, crs)
 ply <- spTransform(ESRP_Boundary, crs)
 
 # Exclude grid points outside polygon

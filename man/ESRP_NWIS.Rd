@@ -29,6 +29,8 @@ This data set has the following attributes:
     for calendar year 2008, in meters.}
   \item{sd}{Standard deviation of water-level elevations in meters, for
     entire period of record; duration varies for each well site.}
+  \item{var2}{Land-surface reference point elevation, in meters 
+    above the NAVD 88.}
   \item{mapno}{Numeric identifier used to locate well sites on map.}
   \item{network}{Unique identifier for water-table monitoring network. 
     For this data set "State" is used to identify wells in the 2008 
@@ -38,8 +40,6 @@ This data set has the following attributes:
     "State, INL" belong to both monitoring networks.}
   \item{nrec.por}{Number of records in the entire period of record.}
   \item{nrec}{Number of records in calendar year 2008.}
-  \item{alt.va}{Land-surface reference point elevation, in meters 
-    above the NAVD 88.}
   \item{alt.acy.va}{Accuracy of land-surface reference point elevation 
     in meters.}
   \item{lev.acy.va}{Mean water-level measurement accuracy 

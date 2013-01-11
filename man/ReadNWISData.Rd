@@ -75,6 +75,7 @@ Returns an object of class \code{\link{SpatialPointsDataFrame}} with components:
   in meters, for the time period defined by \code{dt.lim}. This variable
   is calculated from the summation of \code{alt.acy.va} and \code{lev.acy.va} 
   values.}
+\item{var2}{numeric; land-surface datum in meters.}
 \item{sd}{numeric; standard deviation of the water-table elevation in meters, 
   for the entire period of record.}
 \item{mapno}{integer; identifier (row index number) used to locate 
@@ -83,7 +84,6 @@ Returns an object of class \code{\link{SpatialPointsDataFrame}} with components:
 \item{nrec.por}{integer; number of records in the entire period of record.}
 \item{nrec}{integer; number of records in the time period defined by 
   \code{dt.lim}.}
-\item{alt.va}{numeric; land-surface datum in meters.}
 \item{alt.acy.va}{numeric; accuracy of land-surface datum in meters.}
 \item{lev.acy.va}{numeric; mean water-level measurement accuracy in meters,
   for the time period defined by \code{dt.lim}.}
@@ -111,8 +111,8 @@ obj <- ReadNWISData(file, dt.lim)
 str(obj)
 
 # Compare with available data set
-data(ESRP_WaterLevels_2008)
-identical(obj, ESRP_WaterLevels_2008)
+data(ESRP_NWIS)
+identical(obj, ESRP_NWIS)
 }
 
 \keyword{manip}

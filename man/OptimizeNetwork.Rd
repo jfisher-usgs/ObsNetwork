@@ -22,7 +22,7 @@ OptimizeNetwork(pts, grd, ply, network, nsites, vg.model, formula, nmax = Inf,
 \arguments{
 \item{pts}{SpatialPointsDataFrame; data at observation sites. A
   description of the required data frame variables is given in the
-  \sQuote{Value} section of \code{\link{ProcessObservations}}.
+  \sQuote{Value} section of \code{\link{ReadNWISData}}.
   Duplicate site numbers and (or) spatial coordinates are currently not 
   permitted.
   }
@@ -124,7 +124,7 @@ The status of the objective values after each GA iteration is plotted.
 
 \examples{
 data(ESRP_NED)
-data(ESRP_WaterLevels_2008)
+data(ESRP_NWIS)
 data(ESRP_Boundary)
 
 # Formula and variogram
@@ -134,36 +134,36 @@ vg.model <- vgm(psill = 0.01546379, model = "Lin", nugget = 0)
 # Optimize "State" network; number of iterations should be much larger
 xlim <- c(10000, 328000)
 ylim <- c(81200, 335700)
-ga <- OptimizeNetwork(ESRP_WaterLevels_2008, ESRP_NED, ESRP_Boundary,
+ga <- OptimizeNetwork(ESRP_NWIS, ESRP_NED, ESRP_Boundary,
                       network = "State", nsites = 20, vg.model = vg.model,
                       formula = fo, nmax = Inf, grd.fact = 5, pop.size = 200,
                       obj.weights = c(10, 1, 1, 1), niters = 3)
-PlotRaster(ga$kr, "var1.pred", ESRP_WaterLevels_2008 ,
+PlotRaster(ga$kr, "var1.pred", ESRP_NWIS ,
            pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
            main = "Predictions", rm.idxs = which(ga$is.rm.idx),
            xlim = xlim, ylim = ylim)
-PlotRaster(ga$kr, "var1.se", ESRP_WaterLevels_2008,
+PlotRaster(ga$kr, "var1.se", ESRP_NWIS,
            pal = terrain.colors, main = "Standard errors",
            rm.idxs = which(ga$is.rm.idx), xlim = xlim, ylim = ylim)
 
 # Optimize "INL" network; number of iterations should be much larger
 xlim <- c(178000, 257500)
 ylim <- c(202000, 272000)
-ga <- OptimizeNetwork(ESRP_WaterLevels_2008, ESRP_NED, ESRP_Boundary,
+ga <- OptimizeNetwork(ESRP_NWIS, ESRP_NED, ESRP_Boundary,
                       network = "INL", nsites = 20, vg.model = vg.model,
                       formula = fo, nmax = Inf, grd.fact = 5, pop.size = 200,
                       obj.weights = c(10, 1, 1, 1), xlim = xlim, ylim = ylim,
                       niters = 10)
-PlotRaster(ga$kr, "var1.pred", ESRP_WaterLevels_2008,
+PlotRaster(ga$kr, "var1.pred", ESRP_NWIS,
            pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
            main = "Predictions", rm.idxs = which(ga$is.rm.idx),
            xlim = xlim, ylim = ylim)
-PlotRaster(ga$kr, "var1.se", ESRP_WaterLevels_2008, pal = terrain.colors,
+PlotRaster(ga$kr, "var1.se", ESRP_NWIS, pal = terrain.colors,
            main = "Standard errors", rm.idxs = which(ga$is.rm.idx),
            xlim = xlim, ylim = ylim)
 
 # Restart GA using previous best solution
-ga <- OptimizeNetwork(ESRP_WaterLevels_2008, ESRP_NED, ESRP_Boundary,
+ga <- OptimizeNetwork(ESRP_NWIS, ESRP_NED, ESRP_Boundary,
                       network = "INL", nsites = 20, vg.model = vg.model,
                       formula = fo, nmax = Inf, grd.fact = 5, pop.size = 200,
                       obj.weights = c(10, 1, 1, 1), xlim = xlim, ylim = ylim,

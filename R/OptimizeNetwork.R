@@ -88,6 +88,16 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, vg.model,
 
 
   # Main program
+  
+  # Add independent-variable to points if missing (used for KED only)
+  if (!"var2" %in% names(pts))
+    pts$var2 <- NA
+  
+  # Reduce points to required variables
+  required.vars <- c("siteno", "var1", "acy", "sd", "network", "var2")
+  if (!all(required.vars %in% names(pts)))
+    stop("missing variable(s)")
+  pts <- pts[, required.vars]
 
   # Transform points and polygon projection and datum
   crs <- CRS(proj4string(grd))
@@ -102,7 +112,7 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, vg.model,
   if (missing(network)) {
     nsites.in.network <- length(pts)
   } else {
-    is.net <- pts$net == network
+    is.net <- pts$network == network
     nsites.in.network <- sum(is.net)
     if (nsites.in.network == 0)
       stop("network not in observation table")

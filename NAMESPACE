@@ -4,7 +4,6 @@ export(OpenGraphicsDevice,
        OptimizeNetwork,
        PlotBubble,
        PlotRaster,
-       ProcessObservations,
        ReadNWISData,
        RunCrossValidation,
        WriteGAResults)

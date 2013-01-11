@@ -69,7 +69,7 @@ Returns (or plots) the raster plot.
 
 \examples{
 data(ESRP_NED)
-data(ESRP_WaterLevels_2008)
+data(ESRP_NWIS)
 data(ESRP_Boundary)
 data(ESRP_Lakes)
 data(ESRP_Rivers)
@@ -79,11 +79,11 @@ data(INL_Boundary)
 PlotRaster(ESRP_NED, "var2")
 
 # Set axis limits, add points and long-lat grid to plot layout
-pts <- ESRP_WaterLevels_2008[ESRP_WaterLevels_2008$net == "State", ]
+pts <- ESRP_NWIS[ESRP_NWIS$network == "State", ]
 xlim <- c(10000, 328000)
 ylim <- c(81200, 335700)
 PlotRaster(ESRP_NED, "var2", pts, ESRP_Boundary, xlim = xlim, ylim = ylim,
-           pal = terrain.colors, label.pts = "mapid", ll.lines = TRUE)
+           pal = terrain.colors, label.pts = "mapno", ll.lines = TRUE)
 
 # Plot hill shade, add lakes, river, and INL boundary to the plot layout
 slp <- terrain(raster(ESRP_NED), opt = "slope")
@@ -100,7 +100,7 @@ lo[[3]] <- list("sp.polygons", INL_Boundary, col = "#000000", first = FALSE)
 PlotRaster(grd, 1, xlim = xlim, ylim = ylim, at = at, pal = pal, lo = lo)
 
 # Set new axis limits
-pts <- ESRP_WaterLevels_2008[ESRP_WaterLevels_2008$net == "INL", ]
+pts <- ESRP_NWIS[ESRP_NWIS$network == "INL", ]
 xlim <- c(178000, 257500)
 ylim <- c(202000, 272000)
 PlotRaster(ESRP_NED, "var2", pts, ESRP_Boundary, xlim = xlim, ylim = ylim,

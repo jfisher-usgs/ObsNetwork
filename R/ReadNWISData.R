@@ -117,9 +117,8 @@ ReadNWISData <- function(file, dt.lim, dt.fmt="%Y-%m-%d %H:%M", sep="\t") {
   }
 
   # Initialize output data table
-  vars <- c("x", "y", "siteno", "var1", "acy", "sd",
-            "mapno", "network", "nrec.por", "nrec",
-            "alt.va", "alt.acy.va", "lev.acy.va",
+  vars <- c("x", "y", "siteno", "var1", "acy", "sd", "var2",
+            "mapno", "network", "nrec.por", "nrec", "alt.acy.va", "lev.acy.va",
             "coord.acy.va", "coord.meth.cd", "alt.meth.cd", "lev.meth.cd", 
             "sitenm")
   sitenos <- unique(d$SITE_NO)
@@ -142,7 +141,7 @@ ReadNWISData <- function(file, dt.lim, dt.fmt="%Y-%m-%d %H:%M", sep="\t") {
     dd$sitenm[i]     <- d.rec$STATION_NM[1]  # site name
     dd$x[i]          <- d.rec$DEC_LONG_VA[1] # decimal longitude
     dd$y[i]          <- d.rec$DEC_LAT_VA[1]  # decimal latitude
-    dd$alt.va[i]     <- d.rec$ALT_VA[1]      # land-surface reference point elev.
+    dd$var2[i]       <- d.rec$ALT_VA[1]      # land-surface reference point elev.
     dd$alt.acy.va[i] <- d.rec$ALT_ACY_VA[1]  # accuracy of referece point
     
     if ("NETWORK" %in% names(d)) 
