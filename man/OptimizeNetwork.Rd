@@ -20,12 +20,11 @@ OptimizeNetwork(pts, grd, ply, network, nsites, vg.model, formula, nmax = Inf,
 }
 
 \arguments{
-\item{pts}{SpatialPointsDataFrame; data at observation sites. A
-  description of the required data frame variables is given in the
-  \sQuote{Value} section of \code{\link{ReadNWISData}}.
-  Duplicate site numbers and (or) spatial coordinates are currently not 
-  permitted.
-  }
+\item{pts}{SpatialPointsDataFrame; data at observation sites. Required data 
+  frame variables include: \code{siteno},  \code{var1},  \code{acy}, and 
+  \code{sd}; a description of these variables is given in the
+  \sQuote{Value} section of the \code{\link{ReadNWISData}} function.
+  Duplicate site numbers and (or) spatial coordinates are not permitted.}
 \item{grd}{SpatialGridDataFrame; raster data with independent variables.}
 \item{ply}{SpatialPolygonsDataFrame; a polygon used to crop the raster grid
   (optional).}
@@ -129,7 +128,7 @@ data(ESRP_Boundary)
 
 # Formula and variogram
 fo <- var1 ~ x + y
-vg.model <- vgm(psill = 0.01546379, model = "Lin", nugget = 0)
+vg.model <- vgm(psill = 1948.533, model = "Sph", nugget = 0, range = 153891.038)
 
 # Optimize "State" network; number of iterations should be much larger
 xlim <- c(10000, 328000)

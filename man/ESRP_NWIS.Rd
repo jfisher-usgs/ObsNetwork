@@ -19,7 +19,7 @@ ESRP_NWIS
 An object of class \code{\link{SpatialPointsDataFrame}} with 335 points
 (coordinates). Geographic coordinates are in units of decimal degrees,
 and in conformance with the North American Datum of 1983 (NAD 83).
-This data set has the following attributes:
+This data set has the following variables:
 \describe{
   \item{siteno}{Unique numerical identifier for each well site, for example
     \href{http://waterdata.usgs.gov/id/nwis/inventory/?site_no=435339112444601}{435339112444601}.}
