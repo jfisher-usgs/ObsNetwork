@@ -5,7 +5,7 @@
 \title{Optimize Observation Network}
 
 \description{
-Determine sites to exclude from an existing monitoring network because
+Determine sites to exclude from an existing observation network because
 they provide little or no beneficial added information. A kriging-based
 genetic algorithm (GA) is used to solve the multi-objective optimization
 problem.
@@ -21,19 +21,27 @@ OptimizeNetwork(pts, grd, ply, network, nsites, vg.model, formula, nmax = Inf,
 
 \arguments{
 \item{pts}{SpatialPointsDataFrame; data at observation sites. Required data 
-  frame variables include: \code{siteno},  \code{var1},  \code{acy}, and 
-  \code{sd}; a description of these variables is given in the
-  \sQuote{Value} section of the \code{\link{ReadNWISData}} function.
-  Duplicate site numbers and (or) spatial coordinates are not permitted.}
-\item{grd}{SpatialGridDataFrame; raster data with independent variables.}
+  frame variables include: 
+  \code{siteno}, a unique site number;
+  \code{var1}, the dependent variable (such as, the water-table elevation);
+  \code{acy}, the mean measurment error of the dependent variable;
+  \code{sd}, the standard deviation of the dependent variable.
+  An optional \code{network} variable may be used to identify a 
+  sites observation network(s). Sites belonging to multiple observation 
+  networks are specified using comma separation.
+  Note that duplicate site numbers and (or) spatial coordinates are not 
+  permitted.}
+\item{grd}{SpatialGridDataFrame; interpolation grid. 
+  For kriging with an external drift (KED), a data frame variable \code{var2}, 
+  the independent variable (such as, land-surface elevation), is required.}
 \item{ply}{SpatialPolygonsDataFrame; a polygon used to crop the raster grid
   (optional).}
-\item{network}{character; the name of an observation network. Only sites
+\item{network}{character; observation network name. Only sites
   included in this network will be recognized as decision variables in the
   optimization problem; this argument is optional, in its absence all
   sites will be recognized as decision variables.}
-\item{nsites}{integer; the number of sites to remove from the observation
-  network (the number of decision variables in the optimization problem).}
+\item{nsites}{integer; number of sites to remove from the observation
+  network.}
 \item{vg.model}{variogramModel; variogram model of dependent variable
    defined by a call to \code{\link{vgm}}.}
 \item{formula}{formula; defines the dependent variable as a linear model of
@@ -43,25 +51,26 @@ OptimizeNetwork(pts, grd, ply, network, nsites, vg.model, formula, nmax = Inf,
   is defined in terms of the space of the spatial locations. By default,
   all sites are used.}
 \item{xlim}{numeric; vector of length 2 giving left and right limits for
-  the x-axis, used to crop the raster grid.}
+  the x-axis, used to crop the interpolation grid.}
 \item{ylim}{numeric; vector of length 2 giving lower and upper limits for
-  the y-axis, used to crop the raster grid.}
-\item{grd.fact}{integer; aggregation factor for the raster grid expressed as the
-  number of cells in each direction (horizontally and vertically).}
-\item{niters}{integer; the number of iterations used in the GA.}
-\item{pop.size}{integer; the population size used in the GA.}
+  the y-axis, used to crop the interpolation grid.}
+\item{grd.fact}{integer; aggregation factor for the interpolation grid in 
+  \code{grd}, expressed as the number of cells in each direction.}
+\item{niters}{integer; number of iterations used in the GA.}
+\item{pop.size}{integer; population size used in the GA.}
 \item{obj.weights}{numeric; vector of length 4 giving the weights for each
   objective in the multi-objective optimzation problem,
   see \sQuote{details} section below.}
-\item{rtn.kr}{logical; return kriging results using optimal network.}
-\item{mutation.chance}{numeric; the chance that a gene in the chromosome
+\item{rtn.kr}{logical; if \code{TRUE}, return kriging results using 
+  optimal network.}
+\item{mutation.chance}{numeric; chance that a gene in the chromosome
   mutates. By default \code{1/(nnetsites+1)}, where \code{nnetsites} is the
   number of sites in the network. It affects the convergence rate
   and the probing of search space: a low chance results in quicker convergence,
   while a high chance increases the span of the search space.}
-\item{elitism}{integer; the number of chromosomes that are kept into the
+\item{elitism}{integer; number of chromosomes that are kept into the
   next generation. By default is about 20 percent of the population size.}
-\item{zero.to.one.ratio}{numeric; the chance for a zero for mutations and
+\item{zero.to.one.ratio}{numeric; chance for a zero for mutations and
   initialization. This option is used to control the number of set genes in
   the chromosome. By default \code{floor(nnetsites/nsites)-1}, where 
   \code{nnetsites} is the number of sites in the network.}
@@ -82,14 +91,14 @@ objectives are given as:
   \item Mean measurement error.
 }
 The optimal solution obtained will depend on the relative values of the weights
-specified, \code{obj.weights}. For example, if a higher weight is specified for
-the mean prediction error, the solution will be one that favors a smaller
+specified in \code{obj.weights}. For example, if a higher weight is specified 
+for the mean prediction error, the solution will be one that favors a smaller
 prediction error over a small root-mean squared error, mean standard deviation,
 and mean measurement error. Setting a weight equal to zero results in the 
 removal of an objective from the multi-objective function.
 
 Spatial data is transformed to the map projection and datum of the
-raster data set, \code{grd}.
+raster data set in \code{grd}.
 }
 
 \value{
@@ -97,9 +106,9 @@ Returns a list with components:
 \item{rm.pts}{SpatialPointsDataFrame; a subset of \code{pts} giving the
   optimal values for the decision variables. This data frame consists of
   \code{nsites} rows, each row corresponds to a site that is suggested
-  for removal from the monitoring network.}
+  for removal from the observation network.}
 \item{is.rm.idx}{logical; vector of length equal to the number of rows in
-  \code{pts} specifying sites to remove from the monitoring network.}
+  \code{pts} specifying sites to remove from the observation network.}
 \item{obj.values}{matrix; objective values after each iteration of the GA.
   This matrix has \code{niters} rows and 5 columns (4 objective values and
   their sum).}
