@@ -12,7 +12,7 @@ problem.
 }
 
 \usage{
-OptimizeNetwork(pts, grd, ply, network, nsites, vg.model, formula, nmax = Inf,
+OptimizeNetwork(pts, grd, ply, network, nsites, model, formula, nmax = Inf,
                 xlim = bbox(grd)[1, ], ylim = bbox(grd)[2, ], grd.fact = 1,
                 niters = 200, pop.size = 200, obj.weights = c(1, 1, 1, 1),
                 rtn.kr = TRUE, mutation.chance = NA, elitism = NA,
@@ -42,7 +42,7 @@ OptimizeNetwork(pts, grd, ply, network, nsites, vg.model, formula, nmax = Inf,
   sites will be recognized as decision variables.}
 \item{nsites}{integer; number of sites to remove from the observation
   network.}
-\item{vg.model}{variogramModel; variogram model of dependent variable
+\item{model}{variogramModel; variogram model of dependent variable
    defined by a call to \code{\link{vgm}}.}
 \item{formula}{formula; defines the dependent variable as a linear model of
   the independent variables.}
@@ -137,13 +137,13 @@ data(ESRP_Boundary)
 
 # Formula and variogram
 fo <- var1 ~ x + y
-vg.model <- vgm(psill = 1948.533, model = "Sph", nugget = 0, range = 153891.038)
+model <- vgm(psill = 1948.533, model = "Sph", nugget = 0, range = 153891.038)
 
 # Optimize "State" network; number of iterations should be much larger
 xlim <- c(10000, 328000)
 ylim <- c(81200, 335700)
 ga <- OptimizeNetwork(ESRP_NWIS, ESRP_NED, ESRP_Boundary,
-                      network = "State", nsites = 20, vg.model = vg.model,
+                      network = "State", nsites = 20, model = model,
                       formula = fo, nmax = Inf, grd.fact = 5, pop.size = 200,
                       obj.weights = c(10, 1, 1, 1), niters = 3)
 PlotRaster(ga$kr, "var1.pred", ESRP_NWIS ,
@@ -158,7 +158,7 @@ PlotRaster(ga$kr, "var1.se", ESRP_NWIS,
 xlim <- c(178000, 257500)
 ylim <- c(202000, 272000)
 ga <- OptimizeNetwork(ESRP_NWIS, ESRP_NED, ESRP_Boundary,
-                      network = "INL", nsites = 20, vg.model = vg.model,
+                      network = "INL", nsites = 20, model = model,
                       formula = fo, nmax = Inf, grd.fact = 5, pop.size = 200,
                       obj.weights = c(10, 1, 1, 1), xlim = xlim, ylim = ylim,
                       niters = 10)
@@ -172,7 +172,7 @@ PlotRaster(ga$kr, "var1.se", ESRP_NWIS, pal = terrain.colors,
 
 # Restart GA using previous best solution
 ga <- OptimizeNetwork(ESRP_NWIS, ESRP_NED, ESRP_Boundary,
-                      network = "INL", nsites = 20, vg.model = vg.model,
+                      network = "INL", nsites = 20, model = model,
                       formula = fo, nmax = Inf, grd.fact = 5, pop.size = 200,
                       obj.weights = c(10, 1, 1, 1), xlim = xlim, ylim = ylim,
                       niters = 10, suggestions = ga$best.solution)

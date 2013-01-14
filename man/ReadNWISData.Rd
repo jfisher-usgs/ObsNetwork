@@ -75,9 +75,9 @@ Returns an object of class \code{\link{SpatialPointsDataFrame}} with components:
   in meters, for the time period defined by \code{dt.lim}. This variable
   is calculated from the summation of \code{alt.acy.va} and \code{lev.acy.va} 
   values.}
-\item{var2}{numeric; land-surface datum in meters.}
 \item{sd}{numeric; standard deviation of the water-table elevation in meters, 
   for the entire period of record.}
+\item{var2}{numeric; land-surface datum in meters.}
 \item{mapno}{integer; identifier (row index number) used to locate 
   sites on map.}
 \item{network}{character; monitoring network name.}
