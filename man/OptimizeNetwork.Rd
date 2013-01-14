@@ -118,9 +118,11 @@ Returns a list with components:
 \item{elapsed.time}{numeric; elapsed time in hours for running the GA.}
 \item{ncalls.penalty}{integer; number of calls to penalty function.}
 \item{kr}{SpatialGridDataFrame; a data frame containing the coordinates of
-  \code{grd} cropped to the axis limits and polygon. Attributes columns contain
-  prediction and standard error from kriging of the optimized observation
-  network.}
+  \code{grd} cropped to the axis limits and polygon. Attribute columns contain
+  prediction \code{var1.pred}, variance \code{var1.var}, and standard error 
+  \code{var1.se} from the application of kriging on the reduced network. 
+  Prediction differences between the original and reducded network is
+  given in the \code{var1.diff} attribute.}
 \item{best.solution}{matrix; best GA solution.}
 \item{rbga.ans}{rbga; the returned value of \code{\link{rbga.bin}}.}
 The status of the objective values after each GA iteration is plotted.
@@ -169,8 +171,8 @@ PlotRaster(ga$kr, "var1.pred", ESRP_NWIS,
            pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
            main = "Predictions", net.idxs = which(ga$is.net), 
            rm.idxs = which(ga$is.rm), xlim = xlim, ylim = ylim)
-PlotRaster(ga$kr, "var1.se", ESRP_NWIS, pal = terrain.colors,
-           main = "Standard errors", net.idxs = which(ga$is.net), 
+PlotRaster(ga$kr, "var1.diff", ESRP_NWIS, pal = cm.colors,
+           main = "Prediction Differences", net.idxs = which(ga$is.net), 
            rm.idxs = which(ga$is.rm), xlim = xlim, ylim = ylim)
 
 # Restart GA using previous best solution

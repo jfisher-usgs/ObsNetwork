@@ -212,6 +212,10 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, model,
     kr <- krige(formula=formula, locations=pts[-rm.idxs, ], newdata=grd,
                 model=model, debug.level=0, block=grd@grid@cellsize)
     kr$var1.se <- sqrt(kr$var1.var) # standard error
+    
+    kr0 <- krige(formula=formula, locations=pts, newdata=grd, model=model, 
+                 debug.level=0, block=grd@grid@cellsize)
+    kr$var1.diff <- kr0$var1.pred - kr$var1.pred
   } else {
     kr <- NULL
   }
