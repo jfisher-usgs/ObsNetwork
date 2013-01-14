@@ -9,17 +9,24 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, model,
 
   # Calculate objective functions
   CalcObj <- function(idxs) {
-    newdata <- rbind(grd.pts, pts[idxs, "var2"])
-
-    # Perform kriging
-    kr <- gstat::krige(formula=formula, locations=pts[-idxs, ], newdata=newdata,
-                       model=model, nmax=nmax, debug.level=0)
-
-    pred <- kr[(ngrd.pts + 1):length(kr), ]$var1.pred
-    se <- sqrt(abs(kr[1:ngrd.pts, ]$var1.var))
-
-    obj.1 <- mean(se)
-    obj.2 <- sqrt(sum((pred - pts$var1[idxs])^2) / nsites)
+    
+    # Remove selected sites
+    locations <- pts[-idxs, ]
+    
+    # Perform point kriging to predict values at removed site locations
+    kr.pts <- gstat::krige(formula=formula, locations=locations, 
+                           newdata=pts[idxs, ], model=model, nmax=nmax, 
+                           debug.level=0)
+    kr.pts.pred <- kr.pts$var1.pred
+    
+    # Perform block kriging to predict standard errors in modified grid
+    kr.grd <- gstat::krige(formula=formula, locations=locations, 
+                           newdata=grd.mod, model=model, nmax=nmax, 
+                           debug.level=0, block=grd.mod@grid@cellsize)
+    kr.grd.se   <- sqrt(abs(kr.grd$var1.var))
+   
+    obj.1 <- mean(kr.grd.se, na.rm=TRUE)
+    obj.2 <- sqrt(sum((kr.pts.pred - pts$var1[idxs])^2) / nsites)
     obj.3 <- mean(pts$sd[idxs])
     obj.4 <- mean(pts$acy[-idxs])
 
@@ -89,36 +96,36 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, model,
 
   # Main program
   
-  # Add independent-variable to points if missing (used for KED only)
-  if (!"var2" %in% names(pts))
-    pts$var2 <- NA
-  
-  # Reduce points to required variables
-  required.vars <- c("siteno", "var1", "acy", "sd", "network", "var2")
+  # Check for required variables in spatial points data frame
+  required.vars <- c("siteno", "var1", "acy", "sd")
   if (!all(required.vars %in% names(pts)))
-    stop("missing variable(s)")
-  pts <- pts[, required.vars]
-
+    stop("missing required variable(s) in spatial points data frame")
+  
   # Transform points and polygon projection and datum
   crs <- CRS(proj4string(grd))
   pts <- spTransform(pts, crs)
   if (!missing(ply))
     ply <- spTransform(ply, crs)
-
+  
   # Save original vector of site numbers
   orig.siteno <- pts$siteno
-
-  # Bring network sites to initial rows of data table
-  if (missing(network)) {
-    nsites.in.network <- length(pts)
+  
+  # Identify sites in observation network(s)
+  if ("network" %in% names(pts) & !missing(network)) {
+    is.net <- rep(FALSE, length(pts))
+    for (i in seq(along=network)) {
+      chk <- sapply(strsplit(pts$network, ","), 
+                    function (j) network[i] %in% gsub("^\\s+|\\s+$", "", j))
+      is.net <- is.net | chk
+    }
   } else {
-    is.net <- pts$network == network
-    nsites.in.network <- sum(is.net)
-    if (nsites.in.network == 0)
-      stop("network not in observation table")
-    pts <- rbind(pts[is.net, ], pts[!is.net, ])
+    is.net <- rep(TRUE, length(pts))
   }
-
+  pts <- pts[is.net, ]
+  nsites.in.network <- length(pts)
+  if (nsites.in.network == 0)
+    stop("no sites in selected observation network")
+  
   # Initialize chromosome
   if (is.null(suggestions)) {
     idxs <- sample(1:nsites.in.network, nsites, replace=FALSE)
@@ -142,8 +149,8 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, model,
 
   # Crop grid to polygon
   if (!missing(ply))
-    grd$var2 <- grd$var2 * overlay(grd, ply)
-
+    grd[[1]] <- grd[[1]] * overlay(grd, ply)
+  
   # Reduce grid resolution
   # TODO(jfisher): prevent raster() from removing all but first field
   if (grd.fact > 1)
@@ -151,11 +158,7 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, model,
                             na.rm=TRUE), 'SpatialGridDataFrame')
   else
     grd.mod <- grd
-
-  # Convert grid to data frame
-  grd.pts <- as(grd.mod, "SpatialPointsDataFrame")
-  coordnames(grd.pts) <- c("x", "y")
-  ngrd.pts <- length(grd.pts)
+  coordnames(grd.mod) <- c("x", "y")
 
   # Initialize matrix of objective values
   nobjs <- length(obj.weights)
@@ -199,7 +202,7 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, model,
   best.solution <- GetBestSolution(rbga.ans)
   rm.idxs <- which(as.logical(best.solution)) # index from modified points
   rm.pts <- pts[rm.idxs, ]
-  is.rm.idx <- orig.siteno %in% rm.pts$siteno # index from unmodified points
+  is.rm <- orig.siteno %in% rm.pts$siteno # index from unmodified points
 
   # Reset graphics parameters
   par(op)
@@ -207,7 +210,7 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, model,
   # Final kriging
   if (rtn.kr) {
     kr <- krige(formula=formula, locations=pts[-rm.idxs, ], newdata=grd,
-                model=model, debug.level=0)
+                model=model, debug.level=0, block=grd@grid@cellsize)
     kr$var1.se <- sqrt(kr$var1.var) # standard error
   } else {
     kr <- NULL
@@ -230,8 +233,8 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, model,
   cat("\nNumber of calls to penalty function:", format(ncalls.penalty), "\n")
 
   # Return optimized sites to remove
-  invisible(list(rm.pts=rm.pts, is.rm.idx=is.rm.idx, obj.values=obj.values,
-                 ans.rep=ans.rep, elapsed.time=elapsed.time, 
-                 ncalls.penalty=ncalls.penalty, kr=kr,
-                 best.solution=t(best.solution), rbga.ans=rbga.ans))
+  invisible(list(rm.pts=rm.pts, is.net=is.net, is.rm=is.rm, 
+                 obj.values=obj.values, ans.rep=ans.rep, 
+                 elapsed.time=elapsed.time, ncalls.penalty=ncalls.penalty, 
+                 kr=kr, best.solution=t(best.solution), rbga.ans=rbga.ans))
 }

@@ -9,7 +9,7 @@ Raster plot for spatial data with attributes.
 }
 
 \usage{
-PlotRaster(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
+PlotRaster(grd, zcol, pts, ply, net.idxs, rm.idxs, xlim, ylim, at,
            pal = heat.colors, contour = FALSE, label.contours = FALSE,
            label.pts = FALSE, main = "", gr.type = "windows",
            gr.file = NULL, width = 7, height = NA, lo = list(),
@@ -24,8 +24,11 @@ PlotRaster(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
 \item{ply}{SpatialPolygonsDataFrame; a polygon defining the spatial domain
   of the raster data; data outside this domain is excluded. Polygon is
   included in the layout.}
+\item{net.idxs}{integer; vector of row indexes in \code{pts}, point symbols at
+  these sites are drawn as circle symbols with white backgrounds. Gray 
+  backgrounds are applied to all other point symbols.}
 \item{rm.idxs}{integer; vector of row indexes in \code{pts}, point symbols at
-  these coordinates are drawn as crosses (\code{pch=4}) rather than the
+  these sites are drawn as crosses (\code{pch=4}) rather than the
   default, an open circle symbol (\code{pch=21}).}
 \item{xlim}{numeric; vector of length 2 giving left and right limits for
   the x-axis.}

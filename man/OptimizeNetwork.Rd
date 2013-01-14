@@ -24,7 +24,7 @@ OptimizeNetwork(pts, grd, ply, network, nsites, model, formula, nmax = Inf,
   frame variables include: 
   \code{siteno}, a unique site number;
   \code{var1}, the dependent variable (such as, the water-table elevation);
-  \code{acy}, the mean measurment error of the dependent variable;
+  \code{acy}, the mean measurement error of the dependent variable;
   \code{sd}, the standard deviation of the dependent variable.
   An optional \code{network} variable may be used to identify a 
   sites observation network(s). Sites belonging to multiple observation 
@@ -107,7 +107,9 @@ Returns a list with components:
   optimal values for the decision variables. This data frame consists of
   \code{nsites} rows, each row corresponds to a site that is suggested
   for removal from the observation network.}
-\item{is.rm.idx}{logical; vector of length equal to the number of rows in
+\item{is.net}{logical; vector of length equal to the number of rows in
+  \code{pts} specifying sites belonging to the observation network.}
+\item{is.rm}{logical; vector of length equal to the number of rows in
   \code{pts} specifying sites to remove from the observation network.}
 \item{obj.values}{matrix; objective values after each iteration of the GA.
   This matrix has \code{niters} rows and 5 columns (4 objective values and
@@ -148,11 +150,12 @@ ga <- OptimizeNetwork(ESRP_NWIS, ESRP_NED, ESRP_Boundary,
                       obj.weights = c(10, 1, 1, 1), niters = 3)
 PlotRaster(ga$kr, "var1.pred", ESRP_NWIS ,
            pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
-           main = "Predictions", rm.idxs = which(ga$is.rm.idx),
-           xlim = xlim, ylim = ylim)
+           main = "Predictions", net.idxs = which(ga$is.net), 
+           rm.idxs = which(ga$is.rm), xlim = xlim, ylim = ylim)
 PlotRaster(ga$kr, "var1.se", ESRP_NWIS,
            pal = terrain.colors, main = "Standard errors",
-           rm.idxs = which(ga$is.rm.idx), xlim = xlim, ylim = ylim)
+           net.idxs = which(ga$is.net), rm.idxs = which(ga$is.rm), 
+           xlim = xlim, ylim = ylim)
 
 # Optimize "INL" network; number of iterations should be much larger
 xlim <- c(178000, 257500)
@@ -164,11 +167,11 @@ ga <- OptimizeNetwork(ESRP_NWIS, ESRP_NED, ESRP_Boundary,
                       niters = 10)
 PlotRaster(ga$kr, "var1.pred", ESRP_NWIS,
            pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
-           main = "Predictions", rm.idxs = which(ga$is.rm.idx),
-           xlim = xlim, ylim = ylim)
+           main = "Predictions", net.idxs = which(ga$is.net), 
+           rm.idxs = which(ga$is.rm), xlim = xlim, ylim = ylim)
 PlotRaster(ga$kr, "var1.se", ESRP_NWIS, pal = terrain.colors,
-           main = "Standard errors", rm.idxs = which(ga$is.rm.idx),
-           xlim = xlim, ylim = ylim)
+           main = "Standard errors", net.idxs = which(ga$is.net), 
+           rm.idxs = which(ga$is.rm), xlim = xlim, ylim = ylim)
 
 # Restart GA using previous best solution
 ga <- OptimizeNetwork(ESRP_NWIS, ESRP_NED, ESRP_Boundary,

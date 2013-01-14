@@ -1,4 +1,4 @@
-PlotRaster <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
+PlotRaster <- function(grd, zcol, pts, ply, net.idxs, rm.idxs, xlim, ylim, at,
                        pal=heat.colors, contour=FALSE, label.contours=FALSE,
                        label.pts=FALSE, main="", gr.type="windows",
                        gr.file=NULL, width=7, height=NA, lo=list(),
@@ -21,15 +21,27 @@ PlotRaster <- function(grd, zcol, pts, ply, rm.idxs, xlim, ylim, at,
 
   # Add points to layout
   if (!missing(pts)) {
-    if (missing(rm.idxs)) {
-      lo[[length(lo) + 1L]] <- list("sp.points", pts, pch=21, cex=0.5,
-                                    col="black", fill="white")
+    idxs <- 1:length(pts)
+    if (!missing(net.idxs) && is.numeric(net.idxs)) {
+      not.net.idxs <- idxs[-net.idxs]
     } else {
-      lo[[length(lo) + 1L]] <- list("sp.points", pts[-rm.idxs, ], pch=21,
+      net.idxs <- idxs
+      not.net.idxs <- c()
+    }
+    if (!missing(rm.idxs) && is.numeric(rm.idxs)) {
+      net.idxs <- net.idxs[!net.idxs %in% rm.idxs]
+    } else {
+      rm.idxs <- c()
+    }
+    if (length(not.net.idxs) > 0)
+      lo[[length(lo) + 1L]] <- list("sp.points", pts[not.net.idxs, ], pch=21, 
+                                    cex=0.5, col="black", fill="light gray")
+    if (length(net.idxs) > 0)
+      lo[[length(lo) + 1L]] <- list("sp.points", pts[net.idxs, ], pch=21, 
                                     cex=0.5, col="black", fill="white")
+    if (length(rm.idxs) > 0)
       lo[[length(lo) + 1L]] <- list("sp.points", pts[rm.idxs, ], pch=4,
                                     cex=0.5, col="black", lwd=2)
-    }
   }
 
   # Add point labels to layout
