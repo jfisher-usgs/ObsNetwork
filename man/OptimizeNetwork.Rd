@@ -118,9 +118,9 @@ Returns a list with components:
 \item{elapsed.time}{numeric; elapsed time in hours for running the GA.}
 \item{ncalls.penalty}{integer; number of calls to penalty function.}
 \item{kr}{SpatialGridDataFrame; a data frame containing the coordinates of
-  \code{grd} cropped to the axis limits and polygon. Data attributes based
-  on kriging of the reduced network include:
-  \code{var1.pred}, prediction values; \code{var1.var}, prediction variances; 
+  \code{grd} cropped to the axis limits and polygon. Data attributes are based
+  on kriging of the reduced network and include:
+  \code{var1.pred}, predictions; \code{var1.var}, prediction variances; 
   and \code{var1.se}, prediction standard errors. 
   Prediction differences between the original and reduced network is
   given in the \code{var1.diff} attribute.}
