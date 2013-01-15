@@ -20,7 +20,8 @@ ESRP_NED
 
 \format{
 An object of \code{\link{SpatialGridDataFrame-class}} with 323,724
-points (coordinates) and a single data attribute (elevation).
+points (coordintates) and a single data attribute, \code{var2} 
+(land-surface elevation).
 Geographic coordinates are in units of meters, in conformance
 with the North American Datum of 1927 (NAD 27), and placed in a
 Albers Equal-Area Conic projection; standard parellels 42.83, 44.16;

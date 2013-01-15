@@ -7,7 +7,7 @@
 \title{Water-Level Data Set for the ESRP Aquifer}
 
 \description{
-A summary of water-level elevation measurements recorded at wells in 
+A summary of water-level elevation measurements from wells located in 
 the eastern Snake River Plain (ESRP) aquifer, Idaho.
 }
 
@@ -16,7 +16,7 @@ ESRP_NWIS
 }
 
 \format{
-An object of class \code{\link{SpatialPointsDataFrame}} with 335 points
+An object of \code{\link{SpatialPointsDataFrame-class}} with 335 points
 (coordinates). Geographic coordinates are in units of decimal degrees,
 and in conformance with the North American Datum of 1983 (NAD 83).
 This data set has the following variables:
@@ -59,7 +59,7 @@ The National Water Information System
 using \href{https://github.com/jfisher-usgs/RNWIS}{RNWIS} (version 0.1-8). 
 The software \href{http://www.ngs.noaa.gov/PC_PROD/VERTCON/}{VERTCON} 
 (version 2.1) was used to convert National Geodetic Vertical Datum of 1929 
-(NGVD 29) heights to NAVD 88. This data table was constructed using the 
+(NGVD 29) heights to NAVD 88. This final data table was constructed using the 
 \code{\link{ReadNWISData}} pre-processing function.
 }
 

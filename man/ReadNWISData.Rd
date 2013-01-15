@@ -7,7 +7,7 @@
 \description{
 This function reads water-level measurements exported from the 
 U.S. Geological Survey (USGS) National Water Information System (NWIS) 
-and summarizes this data for a specified duration of time.
+database and summarizes this data for a specified duration of time.
 }
 
 \usage{
@@ -45,7 +45,7 @@ Measurement variables (columns in the data table) include:
   \item{ALT_DATUM_CD}{The geodetic or local vertical datum of the elevation 
     datum elevation component (optional). For example, "NGVD29" and "NAVD88".}
   \item{ALT_METH_CD}{Method used to determined elevation of land-surface 
-    datum.}
+    datum (optional).}
   \item{HOLE_DEPTH_VA}{Borehole depth in feet (optional).}
   \item{WELL_DEPTH_VA}{Well depth in feet (optional).}
   \item{LEV_DT}{Date/time when water-level measurement was recorded.}

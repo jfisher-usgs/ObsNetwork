@@ -15,8 +15,8 @@ problem.
 OptimizeNetwork(pts, grd, ply, network, nsites, model, formula, nmax = Inf,
                 xlim = bbox(grd)[1, ], ylim = bbox(grd)[2, ], grd.fact = 1,
                 niters = 200, pop.size = 200, obj.weights = c(1, 1, 1, 1),
-                rtn.kr = TRUE, mutation.chance = NA, elitism = NA,
-                zero.to.one.ratio = NA, suggestions = NULL)
+                mutation.chance = NA, elitism = NA, zero.to.one.ratio = NA, 
+                suggestions = NULL)
 }
 
 \arguments{
@@ -37,9 +37,8 @@ OptimizeNetwork(pts, grd, ply, network, nsites, model, formula, nmax = Inf,
 \item{ply}{SpatialPolygonsDataFrame; a polygon used to crop the raster grid
   (optional).}
 \item{network}{character; observation network name. Only sites
-  included in this network will be recognized as decision variables in the
-  optimization problem; this argument is optional, in its absence all
-  sites will be recognized as decision variables.}
+  belonging to this network will be included in the analysis;
+  this argument is optional, in its absence all sites are used.}
 \item{nsites}{integer; number of sites to remove from the observation
   network.}
 \item{model}{variogramModel; variogram model of dependent variable
@@ -61,8 +60,6 @@ OptimizeNetwork(pts, grd, ply, network, nsites, model, formula, nmax = Inf,
 \item{obj.weights}{numeric; vector of length 4 giving the weights for each
   objective in the multi-objective optimzation problem,
   see \sQuote{details} section below.}
-\item{rtn.kr}{logical; if \code{TRUE}, return kriging results using 
-  optimal network.}
 \item{mutation.chance}{numeric; chance that a gene in the chromosome
   mutates. By default \code{1/(nnetsites+1)}, where \code{nnetsites} is the
   number of sites in the network. It affects the convergence rate
@@ -103,17 +100,16 @@ raster data set in \code{grd}.
 
 \value{
 Returns a list with components:
-\item{rm.pts}{SpatialPointsDataFrame; a subset of \code{pts} giving the
-  optimal values for the decision variables. This data frame consists of
-  \code{nsites} rows, each row corresponds to a site that is suggested
-  for removal from the observation network.}
+\item{rm.pts}{SpatialPointsDataFrame; a subset of \code{pts} with row length
+  equal to \code{nsites}. Includes data records for those sites identified 
+  by the GA for removal from the observation network(s).}
 \item{is.net}{logical; vector of length equal to the number of rows in
   \code{pts} specifying sites belonging to the observation network.}
 \item{is.rm}{logical; vector of length equal to the number of rows in
   \code{pts} specifying sites to remove from the observation network.}
 \item{obj.values}{matrix; objective values after each iteration of the GA.
-  This matrix has \code{niters} rows and 5 columns (4 objective values and
-  their sum).}
+  This matrix has \code{niters} rows and 5 columns 
+  (that is, the 4 objective values and their sum).}
 \item{ans.rep}{numeric; number of times the final solution was repeated.}
 \item{elapsed.time}{numeric; elapsed time in hours for running the GA.}
 \item{ncalls.penalty}{integer; number of calls to penalty function.}
@@ -122,10 +118,10 @@ Returns a list with components:
   on kriging of the reduced network and include:
   \code{var1.pred}, predictions; \code{var1.var}, prediction variances; 
   and \code{var1.se}, prediction standard errors. 
-  Prediction differences between the original and reduced network is
-  given in the \code{var1.diff} attribute.}
+  Prediction differences between the original and reduced network are
+  contained in the \code{var1.diff} attribute.}
 \item{best.solution}{matrix; best GA solution.}
-\item{rbga.ans}{rbga; the returned value of \code{\link{rbga.bin}}.}
+\item{rbga.ans}{rbga; returned value of \code{\link{rbga.bin}}.}
 The status of the objective values after each GA iteration is plotted.
 }
 

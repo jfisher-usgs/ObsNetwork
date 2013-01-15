@@ -7,7 +7,7 @@ Maintainer: Jason C. Fisher <jfisher@usgs.gov>
 Depends: R (>= 2.15.0), sp, rgdal, gstat, raster, genalg, tcltk
 Description: This package evaluates and optimizes long-term monitoring networks
   using a kriging-based genetic algorithm methodology.
-License: Unlimited
+License: GPL (>= 2)
 URL: https://github.com/jfisher-usgs/ObsNetwork
 BugReports: https://github.com/jfisher-usgs/ObsNetwork/issues
 ByteCompile: yes

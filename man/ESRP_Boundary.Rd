@@ -18,7 +18,7 @@ ESRP_Boundary
 
 \format{
 An object of \code{\link{SpatialPolygonsDataFrame-class}} containing
-4 \code{\link{Polygons}}. The three polygons representing buttes
+4 \code{\link{Polygons}}. Three of the polygons represent buttes and
 are set as holes in the much larger aquifer polygon.
 Geographic coordinates are in units of decimal degrees, and in conformance
 with the North American Datum of 1983 (NAD 83).
@@ -39,7 +39,7 @@ dsn <- system.file("extdata/ESRP_Boundary", package = "ObsNetwork")
 obj <- readOGR(dsn = dsn, layer = basename(dsn))
 identical(obj, ESRP_Boundary)
 
-# Polygons slots
+# Summary of polygon slots
 p <- sapply(slot(obj, "polygons"), function(i) slot(i, "Polygons"))
 
 # Generalized boundary of the ESRP aquifer
