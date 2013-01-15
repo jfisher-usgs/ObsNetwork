@@ -2,7 +2,7 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, model,
                             formula, nmax=Inf, xlim=bbox(grd)[1, ],
                             ylim=bbox(grd)[2, ], grd.fact=1, niters=200,
                             pop.size=200, obj.weights=c(1, 1, 1, 1),
-                            rtn.kr=TRUE, mutation.chance=NA, elitism=NA,
+                            mutation.chance=NA, elitism=NA, 
                             zero.to.one.ratio=NA, suggestions=NULL) {
 
   # Additional functions (subroutines)
@@ -39,11 +39,18 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, model,
 
   # Evaluate objective function in GA
   EvalFun <- function(string) {
+    
+    
+    
     if (sum(string) != nsites) {
       ncalls.penalty <<- ncalls.penalty + 1L
       return(1e15)
     }
+    
+    
     idxs <- which(as.logical(string))
+    
+    
     objs <- CalcObj(idxs)
     sum(objs, na.rm=TRUE)
   }
@@ -185,6 +192,9 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, model,
   labs[5] <- "Fitness score"
 
   # Run GA
+  
+  
+  
   elapsed.time <- system.time({
     rbga.ans <- rbga.bin(size=nsites.in.network,
                          popSize=pop.size,
@@ -198,9 +208,16 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, model,
                          verbose=FALSE,
                          suggestions=suggestions)
   })
+  
+  
+  
   summary.rbga(rbga.ans, echo=TRUE)
   best.solution <- GetBestSolution(rbga.ans)
+  
+  
   rm.idxs <- which(as.logical(best.solution)) # index from modified points
+  
+  
   rm.pts <- pts[rm.idxs, ]
   is.rm <- orig.siteno %in% rm.pts$siteno # index from unmodified points
 
@@ -208,17 +225,13 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, model,
   par(op)
 
   # Final kriging
-  if (rtn.kr) {
-    kr <- krige(formula=formula, locations=pts[-rm.idxs, ], newdata=grd,
-                model=model, debug.level=0, block=grd@grid@cellsize)
-    kr$var1.se <- sqrt(kr$var1.var) # standard error
-    
-    kr0 <- krige(formula=formula, locations=pts, newdata=grd, model=model, 
-                 debug.level=0, block=grd@grid@cellsize)
-    kr$var1.diff <- kr0$var1.pred - kr$var1.pred
-  } else {
-    kr <- NULL
-  }
+  kr <- krige(formula=formula, locations=pts[-rm.idxs, ], newdata=grd,
+              model=model, debug.level=0, block=grd@grid@cellsize)
+  kr$var1.se <- sqrt(kr$var1.var) # standard error
+  
+  kr0 <- krige(formula=formula, locations=pts, newdata=grd, model=model, 
+               debug.level=0, block=grd@grid@cellsize)
+  kr$var1.diff <- kr0$var1.pred - kr$var1.pred
 
   # Report elapsed time for running optimization
   elapsed.time <- as.numeric(elapsed.time['elapsed']) / 3600
