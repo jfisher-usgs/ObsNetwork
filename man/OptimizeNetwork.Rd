@@ -12,7 +12,7 @@ problem.
 }
 
 \usage{
-OptimizeNetwork(pts, grd, ply, network, nsites, model, formula, nmax = Inf,
+OptimizeNetwork(pts, grd, ply, network.nm, nsites, model, formula, nmax = Inf,
                 xlim = bbox(grd)[1, ], ylim = bbox(grd)[2, ], grd.fact = 1,
                 niters = 200, pop.size = 200, obj.weights = c(1, 1, 1, 1),
                 mutation.chance = NA, elitism = NA, zero.to.one.ratio = NA, 
@@ -22,11 +22,11 @@ OptimizeNetwork(pts, grd, ply, network, nsites, model, formula, nmax = Inf,
 \arguments{
 \item{pts}{SpatialPointsDataFrame; data at observation sites. Required data 
   frame variables include: 
-  \code{siteno}, a unique site number;
+  \code{site.no}, a unique site number;
   \code{var1}, the dependent variable (such as, the water-table elevation);
-  \code{acy}, the mean measurement error of the dependent variable;
-  \code{sd}, the standard deviation of the dependent variable.
-  An optional \code{network} variable may be used to identify a 
+  \code{var1.acy}, the mean measurement error of the dependent variable;
+  \code{var1.sd}, the standard deviation of the dependent variable.
+  An optional \code{network.nm} variable may be used to identify a 
   sites observation network(s). Sites belonging to multiple observation 
   networks are specified using comma separation.
   Note that duplicate site numbers and (or) spatial coordinates are not 
@@ -36,7 +36,7 @@ OptimizeNetwork(pts, grd, ply, network, nsites, model, formula, nmax = Inf,
   the independent variable (such as, land-surface elevation), is required.}
 \item{ply}{SpatialPolygonsDataFrame; a polygon used to crop the raster grid
   (optional).}
-\item{network}{character; observation network name. Only sites
+\item{network.nm}{character; observation network name. Only sites
   belonging to this network will be included in the analysis;
   this argument is optional, in its absence all sites are used.}
 \item{nsites}{integer; number of sites to remove from the observation
@@ -100,7 +100,7 @@ raster data set in \code{grd}.
 
 \value{
 Returns a list with components:
-\item{rm.pts}{SpatialPointsDataFrame; a subset of \code{pts} with row length
+\item{pts.rm}{SpatialPointsDataFrame; a subset of \code{pts} with row length
   equal to \code{nsites}. Includes data records for those sites identified 
   by the GA for removal from the observation network(s).}
 \item{is.net}{logical; vector of length equal to the number of rows in
@@ -110,7 +110,7 @@ Returns a list with components:
 \item{obj.values}{matrix; objective values after each iteration of the GA.
   This matrix has \code{niters} rows and 5 columns 
   (that is, the 4 objective values and their sum).}
-\item{ans.rep}{numeric; number of times the final solution was repeated.}
+\item{nrep.ans}{numeric; number of times the final solution was repeated.}
 \item{elapsed.time}{numeric; elapsed time in hours for running the GA.}
 \item{ncalls.penalty}{integer; number of calls to penalty function.}
 \item{kr}{SpatialGridDataFrame; a data frame containing the coordinates of
@@ -144,7 +144,7 @@ model <- vgm(psill = 1948.533, model = "Sph", nugget = 0, range = 153891.038)
 xlim <- c(10000, 328000)
 ylim <- c(81200, 335700)
 ga <- OptimizeNetwork(ESRP_NWIS, ESRP_NED, ESRP_Boundary,
-                      network = "State", nsites = 20, model = model,
+                      network.nm = "State", nsites = 20, model = model,
                       formula = fo, nmax = Inf, grd.fact = 5, pop.size = 200,
                       obj.weights = c(10, 1, 1, 1), niters = 3)
 PlotRaster(ga$kr, "var1.pred", ESRP_NWIS ,
@@ -160,7 +160,7 @@ PlotRaster(ga$kr, "var1.se", ESRP_NWIS,
 xlim <- c(178000, 257500)
 ylim <- c(202000, 272000)
 ga <- OptimizeNetwork(ESRP_NWIS, ESRP_NED, ESRP_Boundary,
-                      network = "INL", nsites = 20, model = model,
+                      network.nm = "INL", nsites = 20, model = model,
                       formula = fo, nmax = Inf, grd.fact = 5, pop.size = 200,
                       obj.weights = c(10, 1, 1, 1), xlim = xlim, ylim = ylim,
                       niters = 10)
@@ -174,7 +174,7 @@ PlotRaster(ga$kr, "var1.diff", ESRP_NWIS, pal = cm.colors,
 
 # Restart GA using previous best solution
 ga <- OptimizeNetwork(ESRP_NWIS, ESRP_NED, ESRP_Boundary,
-                      network = "INL", nsites = 20, model = model,
+                      network.nm = "INL", nsites = 20, model = model,
                       formula = fo, nmax = Inf, grd.fact = 5, pop.size = 200,
                       obj.weights = c(10, 1, 1, 1), xlim = xlim, ylim = ylim,
                       niters = 10, suggestions = ga$best.solution)

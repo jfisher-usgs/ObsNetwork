@@ -21,18 +21,18 @@ An object of \code{\link{SpatialPointsDataFrame-class}} with 335 points
 and in conformance with the North American Datum of 1983 (NAD 83).
 This data set has the following variables:
 \describe{
-  \item{siteno}{Unique numerical identifier for each well site, for example
+  \item{site.no}{Unique numerical identifier for each well site, for example
     \href{http://waterdata.usgs.gov/id/nwis/inventory/?site_no=435339112444601}{435339112444601}.}
   \item{var1}{Median water-level elevation for calendar year 2008, in meters 
     above the North American Vertical Datum of 1988 (NAVD 88).}
-  \item{acy}{Mean measurement accuracy of water-level elevations 
+  \item{var1.acy}{Mean measurement accuracy of water-level elevations 
     for calendar year 2008, in meters.}
-  \item{sd}{Standard deviation of water-level elevations in meters, for
+  \item{var1.sd}{Standard deviation of water-level elevations in meters, for
     entire period of record; duration varies for each well site.}
   \item{var2}{Land-surface reference point elevation, in meters 
     above the NAVD 88.}
-  \item{mapno}{Numeric identifier used to locate well sites on map.}
-  \item{network}{Unique identifier for water-table monitoring network. 
+  \item{map.no}{Numeric identifier used to locate well sites on map.}
+  \item{network.nm}{Unique identifier for water-table monitoring network. 
     For this data set "State" is used to identify wells in the 2008 
     Federal-State Cooperative water-table monitoring network (166 wells), 
     and "INL" for wells in the 2008 U.S. Geological Survey-Idaho National 
@@ -49,7 +49,7 @@ This data set has the following variables:
   \item{alt.meth.cd}{Method used to determine land-surface datum.}
   \item{lev.meth.cd}{All methods used to determine water levels; 
     comma separated.}
-  \item{sitenm}{Local well identifier, for example "07N 31E 34BDD1 USGS 25".}
+  \item{site.nm}{Local well identifier, for example "07N 31E 34BDD1 USGS 25".}
 }
 }
 
@@ -59,7 +59,7 @@ The National Water Information System
 using \href{https://github.com/jfisher-usgs/RNWIS}{RNWIS} (version 0.1-8). 
 The software \href{http://www.ngs.noaa.gov/PC_PROD/VERTCON/}{VERTCON} 
 (version 2.1) was used to convert National Geodetic Vertical Datum of 1929 
-(NGVD 29) heights to NAVD 88. This final data table was constructed using the 
+(NGVD 29) heights to NAVD 88. The final data table was constructed using the 
 \code{\link{ReadNWISData}} pre-processing function.
 }
 

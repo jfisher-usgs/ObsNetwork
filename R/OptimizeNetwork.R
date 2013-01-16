@@ -1,4 +1,4 @@
-OptimizeNetwork <- function(pts, grd, ply, network, nsites, model,
+OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model,
                             formula, nmax=Inf, xlim=bbox(grd)[1, ],
                             ylim=bbox(grd)[2, ], grd.fact=1, niters=200,
                             pop.size=200, obj.weights=c(1, 1, 1, 1),
@@ -27,8 +27,8 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, model,
    
     obj.1 <- mean(kr.grd.se, na.rm=TRUE)
     obj.2 <- sqrt(sum((kr.pts.pred - pts$var1[idxs])^2) / nsites)
-    obj.3 <- mean(pts$sd[idxs])
-    obj.4 <- mean(pts$acy[-idxs])
+    obj.3 <- mean(pts$var1.sd[idxs])
+    obj.4 <- mean(pts$var1.acy[-idxs])
 
     obj.1 <- obj.1 * obj.weights[1]
     obj.2 <- obj.2 * obj.weights[2]
@@ -104,7 +104,7 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, model,
   # Main program
   
   # Check for required variables in spatial points data frame
-  required.vars <- c("siteno", "var1", "acy", "sd")
+  required.vars <- c("site.no", "var1", "var1.acy", "var1.sd")
   if (!all(required.vars %in% names(pts)))
     stop("missing required variable(s) in spatial points data frame")
   
@@ -115,14 +115,14 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, model,
     ply <- spTransform(ply, crs)
   
   # Save original vector of site numbers
-  orig.siteno <- pts$siteno
+  orig.site.no <- pts$site.no
   
   # Identify sites in observation network(s)
-  if ("network" %in% names(pts) & !missing(network)) {
+  if ("network.nm" %in% names(pts) & !missing(network.nm)) {
     is.net <- rep(FALSE, length(pts))
-    for (i in seq(along=network)) {
-      chk <- sapply(strsplit(pts$network, ","), 
-                    function (j) network[i] %in% gsub("^\\s+|\\s+$", "", j))
+    for (i in seq(along=network.nm)) {
+      chk <- sapply(strsplit(pts$network.nm, ","), 
+                    function (j) network.nm[i] %in% gsub("^\\s+|\\s+$", "", j))
       is.net <- is.net | chk
     }
   } else {
@@ -218,8 +218,8 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, model,
   rm.idxs <- which(as.logical(best.solution)) # index from modified points
   
   
-  rm.pts <- pts[rm.idxs, ]
-  is.rm <- orig.siteno %in% rm.pts$siteno # index from unmodified points
+  pts.rm <- pts[rm.idxs, ]
+  is.rm <- orig.site.no %in% pts.rm$site.no # index from unmodified points
 
   # Reset graphics parameters
   par(op)
@@ -238,20 +238,20 @@ OptimizeNetwork <- function(pts, grd, ply, network, nsites, model,
   cat("\nElapsed time:", format(elapsed.time), "hours\n")
 
   # Determine and report how many times the final solution was repeated
-  ans.rep <- 0L
+  nrep.ans <- 0L
   for (i in niters:1) {
     if (!identical(obj.values[i, ], obj.values[niters, ]))
       break
-    ans.rep <-  ans.rep + 1L
+    nrep.ans <-  nrep.ans + 1L
   }
-  cat("\nNumber of times final solution was repeated:", ans.rep, "\n")
+  cat("\nNumber of times final solution was repeated:", nrep.ans, "\n")
   
   # Report number of calls to penalty function
   cat("\nNumber of calls to penalty function:", format(ncalls.penalty), "\n")
 
   # Return optimized sites to remove
-  invisible(list(rm.pts=rm.pts, is.net=is.net, is.rm=is.rm, 
-                 obj.values=obj.values, ans.rep=ans.rep, 
+  invisible(list(pts.rm=pts.rm, is.net=is.net, is.rm=is.rm, 
+                 obj.values=obj.values, nrep.ans=nrep.ans, 
                  elapsed.time=elapsed.time, ncalls.penalty=ncalls.penalty, 
                  kr=kr, best.solution=t(best.solution), rbga.ans=rbga.ans))
 }

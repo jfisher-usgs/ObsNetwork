@@ -117,37 +117,37 @@ ReadNWISData <- function(file, dt.lim, dt.fmt="%Y-%m-%d %H:%M", sep="\t") {
   }
 
   # Initialize output data table
-  vars <- c("x", "y", "siteno", "var1", "acy", "sd", "var2",
-            "mapno", "network", "nrec.por", "nrec", "alt.acy.va", "lev.acy.va",
-            "coord.acy.va", "coord.meth.cd", "alt.meth.cd", "lev.meth.cd", 
-            "sitenm")
-  sitenos <- unique(d$SITE_NO)
-  m <- length(sitenos) # rows
+  vars <- c("x", "y", "site.no", "var1", "var1.acy", "var1.sd", "var2",
+            "map.no", "network.nm", "nrec.por", "nrec", "alt.acy.va", 
+            "lev.acy.va", "coord.acy.va", "coord.meth.cd", "alt.meth.cd", 
+            "lev.meth.cd", "site.nm")
+  site.nos <- unique(d$SITE_NO)
+  m <- length(site.nos) # rows
   n <- length(vars)    # columns
   dd <- as.data.frame(matrix(NA, nrow=m, ncol=n, dimnames=list(1:m, vars)))
   
-  dd$siteno <- sitenos # site numbers
-  dd$mapno <- 1:m # default map numbers
+  dd$site.no <- site.nos # site numbers
+  dd$map.no <- 1:m # default map numbers
   
   # Loop through site numbers
   for (i in 1:m) {
-    siteno <- dd$siteno[i]
+    site.no <- dd$site.no[i]
     
     # Create new table from records corresponding to current site number
-    rec <- which(d$SITE_NO == siteno)
+    rec <- which(d$SITE_NO == site.no)
     d.rec <- d[rec, ]
     
     dd$nrec.por[i]   <- nrow(d.rec)          # number of records in period-of-record
-    dd$sitenm[i]     <- d.rec$STATION_NM[1]  # site name
+    dd$site.nm[i]    <- d.rec$STATION_NM[1]  # site name
     dd$x[i]          <- d.rec$DEC_LONG_VA[1] # decimal longitude
     dd$y[i]          <- d.rec$DEC_LAT_VA[1]  # decimal latitude
     dd$var2[i]       <- d.rec$ALT_VA[1]      # land-surface reference point elev.
     dd$alt.acy.va[i] <- d.rec$ALT_ACY_VA[1]  # accuracy of referece point
     
-    if ("NETWORK" %in% names(d)) 
-      dd$network[i] <- d.rec$NETWORK[1]
+    if ("NETWORK_NM" %in% names(d)) 
+      dd$network.nm[i] <- d.rec$NETWORK_NM[1]
     if ("MAP_NO" %in% names(d))
-      dd$mapno[i] <- d.rec$MAP_NO[1]
+      dd$map.no[i] <- d.rec$MAP_NO[1]
     if ("COORD_ACY_VA" %in% names(d))
       dd$coord.acy.va[i] <- d.rec$COORD_ACY_VA[1]
     
@@ -158,7 +158,7 @@ ReadNWISData <- function(file, dt.lim, dt.fmt="%Y-%m-%d %H:%M", sep="\t") {
     if ("LEV_METH_CD" %in% names(d))
       dd$lev.meth.cd[i] <- paste(unique(na.omit(d.rec$LEV_METH_CD)), collapse=", ")
     
-    dd$sd[i] <- sd(d.rec$ALT_LEV_VA, na.rm=TRUE) # standard deviation of water-level elev.
+    dd$var1.sd[i] <- sd(d.rec$ALT_LEV_VA, na.rm=TRUE) # standard deviation of water-level elev.
     
     # Create new table from records corresponding to date-time limits
     rec.lim <- which(d.rec$LEV_DT >= dt.lim[1] & d.rec$LEV_DT <= dt.lim[2])
@@ -169,7 +169,7 @@ ReadNWISData <- function(file, dt.lim, dt.fmt="%Y-%m-%d %H:%M", sep="\t") {
     dd$nrec[i]       <- nrow(d.rec.lim)
     dd$lev.acy.va[i] <- mean(d.rec.lim$LEV_ACY_VA, na.rm=TRUE)     # accuracy of water level
     dd$var1[i]       <- median(d.rec.lim$ALT_LEV_VA, na.rm=TRUE)   # water-level elev.
-    dd$acy[i]        <- mean(d.rec.lim$ALT_LEV_ACY_VA, na.rm=TRUE) # accuracy of water-level elev.
+    dd$var1.acy[i]   <- mean(d.rec.lim$ALT_LEV_ACY_VA, na.rm=TRUE) # accuracy of water-level elev.
   }
   
   # Convert data frame to spatial data frame
@@ -177,7 +177,7 @@ ReadNWISData <- function(file, dt.lim, dt.fmt="%Y-%m-%d %H:%M", sep="\t") {
   coordinates(dd) = ~x+y
   idxs <- zerodist(dd, zero=0.0, unique.ID=FALSE)
   if (nrow(idxs) > 0) {
-    print(cbind(dd$sitenm[idxs[, 1]], dd$sitenm[idxs[, 2]]))
+    print(cbind(dd$site.nm[idxs[, 1]], dd$site.nm[idxs[, 2]]))
     stop("duplicate coordinates not permitted")
   }
 

@@ -48,9 +48,9 @@ data(ESRP_NWIS)
 data(ESRP_Boundary)
 data(ESRP_NED)
 
-PlotBubble(ESRP_NWIS, "acy", ESRP_Boundary,
+PlotBubble(ESRP_NWIS, "var1.acy", ESRP_Boundary,
            main = "Measurment error")
-PlotBubble(ESRP_NWIS, "sd", ESRP_Boundary,
+PlotBubble(ESRP_NWIS, "var1.sd", ESRP_Boundary,
            xlim = c(178000, 257500), ylim = c(202000, 272000),
            main = "Standard deviation", projargs = proj4string(ESRP_NED))
 }

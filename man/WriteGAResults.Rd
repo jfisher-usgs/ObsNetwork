@@ -20,7 +20,7 @@ WriteGAResults(ga, file)
 
 \details{
 Printed components of \code{ga} include \code{rm.obs},
-\code{obj.values}, \code{ans.rep}, \code{elapsed.time}, 
+\code{obj.values}, \code{nrep.ans}, \code{elapsed.time}, 
 \code{ncalls.penalty}, and \code{best.solution}.
 }
 

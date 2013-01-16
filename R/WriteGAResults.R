@@ -12,7 +12,7 @@ WriteGAResults <- function(ga, file) {
   }
 
   # Removed observations
-  x <- ga$rm.pts
+  x <- ga$pts.rm
   write.table(x, file=file, append=FALSE, quote=FALSE, sep="\t",
               row.names=FALSE)
   cat("\n", file=file, append=TRUE)
@@ -23,7 +23,7 @@ WriteGAResults <- function(ga, file) {
               quote=FALSE, sep="\t")
 
   # Answer repeated
-  x <- ga$ans.rep
+  x <- ga$nrep.ans
   cat("\nNumber of times final solution was repeated:", x, "\n", file=file,
       append=TRUE)
 
