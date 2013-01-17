@@ -38,7 +38,8 @@ OptimizeNetwork(pts, grd, ply, network.nm, nsites, model, formula, nmax = Inf,
   (optional).}
 \item{network.nm}{character; observation network name. Only sites
   belonging to this network will be included in the analysis;
-  this argument is optional, in its absence all sites are used.}
+  this argument is optional, in its absence all sites are assumed to
+  belong to a single network (that is, all sites are used).}
 \item{nsites}{integer; number of sites to remove from the observation
   network.}
 \item{model}{variogramModel; variogram model of dependent variable
