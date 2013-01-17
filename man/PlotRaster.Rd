@@ -24,12 +24,11 @@ PlotRaster(grd, zcol, pts, ply, net.idxs, rm.idxs, xlim, ylim, at,
 \item{ply}{SpatialPolygonsDataFrame; a polygon defining the spatial domain
   of the raster data; data outside this domain is excluded. Polygon is
   included in the layout.}
-\item{net.idxs}{integer; vector of row indexes in \code{pts}, point symbols at
-  these sites are drawn as circle symbols with white backgrounds. Gray 
-  backgrounds are applied to all other point symbols.}
+\item{net.idxs}{integer; vector of row indexes in \code{pts}, point coordinates
+  at these sites are drawn as circle symbols with white backgrounds. 
+  All other circle symbols are drawn with gray backgrounds.}
 \item{rm.idxs}{integer; vector of row indexes in \code{pts}, point symbols at
-  these sites are drawn as crosses (\code{pch=4}) rather than the
-  default, an open circle symbol (\code{pch=21}).}
+  these sites are drawn as crosses.}
 \item{xlim}{numeric; vector of length 2 giving left and right limits for
   the x-axis.}
 \item{ylim}{numeric; vector of length 2 giving lower and upper limits for
@@ -39,7 +38,7 @@ PlotRaster(grd, zcol, pts, ply, net.idxs, rm.idxs, xlim, ylim, at,
 \item{pal}{function; a color palette to be used to assign colors in the plot.}
 \item{contour}{logical; add contour lines to plot, default is \code{FALSE}.}
 \item{label.contours}{logical; label contour lines, default is \code{FALSE}.}
-\item{label.pts}{character or logical; column name in \code{pts} specifying the
+\item{label.pts}{character or logical; attribute in \code{pts} specifying the
   labels to place at point coordinates. If \code{TRUE}, points are labeled with
   index numbers.}
 \item{main}{character; main plot title to be placed on top.}

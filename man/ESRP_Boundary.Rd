@@ -39,7 +39,7 @@ dsn <- system.file("extdata/ESRP_Boundary", package = "ObsNetwork")
 obj <- readOGR(dsn = dsn, layer = basename(dsn))
 identical(obj, ESRP_Boundary)
 
-# Summary of polygon slots
+# Polygon slots
 p <- sapply(slot(obj, "polygons"), function(i) slot(i, "Polygons"))
 
 # Generalized boundary of the ESRP aquifer

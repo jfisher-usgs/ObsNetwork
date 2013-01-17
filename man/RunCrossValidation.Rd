@@ -5,8 +5,8 @@
 \title{Run Cross Validation}
 
 \description{
-Cross validation function for kriging; a wrapper around
-\code{\link[gstat]{krige.cv}} in the \pkg{gstat} package.
+Cross validation function for kriging; a wrapper around the
+\code{\link[gstat]{krige.cv}} function in the \pkg{gstat} package.
 This function may be used to identify negative aspects of a kriging
 model, such as the worst errors or the areas with consistent bias.
 }
@@ -33,9 +33,9 @@ RunCrossValidation(formula, pts, model, nfold = nrow(pts), ...,
 
 \value{
 Returns a list with components:
-\item{cv}{SpatialPointsDataFrame; columns of prediction and prediction variance
-  of cross validated data points, observed values, residuals, zscore (residual
-  divided by kriging standard error), and fold.}
+\item{cv}{SpatialPointsDataFrame; attributes of prediction and prediction 
+  variance of cross validated data points, observed values, residuals, 
+  zscore (residual divided by kriging standard error), and fold.}
 \item{me}{numeric; mean error, ideally 0.}
 \item{mspe}{numeric; mean squared prediction error, ideally small.}
 \item{cor.op}{numeric; correlation of observed and predicted, ideally 1.}
@@ -66,7 +66,7 @@ grd$var2 <- grd$var2 * sp::overlay(grd, ply)
 xlim <- c(10000, 328000)
 ylim <- c(81200, 335700)
 
-# Kriging function
+# Kriging function with plotting routine
 Krige <- function(fo, model, xlim, ylim, ...) {
   kr <- gstat::krige(formula = fo, locations = pts, newdata = grd,
                      model = model, ...)
@@ -88,7 +88,7 @@ plot(vg, model, main = "Linear variogram model (var1 ~ 1)")
 cv <- RunCrossValidation(fo, pts, model = model)
 cat(cv$me, cv$mspe, cv$cor.op, cv$cor.pr, "\n")
 
-### Universal Kriging (UK) with block estimates, accounts for linear spatial trend:
+### Universal Kriging (UK), accounts for linear spatial trend:
 fo <- var1 ~ x + y
 lm.trend <- lm(fo, data = pts)
 summary(lm.trend)

@@ -26,13 +26,13 @@ OptimizeNetwork(pts, grd, ply, network.nm, nsites, model, formula, nmax = Inf,
   \code{var1}, the dependent variable (such as, the water-table elevation);
   \code{var1.acy}, the mean measurement error of the dependent variable;
   \code{var1.sd}, the standard deviation of the dependent variable.
-  An optional \code{network.nm} variable may be used to identify a 
-  sites observation network(s). Sites belonging to multiple observation 
+  An optional \code{network.nm} variable may be included to identify a 
+  sites observation network(s). Sites belonging to multiple  
   networks are specified using comma separation.
   Note that duplicate site numbers and (or) spatial coordinates are not 
   permitted.}
 \item{grd}{SpatialGridDataFrame; interpolation grid. 
-  For kriging with an external drift (KED), a data frame variable \code{var2}, 
+  For kriging with external drift (KED) a data frame variable \code{var2}, 
   the independent variable (such as, land-surface elevation), is required.}
 \item{ply}{SpatialPolygonsDataFrame; a polygon used to crop the raster grid
   (optional).}
@@ -53,16 +53,16 @@ OptimizeNetwork(pts, grd, ply, network.nm, nsites, model, formula, nmax = Inf,
   the x-axis, used to crop the interpolation grid.}
 \item{ylim}{numeric; vector of length 2 giving lower and upper limits for
   the y-axis, used to crop the interpolation grid.}
-\item{grd.fact}{integer; aggregation factor for the interpolation grid in 
-  \code{grd}, expressed as the number of cells in each direction.}
-\item{niters}{integer; number of iterations used in the GA.}
+\item{grd.fact}{integer; aggregation factor for the interpolation grid, 
+  \code{grd}.}
+\item{niters}{integer; number of iterations the GA will perform.}
 \item{pop.size}{integer; population size used in the GA.}
 \item{obj.weights}{numeric; vector of length 4 giving the weights for each
   objective in the multi-objective optimzation problem,
   see \sQuote{details} section below.}
 \item{mutation.chance}{numeric; chance that a gene in the chromosome
   mutates. By default \code{1/(nnetsites+1)}, where \code{nnetsites} is the
-  number of sites in the network. It affects the convergence rate
+  number of sites in the observation network. It affects the convergence rate
   and the probing of search space: a low chance results in quicker convergence,
   while a high chance increases the span of the search space.}
 \item{elitism}{integer; number of chromosomes that are kept into the
@@ -80,19 +80,19 @@ A solution to the multiobjective optimization problem is found by minimizing
 the aggregate objective function, the weighted linear sum of 4 objectives. The
 objectives are given as:
 \enumerate{
-  \item Mean standard error from the application of kriging.
+  \item Mean standard error from the application of block kriging.
   \item Root-mean-square error, difference between predicted and measured
-        values at removed sites.
-  \item Mean standard deviation, variability of measurement over time at
-        removed sites.
-  \item Mean measurement error.
+        values, at removed sites.
+  \item Mean standard deviation, variability of measurement over time,
+        at removed sites.
+  \item Mean measurement error, at remaining sites.
 }
 The optimal solution obtained will depend on the relative values of the weights
 specified in \code{obj.weights}. For example, if a higher weight is specified 
 for the mean prediction error, the solution will be one that favors a smaller
 prediction error over a small root-mean squared error, mean standard deviation,
-and mean measurement error. Setting a weight equal to zero results in the 
-removal of an objective from the multi-objective function.
+and mean measurement error. Setting a weight equal to zero will 
+remove an objective from the multi-objective function.
 
 Spatial data is transformed to the map projection and datum of the
 raster data set in \code{grd}.

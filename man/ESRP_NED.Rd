@@ -20,8 +20,8 @@ ESRP_NED
 
 \format{
 An object of \code{\link{SpatialGridDataFrame-class}} with 323,724
-points (coordintates) and a single data attribute, \code{var2} 
-(land-surface elevation).
+points (coordintates) and a single data attribute, \code{var2}, the
+land-surface elevation.
 Geographic coordinates are in units of meters, in conformance
 with the North American Datum of 1927 (NAD 27), and placed in a
 Albers Equal-Area Conic projection; standard parellels 42.83, 44.16;
@@ -55,8 +55,9 @@ summary(ESRP_NED)
 f <- system.file("extdata/ESRP_NED.tif", package = "ObsNetwork")
 grd <- rgdal::readGDAL(f, band = 1)
 names(grd) <- "var2"
-grd.attr <- as.data.frame(slot(grd, "grid"))
 summary(grd)
+grd.attr <- as.data.frame(slot(grd, "grid"))
+summary(grd.attr)
 
 # Transform coordinates to meters; Albers Equal-Area Conic projection; NAD27
 projargs <- paste("+proj=aea +lat_1=42.83333333333333 +lat_2=44.16666666666666",

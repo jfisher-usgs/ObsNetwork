@@ -25,14 +25,14 @@ This data set has the following variables:
     \href{http://waterdata.usgs.gov/id/nwis/inventory/?site_no=435339112444601}{435339112444601}.}
   \item{var1}{Median water-level elevation for calendar year 2008, in meters 
     above the North American Vertical Datum of 1988 (NAVD 88).}
-  \item{var1.acy}{Mean measurement accuracy of water-level elevations 
-    for calendar year 2008, in meters.}
-  \item{var1.sd}{Standard deviation of water-level elevations in meters, for
+  \item{var1.acy}{Mean measurement accuracy of water-level elevations, 
+    in meters, for calendar year 2008.}
+  \item{var1.sd}{Standard deviation of water-level elevations, in meters, for
     entire period of record; duration varies for each well site.}
   \item{var2}{Land-surface reference point elevation, in meters 
     above the NAVD 88.}
   \item{map.no}{Numeric identifier used to locate well sites on map.}
-  \item{network.nm}{Unique identifier for water-table monitoring network. 
+  \item{network.nm}{Identifier for water-table monitoring network. 
     For this data set "State" is used to identify wells in the 2008 
     Federal-State Cooperative water-table monitoring network (166 wells), 
     and "INL" for wells in the 2008 U.S. Geological Survey-Idaho National 
@@ -40,11 +40,11 @@ This data set has the following variables:
     "State, INL" belong to both monitoring networks.}
   \item{nrec.por}{Number of records in the entire period of record.}
   \item{nrec}{Number of records in calendar year 2008.}
-  \item{alt.acy.va}{Accuracy of land-surface reference point elevation 
+  \item{alt.acy.va}{Accuracy of land-surface reference point elevation, 
     in meters.}
-  \item{lev.acy.va}{Mean water-level measurement accuracy 
-    for calendar year 2008, in meters.}
-  \item{coord.acy.va}{Latitude/longitude coordinate accuracy in arc-seconds.}
+  \item{lev.acy.va}{Mean water-level measurement accuracy, in meters, 
+    for calendar year 2008.}
+  \item{coord.acy.va}{Latitude/longitude coordinate accuracy, in arc-seconds.}
   \item{coord.meth.cd}{Method used to determine horizontal datum.}
   \item{alt.meth.cd}{Method used to determine land-surface datum.}
   \item{lev.meth.cd}{All methods used to determine water levels; 

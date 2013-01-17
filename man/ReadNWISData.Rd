@@ -36,16 +36,19 @@ Measurement variables (columns in the data table) include:
   \item{SITE_NO}{Site number.}
   \item{DEC_LONG_VA}{Decimal longitude.}
   \item{DEC_LAT_VA}{Decimal latitude.}
-  \item{COORD_ACY_CD}{Latitude/longitude coordinate accuracy (optional).}
-  \item{COORD_DATUM_CD}{Latitude/longitude (horizontal) coordinate datum 
+  \item{COORD_ACY_CD}{Latitude/longitude coordinate accuracy code 
     (optional).}
-  \item{COORD_METH_CD}{Method used to determine horizontal datum (optional).}
+  \item{COORD_DATUM_CD}{Latitude/longitude (horizontal) coordinate datum 
+    code (optional).}
+  \item{COORD_METH_CD}{Code indicating the method used to determine horizontal 
+    datum (optional).}
   \item{ALT_VA}{Gage or land-surface datum, in feet.}
   \item{ALT_ACY_VA}{Accuracy of land-surface datum, in feet.}
-  \item{ALT_DATUM_CD}{The geodetic or local vertical datum of the elevation 
-    datum elevation component (optional); for example, "NGVD29" or "NAVD88".}
-  \item{ALT_METH_CD}{Method used to determined elevation of land-surface 
-    datum (optional).}
+  \item{ALT_DATUM_CD}{Code indicating the geodetic or local vertical datum of 
+    the elevation datum elevation component (optional); 
+    for example, "NGVD29" or "NAVD88".}
+  \item{ALT_METH_CD}{Code indicating the method used to determine the elevation 
+    of land-surface datum (optional).}
   \item{HOLE_DEPTH_VA}{Borehole depth, in feet (optional).}
   \item{WELL_DEPTH_VA}{Well depth, in feet (optional).}
   \item{LEV_DT}{Date/time when water-level measurement was recorded. 
@@ -72,25 +75,25 @@ be downloaded at \href{http://waterdata.usgs.gov/id/nwis/gw}{NWISWeb}.
 \value{
 Returns an object of \code{\link{SpatialPointsDataFrame-class}} with components:
 \item{site.no}{numeric; unique identifier for site.}
-\item{var1}{numeric; the median value of the water-table elevation in meters, 
+\item{var1}{numeric; the median value of the water-table elevation, in meters, 
   for the time period defined by \code{dt.lim}.}
-\item{var1.acy}{numeric; mean measurement accuracy of the water-table elevation 
+\item{var1.acy}{numeric; mean measurement accuracy of the water-table elevation, 
   in meters, for the time period defined by \code{dt.lim}. This variable
   is calculated from the summation of \code{alt.acy.va} and \code{lev.acy.va} 
   values.}
-\item{var1.sd}{numeric; standard deviation of the water-table elevation 
+\item{var1.sd}{numeric; standard deviation of the water-table elevation, 
   in meters, for the entire period of record.}
-\item{var2}{numeric; land-surface datum in meters.}
+\item{var2}{numeric; land-surface datum, in meters.}
 \item{map.no}{integer; identifier (row index number) used to locate 
   sites on map.}
 \item{network.nm}{character; monitoring network name.}
 \item{nrec.por}{integer; number of records in the entire period of record.}
 \item{nrec}{integer; number of records in the time period defined by 
   \code{dt.lim}.}
-\item{alt.acy.va}{numeric; accuracy of land-surface datum in meters.}
-\item{lev.acy.va}{numeric; mean water-level measurement accuracy in meters,
+\item{alt.acy.va}{numeric; accuracy of land-surface datum, in meters.}
+\item{lev.acy.va}{numeric; mean water-level measurement accuracy, in meters,
   for the time period defined by \code{dt.lim}.}
-\item{coord.acy.va}{numeric; latitude/longitude coordinate accuracy in 
+\item{coord.acy.va}{numeric; latitude/longitude coordinate accuracy, in 
   arc-seconds.}
 \item{coord.meth.cd}{character; method used to determine horizontal datum.}
 \item{alt.meth.cd}{character; method used to determine elevation at  
