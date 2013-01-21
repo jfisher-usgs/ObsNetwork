@@ -36,7 +36,7 @@ OptimizeNetwork(pts, grd, ply, network.nm, nsites, model, formula, nmax = Inf,
   the independent variable (such as, land-surface elevation), is required.}
 \item{ply}{SpatialPolygonsDataFrame; a polygon used to crop the raster grid
   (optional).}
-\item{network.nm}{character; observation network name. Only sites
+\item{network.nm}{character; vector of observation network names. Only sites
   belonging to this network will be included in the analysis;
   this argument is optional, in its absence all sites are assumed to
   belong to a single network (that is, all sites are used).}
