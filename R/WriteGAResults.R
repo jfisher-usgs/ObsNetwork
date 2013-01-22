@@ -33,12 +33,12 @@ WriteGAResults <- function(ga, file) {
 
   # Penalty calls
   x <- format(ga$ncalls.penalty)
-  cat("\nNumber of calls to penalty function\t:", x, "\n", file=file, 
+  cat("\nNumber of calls to penalty function:\t", x, "\n", file=file, 
       append=TRUE)
   
   # Best solution
   x <- paste(deparse((as.vector(ga$best.solution))), collapse="\n")
-  cat("\nBest solution:\t", x, file=file, append=TRUE)
+  cat("\nBest solution:\n", x, file=file, append=TRUE)
   
   invisible(NULL)
 }

@@ -15,13 +15,13 @@ WriteGAResults(ga, file)
 
 \arguments{
 \item{ga}{list; object returned from \code{\link{OptimizeNetwork}}.}
-\item{file}{character; the path of a file for writing (optional).}
+\item{file}{character; path of a file for writing (optional).}
 }
 
 \details{
-Printed components of \code{ga} include \code{rm.obs},
-\code{obj.values}, \code{nrep.ans}, \code{elapsed.time}, 
-\code{ncalls.penalty}, and \code{best.solution}.
+Printed components of \code{ga} include: \code{rm.obs};
+\code{obj.values}; \code{nrep.ans}; \code{elapsed.time}; 
+\code{ncalls.penalty}; and \code{best.solution}.
 }
 
 \value{

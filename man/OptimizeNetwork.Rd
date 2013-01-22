@@ -81,7 +81,8 @@ A solution to the multiobjective optimization problem is found by minimizing
 the aggregate objective function, the weighted linear sum of 4 objectives. The
 objectives are given as:
 \enumerate{
-  \item Mean standard error from the application of block kriging.
+  \item Mean standard error from the application of point kriging, at grid 
+        points.
   \item Root-mean-square error, difference between predicted and measured
         values, at removed sites.
   \item Mean standard deviation, variability of measurement over time,
@@ -169,7 +170,9 @@ PlotRaster(ga$kr, "var1.pred", ESRP_NWIS,
            pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
            main = "Predictions", net.idxs = which(ga$is.net), 
            rm.idxs = which(ga$is.rm), xlim = xlim, ylim = ylim)
-PlotRaster(ga$kr, "var1.diff", ESRP_NWIS, pal = cm.colors,
+cols <- c("#00007F", "#0000FF", "#007FFF", "#00FFFF", "#7FFF7F", 
+          "#FFFF00", "#FF7F00", "#FF0000", "#7F0000")
+PlotRaster(ga$kr, "var1.diff", ESRP_NWIS, pal = colorRampPalette(cols),
            main = "Prediction Differences", net.idxs = which(ga$is.net), 
            rm.idxs = which(ga$is.rm), xlim = xlim, ylim = ylim)
 
