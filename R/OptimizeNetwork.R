@@ -30,27 +30,18 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model,
     obj.3 <- mean(pts$var1.sd[idxs])
     obj.4 <- mean(pts$var1.acy[-idxs])
 
-    obj.1 <- obj.1 * obj.weights[1]
-    obj.2 <- obj.2 * obj.weights[2]
-    obj.3 <- obj.3 * obj.weights[3]
-    obj.4 <- obj.4 * obj.weights[4]
-    c(obj.1, obj.2, obj.3, obj.4)
+    c(obj.1 * obj.weights[1], obj.2 * obj.weights[2], 
+      obj.3 * obj.weights[3], obj.4 * obj.weights[4])
   }
 
   # Evaluate objective function in GA
   EvalFun <- function(string) {
-    
-    
-    
-    if (sum(string) != nsites) {
+    nstring <- sum(string)
+    if (nstring != nsites) {
       ncalls.penalty <<- ncalls.penalty + 1L
-      return(1e15)
+      return(1e6 * abs(nsites - nstring))
     }
-    
-    
     idxs <- which(as.logical(string))
-    
-    
     objs <- CalcObj(idxs)
     sum(objs, na.rm=TRUE)
   }
@@ -192,9 +183,6 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model,
   labs[5] <- "Fitness score"
 
   # Run GA
-  
-  
-  
   elapsed.time <- system.time({
     rbga.ans <- rbga.bin(size=nsites.in.network,
                          popSize=pop.size,
@@ -208,16 +196,9 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model,
                          verbose=FALSE,
                          suggestions=suggestions)
   })
-  
-  
-  
   summary.rbga(rbga.ans, echo=TRUE)
   best.solution <- GetBestSolution(rbga.ans)
-  
-  
   rm.idxs <- which(as.logical(best.solution)) # index from modified points
-  
-  
   pts.rm <- pts[rm.idxs, ]
   is.rm <- orig.site.no %in% pts.rm$site.no # index from unmodified points
 
