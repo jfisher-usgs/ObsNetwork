@@ -112,13 +112,13 @@ Returns a list with components:
   This matrix has \code{niters} rows and 5 columns 
   (that is, the 4 objective values and their sum).}
 \item{nrep.ans}{numeric; number of times the final solution was repeated.}
-\item{elapsed.time}{numeric; elapsed time in hours for running the GA.}
+\item{elapsed.time}{numeric; elapsed time for running the GA, in hours.}
 \item{ncalls.penalty}{integer; number of calls to penalty function.}
 \item{kr}{SpatialGridDataFrame; a data frame containing the coordinates of
   \code{grd} cropped to the axis limits and polygon. Data attributes are based
   on kriging of the reduced network and include:
-  \code{var1.pred}, predictions; \code{var1.var}, prediction variances; 
-  and \code{var1.se}, prediction standard errors. 
+  predictions, \code{var1.pred}; prediction variances, \code{var1.var}; 
+  and prediction standard errors, \code{var1.se}. 
   Prediction differences between the original and reduced network are
   contained in the \code{var1.diff} attribute.}
 \item{best.solution}{matrix; best GA solution.}

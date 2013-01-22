@@ -24,20 +24,21 @@ WriteGAResults <- function(ga, file) {
 
   # Answer repeated
   x <- ga$nrep.ans
-  cat("\nNumber of times final solution was repeated:", x, "\n", file=file,
+  cat("\nNumber of times final solution was repeated:\t", x, "\n", file=file,
       append=TRUE)
 
   # Elapsed time
   x <- format(ga$elapsed.time)
-  cat("\nElapsed time:", x, "hours\n", file=file, append=TRUE)
+  cat("\nElapsed time, in hours:\t", x, "\n", file=file, append=TRUE)
 
   # Penalty calls
   x <- format(ga$ncalls.penalty)
-  cat("\nNumber of calls to penalty function:", x, "\n", file=file, append=TRUE)
+  cat("\nNumber of calls to penalty function\t:", x, "\n", file=file, 
+      append=TRUE)
   
   # Best solution
   x <- paste(deparse((as.vector(ga$best.solution))), collapse="\n")
-  cat("\nBest solution:\n", x, file=file, append=TRUE)
+  cat("\nBest solution:\t", x, file=file, append=TRUE)
   
   invisible(NULL)
 }

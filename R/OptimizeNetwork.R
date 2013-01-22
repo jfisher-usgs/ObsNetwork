@@ -24,14 +24,13 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model,
                            newdata=grd.mod, model=model, nmax=nmax, 
                            debug.level=0, block=grd.mod@grid@cellsize)
     kr.grd.se   <- sqrt(abs(kr.grd$var1.var))
-   
-    obj.1 <- mean(kr.grd.se, na.rm=TRUE)
-    obj.2 <- sqrt(sum((kr.pts.pred - pts$var1[idxs])^2) / nsites)
-    obj.3 <- mean(pts$var1.sd[idxs])
-    obj.4 <- mean(pts$var1.acy[-idxs])
-
-    c(obj.1 * obj.weights[1], obj.2 * obj.weights[2], 
-      obj.3 * obj.weights[3], obj.4 * obj.weights[4])
+    
+    objs <- NULL
+    objs[1] <- mean(kr.grd.se, na.rm=TRUE)
+    objs[2] <- sqrt(sum((kr.pts.pred - pts$var1[idxs])^2) / nsites)
+    objs[3] <- mean(pts$var1.sd[idxs])
+    objs[4] <- mean(pts$var1.acy[-idxs])
+    objs * obj.weights
   }
 
   # Evaluate objective function in GA
