@@ -19,9 +19,9 @@ WriteGAResults(ga, file)
 }
 
 \details{
-Printed components of \code{ga} include: \code{rm.obs};
+Printed components of \code{ga} include: \code{call}; 
 \code{obj.values}; \code{nrep.ans}; \code{elapsed.time}; 
-\code{ncalls.penalty}; and \code{best.solution}.
+\code{sum(ncalls.penalty)}; and \code{pts.rm}.
 }
 
 \value{
@@ -31,7 +31,7 @@ None (invisible \code{NULL}).
 \author{J.C. Fisher}
 
 \seealso{
-\code{\link{write.table}}, \code{\link{cat}}
+\code{\link{OptimizeNetwork}}
 }
 
 \examples{\dontrun{WriteGAResults(ga)}}

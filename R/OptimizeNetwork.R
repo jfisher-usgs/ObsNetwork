@@ -1,14 +1,36 @@
-OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model,
-                            formula, nmax=Inf, xlim=bbox(grd)[1, ],
-                            ylim=bbox(grd)[2, ], grd.fact=1, niters=200,
-                            pop.size=200, obj.weights=c(1, 1, 1, 1),
-                            mutation.chance=NA, elitism=NA, 
-                            zero.to.one.ratio=NA, suggestions=NULL) {
+OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula, 
+                            nmax=Inf, xlim=bbox(grd)[1, ], ylim=bbox(grd)[2, ], 
+                            grd.fact=1, obj.weights=c(1, 1, 1, 1), 
+                            popSize=50, pcrossover=0.8, pmutation=0.1, 
+                            elitism=base::max(1, round(popSize * 0.05)), 
+                            maxiter=100, run=maxiter, maxfitness=Inf, 
+                            suggestions=NULL) {
 
   # Additional functions (subroutines)
 
+  # Decode binary string
+  DecodeBinaryString <- function(string) {
+    sapply(seq(1, nsites * length.bin.string, by=length.bin.string),
+           function(i) {
+             gry <- string[i:(i + length.bin.string - 1L)]
+             GA::binary2decimal(GA::gray2binary(gry))
+           })
+  }
+  
+  # Evaluate fitness function
+  EvalFit <- function(string) {
+    idxs <- DecodeBinaryString(string)
+    nduplicates <- sum(duplicated(idxs))
+    if (nduplicates > 0 | min(idxs) < 1 | max(idxs) > nsites.in.network) {
+      ncalls.penalty.iter <<- ncalls.penalty.iter + 1L
+      return(-1E6 * (nduplicates + 1L))
+    }
+    objs <- EvalObj(idxs)
+    -sum(objs, na.rm=TRUE)
+  }
+
   # Calculate objective functions
-  CalcObj <- function(idxs) {
+  EvalObj <- function(idxs) {
     
     # Remove selected sites
     locations <- pts[-idxs, ]
@@ -23,46 +45,24 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model,
     kr.grd <- gstat::krige(formula=formula, locations=locations, 
                            newdata=grd.mod, model=model, nmax=nmax, 
                            debug.level=0)
-    kr.grd.se <- sqrt(abs(kr.grd$var1.var))
     
     # Solve objective functions
     objs <- NULL
-    objs[1] <- mean(kr.grd.se, na.rm=TRUE)
+    objs[1] <- mean(kr.grd$var1.var, na.rm=TRUE)
     objs[2] <- sqrt(sum((kr.pts.pred - pts$var1[idxs])^2) / nsites)
     objs[3] <- mean(pts$var1.sd[idxs])
     objs[4] <- mean(pts$var1.acy[-idxs])
     objs * obj.weights
   }
 
-  # Evaluate objective function in GA
-  EvalFun <- function(string) {
-    nstring <- sum(string)
-    if (nstring != nsites) {
-      ncalls.penalty <<- ncalls.penalty + 1L
-      return(1e6 * abs(nsites - nstring))
-    }
-    idxs <- which(as.logical(string))
-    objs <- CalcObj(idxs)
-    sum(objs, na.rm=TRUE)
-  }
-
-  # Get best GA solution
-  GetBestSolution <- function(rbga.results) {
-    filter <- rbga.results$evaluations == min(rbga.results$evaluations)
-    best.obj.count <- sum(rep(1, rbga.results$popSize)[filter])
-    if (best.obj.count > 1)
-      best.solution <- rbga.results$population[filter, ][1, ]
-    else
-      best.solution <- rbga.results$population[filter, ]
-    best.solution
-  }
-
   # Monitor progress at end of each GA iteration
-  MonitorFun <- function(obj) {
-    best.solution <- GetBestSolution(obj)
-    idxs <- which(as.logical(best.solution))
-    objs <- CalcObj(idxs)
-    obj.values[obj$iter, ] <<- c(objs, sum(objs, na.rm=TRUE))
+  MonitorGA <- function(obj) {
+    string <- obj@population[which(obj@fitness == max(obj@fitness))[1L], ]
+    idxs <- DecodeBinaryString(string)
+    objectives <- EvalObj(idxs)
+    obj.values[obj@iter, ] <<- c(objectives, sum(objectives, na.rm=TRUE))
+    ncalls.penalty[obj@iter] <<- ncalls.penalty.iter
+    ncalls.penalty.iter <<- 0L
     PlotObjValues()
   }
 
@@ -82,8 +82,9 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model,
       axis(4, tcl=tcl, labels=FALSE)
       axis(1, tcl=tcl, labels=(i == m))
       points(x, y, type="o", pch=21, col=pal[i], bg=pal[i])
-      txt <- paste(format(y[n]), "    ")
-      mtext(txt, side=3, line=-2, adj=1, cex=0.75)
+      txt <- paste(format(y[n]), "     \n(", format(diff(range(y))), ")     ", 
+                   sep="")
+      mtext(txt, side=3, line=-3, adj=1, cex=0.75)
       if (i < m & is.weighted[i]) {
         txt <- paste("Weighted by", format(obj.weights[i]))
         mtext(txt, side=4, line=0.5, cex=0.75, col="dark gray")
@@ -94,10 +95,17 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model,
 
   # Main program
   
+  call <- match.call()
+  
   # Check for required variables in spatial points data frame
   required.vars <- c("site.no", "var1", "var1.acy", "var1.sd")
   if (!all(required.vars %in% names(pts)))
     stop("missing required variable(s) in spatial points data frame")
+  
+  # Check validity of objective weights
+  if (!inherits(obj.weights, c("numeric", "integer")))
+    stop("problem with objective weights")
+  is.weighted <- obj.weights != 1
   
   # Transform points and polygon projection and datum
   crs <- CRS(proj4string(grd))
@@ -124,21 +132,6 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model,
   if (nsites.in.network == 0)
     stop("no sites in selected observation network")
   
-  # Initialize chromosome
-  if (is.null(suggestions)) {
-    idxs <- sample(1:nsites.in.network, nsites, replace=FALSE)
-    suggestions <- rep(0L, nsites.in.network)
-    suggestions[idxs] <- 1L
-    suggestions <- t(suggestions)
-  }
-  
-  # Initialize number of calls to penalty function
-  ncalls.penalty <- 0L
-  
-  # Set default for zero to one ratio
-  if(is.na(zero.to.one.ratio))
-    zero.to.one.ratio <- floor(nsites.in.network / nsites) - 1
-  
   # Crop grid to axis limits
   x <- coordinates(grd)[, 1]
   y <- coordinates(grd)[, 2]
@@ -158,17 +151,15 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model,
     grd.mod <- grd
   coordnames(grd.mod) <- c("x", "y")
 
+  # Initialize number of calls to penalty function
+  ncalls.penalty <- NULL
+  ncalls.penalty.iter <- 0L
+
   # Initialize matrix of objective values
   nobjs <- length(obj.weights)
-  obj.values <- matrix(NA, nrow=niters, ncol=nobjs + 1,
-                       dimnames=list(1:niters, c(paste("obj", 1:nobjs, sep="."),
-                                                 "total")))
-
-  # Check validity of objective weights
-   if (!inherits(obj.weights, c("numeric", "integer")) |
-       length(obj.weights) != nobjs)
-    stop("problem with objective weights")
-   is.weighted <- obj.weights != 1
+  obj.values <- matrix(NA, nrow=maxiter, ncol=nobjs + 1L,
+                       dimnames=list(1:maxiter, c(paste("obj", 1:nobjs, sep="."),
+                                                 "fitness")))
 
   # Set plot attributes
   windows(width=8, height=(nobjs + 1) * 2)
@@ -182,30 +173,44 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model,
   labs[4] <- "Mean measurement error"
   labs[5] <- "Fitness score"
 
+  # Determine maximum lengthy of binary string
+  length.bin.string <- length(GA::decimal2binary(nsites.in.network))
+
+  # Initialize population
+  if (is.null(suggestions)) {
+    fun <- function(i) sample(1:nsites.in.network, nsites, replace=FALSE)
+    idxs <- t(sapply(1:popSize, fun))
+    fun <- function(i) {
+             suggestion <- NULL
+             for (j in i) {
+               gry <- GA::binary2gray(GA::decimal2binary(j, length.bin.string))
+               suggestion <- c(suggestion, gry)
+             }
+             suggestion
+           }
+    suggestions <- t(apply(idxs, 1, function(i) fun(i)))
+  }
+
   # Run GA
   elapsed.time <- system.time({
-    rbga.ans <- rbga.bin(size=nsites.in.network,
-                         popSize=pop.size,
-                         iters=niters,
-                         mutationChance=mutation.chance,
-                         elitism=elitism,
-                         zeroToOneRatio=zero.to.one.ratio,
-                         monitorFunc=MonitorFun,
-                         evalFunc=EvalFun,
-                         showSettings=FALSE,
-                         verbose=FALSE,
-                         suggestions=suggestions)
+    ga.ans <- GA::ga(type="binary", fitness=EvalFit, 
+                     nBits=length.bin.string * nsites, popSize=popSize,
+                     pcrossover=pcrossover, pmutation=pmutation, 
+                     elitism=elitism, monitor=MonitorGA, maxiter=maxiter,
+                     run=run, maxfitness=-maxfitness, names=NULL,
+                     suggestions=suggestions)
   })
-  summary.rbga(rbga.ans, echo=TRUE)
-  best.solution <- GetBestSolution(rbga.ans)
-  rm.idxs <- which(as.logical(best.solution)) # index from modified points
+  
+  summary(ga.ans, echo=TRUE)
+  
+  rm.idxs <- sort(as.vector(t(DecodeBinaryString(ga.ans@solution))))
   pts.rm <- pts[rm.idxs, ]
-  is.rm <- orig.site.no %in% pts.rm$site.no # index from unmodified points
+  is.rm <- orig.site.no %in% pts.rm$site.no
 
   # Reset graphics parameters
   par(op)
 
-  # Final kriging
+  # Final block kriging at original grid resolution
   kr <- krige(formula=formula, locations=pts[-rm.idxs, ], newdata=grd,
               model=model, debug.level=0, block=grd@grid@cellsize)
   kr$var1.se <- sqrt(kr$var1.var) # standard error
@@ -215,24 +220,28 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model,
   kr$var1.diff <- kr0$var1.pred - kr$var1.pred
 
   # Report elapsed time for running optimization
-  elapsed.time <- as.numeric(elapsed.time['elapsed']) / 3600
+  elapsed.time <- as.numeric(elapsed.time["elapsed"]) / 3600
   cat("\nElapsed time:", format(elapsed.time), "hours\n")
 
-  # Determine and report how many times the final solution was repeated
+  # Report how many times the final solution was repeated
   nrep.ans <- 0L
-  for (i in niters:1) {
-    if (!identical(obj.values[i, ], obj.values[niters, ]))
+  for (i in maxiter:1L) {
+    if (!identical(obj.values[i, ], obj.values[maxiter, ]))
       break
     nrep.ans <-  nrep.ans + 1L
   }
   cat("\nNumber of times final solution was repeated:", nrep.ans, "\n")
   
-  # Report number of calls to penalty function
+  # Report the number of calls to the penalty function
   cat("\nNumber of calls to penalty function:", format(ncalls.penalty), "\n")
+  
+  # Report best fitness score
+  fitness <- min(obj.values[, "fitness"])
+  cat("\nBest fitness score:", format(fitness), "\n")
 
-  # Return optimized sites to remove
-  invisible(list(pts.rm=pts.rm, is.net=is.net, is.rm=is.rm, 
-                 obj.values=obj.values, nrep.ans=nrep.ans, 
+  # Return GA solution
+  invisible(list(call=call, pts.rm=pts.rm, is.net=is.net, is.rm=is.rm, 
+                 obj.values=obj.values, fitness=fitness, nrep.ans=nrep.ans, 
                  elapsed.time=elapsed.time, ncalls.penalty=ncalls.penalty, 
-                 kr=kr, best.solution=t(best.solution), rbga.ans=rbga.ans))
+                 kr=kr, ga.ans=ga.ans))
 }

@@ -10,35 +10,33 @@ WriteGAResults <- function(ga, file) {
       return(NULL)
     file <- paste(file, collapse=" ")
   }
-
-  # Removed observations
-  x <- ga$pts.rm
-  write.table(x, file=file, append=FALSE, quote=FALSE, sep="\t",
-              row.names=FALSE)
-  cat("\n", file=file, append=TRUE)
-
+  
+  # Fucntion call
+  cat(ga$call, "\n\n", file=file, append=FALSE)
+              
   # Objective values
-  x <- ga$obj.values[nrow(ga$obj.values), ]
-  write.table(x, file=file, append=TRUE, col.names=FALSE, row.names=TRUE,
-              quote=FALSE, sep="\t")
-
+  tbl <- ga$obj.values[nrow(ga$obj.values), ]
+  write.table(tbl, file=file, col.names=FALSE, row.names=TRUE, quote=FALSE, 
+              sep="\t", append=TRUE)
+  
   # Answer repeated
-  x <- ga$nrep.ans
-  cat("\nNumber of times final solution was repeated:\t", x, "\n", file=file,
-      append=TRUE)
+  cat("\nNumber of times final solution was repeated:\t", ga$nrep.ans, 
+      "\n", file=file, append=TRUE)
 
   # Elapsed time
-  x <- format(ga$elapsed.time)
-  cat("\nElapsed time, in hours:\t", x, "\n", file=file, append=TRUE)
+  cat("\nElapsed time, in hours:\t", format(ga$elapsed.time), "\n", file=file, 
+      append=TRUE)
 
   # Penalty calls
-  x <- format(ga$ncalls.penalty)
-  cat("\nNumber of calls to penalty function:\t", x, "\n", file=file, 
-      append=TRUE)
+  cat("\nNumber of calls to penalty function:\t", sum(ga$ncalls.penalty), 
+      "\n", file=file, append=TRUE)
   
-  # Best solution
-  x <- paste(deparse((as.vector(ga$best.solution))), collapse="\n")
-  cat("\nBest solution:\n", x, file=file, append=TRUE)
+  # Removed observations
+  tbl <- ga$pts.rm
+  cat("\nRemoved sites:\n", file=file, append=TRUE) 
+  cat(paste(names(tbl), collapse="\t"), "\n", file=file, append=TRUE)
+  write.table(tbl, file=file, append=TRUE, quote=FALSE, sep="\t",
+              col.names=FALSE, row.names=FALSE)
   
   invisible(NULL)
 }
