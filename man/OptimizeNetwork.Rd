@@ -113,7 +113,6 @@ Returns a list with components:
 \item{obj.values}{matrix; objective values after each iteration of the GA.
   This matrix has \code{maxiter} rows and 5 columns 
   (that is, the 4 objective values and their sum).}
-\item{fitness}{numeric; best fitness score.}
 \item{nrep.ans}{numeric; number of times the final solution was repeated.}
 \item{elapsed.time}{numeric; elapsed time for running the GA, in hours.}
 \item{ncalls.penalty}{integer; vector giving the number of calls to 

@@ -12,7 +12,7 @@ WriteGAResults <- function(ga, file) {
   }
   
   # Fucntion call
-  cat(ga$call, "\n\n", file=file, append=FALSE)
+  cat(paste(format(ga$call), collapse="\n"), "\n\n", file=file, append=FALSE)
               
   # Objective values
   tbl <- ga$obj.values[nrow(ga$obj.values), ]

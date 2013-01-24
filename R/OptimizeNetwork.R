@@ -241,7 +241,7 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
 
   # Return GA solution
   invisible(list(call=call, pts.rm=pts.rm, is.net=is.net, is.rm=is.rm, 
-                 obj.values=obj.values, fitness=fitness, nrep.ans=nrep.ans, 
+                 obj.values=obj.values, nrep.ans=nrep.ans, 
                  elapsed.time=elapsed.time, ncalls.penalty=ncalls.penalty, 
                  kr=kr, ga.ans=ga.ans))
 }
