@@ -10,11 +10,11 @@ to a file.
 }
 
 \usage{
-WriteGAResults(ga, file)
+WriteGAResults(x, file)
 }
 
 \arguments{
-\item{ga}{list; object returned from \code{\link{OptimizeNetwork}}.}
+\item{x}{list; object returned from \code{\link{OptimizeNetwork}}.}
 \item{file}{character; path of a file for writing (optional).}
 }
 
@@ -34,6 +34,6 @@ None (invisible \code{NULL}).
 \code{\link{OptimizeNetwork}}
 }
 
-\examples{\dontrun{WriteGAResults(ga)}}
+\examples{\dontrun{WriteGAResults(ans)}}
 
 \keyword{IO}

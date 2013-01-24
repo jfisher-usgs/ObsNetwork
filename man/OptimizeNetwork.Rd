@@ -91,13 +91,15 @@ objectives are given as:
 }
 The optimal solution obtained will depend on the relative values of the weights
 specified in \code{obj.weights}. For example, if a higher weight is specified 
-for the mean prediction error, the solution will be one that favors a smaller
-prediction error over a small root-mean squared error, mean standard deviation,
-and mean measurement error. Setting a weight equal to zero will 
+for the mean prediction variance, the solution will be one that favors a smaller
+mean prediction variance over a small root-mean squared error, mean standard 
+deviation, and mean measurement error. Setting a weight equal to zero will 
 remove an objective from the multi-objective function.
 
 Spatial data is transformed to the map projection and datum of the
 raster data set in \code{grd}.
+
+The optimization problem is solved using binary GAs with Gray encoding.
 }
 
 \value{
@@ -130,6 +132,11 @@ The status of the objective values after each GA iteration is plotted.
 
 \author{J.C. Fisher}
 
+\references{
+Scrucca, L., 2012, GA: a package for genetic algorithms in R,
+Submitted to Journal of Statistical Sofware.
+}
+
 \seealso{
 \code{\link{krige}}, \code{\link{ga}}, \code{\link{WriteGAResults}}
 }
@@ -146,40 +153,40 @@ model <- vgm(psill = 1948.533, model = "Sph", nugget = 0, range = 153891.038)
 # Optimize "State" and "INL" networks
 xlim <- c(10000, 328000)
 ylim <- c(81200, 335700)
-ga <- OptimizeNetwork(ESRP_NWIS, ESRP_NED, ESRP_Boundary,
-                      network.nm = c("State", "INL"), nsites = 20, 
-                      model = model, formula = fo, grd.fact = 5, 
-                      obj.weights = c(10, 1, 1, 1), popSize = 20, maxiter = 3)
-PlotRaster(ga$kr, "var1.pred", ESRP_NWIS ,
+ans <- OptimizeNetwork(ESRP_NWIS, ESRP_NED, ESRP_Boundary,
+                       network.nm = c("State", "INL"), nsites = 20, 
+                       model = model, formula = fo, grd.fact = 5, 
+                       obj.weights = c(10, 1, 1, 1), popSize = 20, maxiter = 3)
+PlotRaster(ans$kr, "var1.pred", ESRP_NWIS ,
            pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
-           main = "Predictions", net.idxs = which(ga$is.net), 
-           rm.idxs = which(ga$is.rm), xlim = xlim, ylim = ylim)
-PlotRaster(ga$kr, "var1.se", ESRP_NWIS,
+           main = "Predictions", net.idxs = which(ans$is.net), 
+           rm.idxs = which(ans$is.rm), xlim = xlim, ylim = ylim)
+PlotRaster(ans$kr, "var1.se", ESRP_NWIS,
            pal = terrain.colors, main = "Standard errors",
-           net.idxs = which(ga$is.net), rm.idxs = which(ga$is.rm), 
+           net.idxs = which(ans$is.net), rm.idxs = which(ans$is.rm), 
            xlim = xlim, ylim = ylim)
 
 # Optimize "INL" network
 xlim <- c(178000, 257500)
 ylim <- c(202000, 272000)
-ga <- OptimizeNetwork(ESRP_NWIS, ESRP_NED, ESRP_Boundary,
-                      network.nm = "INL", nsites = 20, model = model,
-                      formula = fo, xlim = xlim, ylim = ylim,
-                      grd.fact = 5, obj.weights = c(10, 1, 1, 1),  maxiter = 3)
-PlotRaster(ga$kr, "var1.pred", ESRP_NWIS,
+ans <- OptimizeNetwork(ESRP_NWIS, ESRP_NED, ESRP_Boundary,
+                       network.nm = "INL", nsites = 20, model = model,
+                       formula = fo, xlim = xlim, ylim = ylim,
+                       grd.fact = 5, obj.weights = c(10, 1, 1, 1),  maxiter = 3)
+PlotRaster(ans$kr, "var1.pred", ESRP_NWIS,
            pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
-           main = "Predictions", net.idxs = which(ga$is.net), 
-           rm.idxs = which(ga$is.rm), xlim = xlim, ylim = ylim)
-PlotRaster(ga$kr, "var1.diff", ESRP_NWIS, pal = jet.colors,
-           main = "Prediction Differences", net.idxs = which(ga$is.net), 
-           rm.idxs = which(ga$is.rm), xlim = xlim, ylim = ylim)
+           main = "Predictions", net.idxs = which(ans$is.net), 
+           rm.idxs = which(ans$is.rm), xlim = xlim, ylim = ylim)
+PlotRaster(ans$kr, "var1.diff", ESRP_NWIS, pal = jet.colors,
+           main = "Prediction Differences", net.idxs = which(ans$is.net), 
+           rm.idxs = which(ans$is.rm), xlim = xlim, ylim = ylim)
 
 # Restart GA using previous best solution
-ga <- OptimizeNetwork(ESRP_NWIS, ESRP_NED, ESRP_Boundary,
-                      network.nm = "INL", nsites = 20, model = model,
-                      formula = fo, xlim = xlim, ylim = ylim, 
-                      grd.fact = 5, obj.weights = c(10, 1, 1, 1), maxiter = 3, 
-                      suggestions = ga$ga.ans@population)
+ans <- OptimizeNetwork(ESRP_NWIS, ESRP_NED, ESRP_Boundary,
+                       network.nm = "INL", nsites = 20, model = model,
+                       formula = fo, xlim = xlim, ylim = ylim, 
+                       grd.fact = 5, obj.weights = c(10, 1, 1, 1), maxiter = 3, 
+                       suggestions = ans$ga.ans@population)
 }
 
 \keyword{optimize}

@@ -237,7 +237,7 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
   
   # Report best fitness score
   fitness <- min(obj.values[, "fitness"])
-  cat("\nBest fitness score:", format(fitness), "\n")
+  cat("\nBest fitness score:", format(fitness), "\n\n")
 
   # Return GA solution
   invisible(list(call=call, pts.rm=pts.rm, is.net=is.net, is.rm=is.rm, 
