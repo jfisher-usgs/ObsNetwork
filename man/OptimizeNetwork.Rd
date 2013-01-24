@@ -150,7 +150,7 @@ data(ESRP_Boundary)
 fo <- var1 ~ x + y
 model <- vgm(psill = 1948.533, model = "Sph", nugget = 0, range = 153891.038)
 
-# Optimize "State" and "INL" networks
+# Optimize combined "State" and "INL" networks
 xlim <- c(10000, 328000)
 ylim <- c(81200, 335700)
 ans <- OptimizeNetwork(ESRP_NWIS, ESRP_NED, ESRP_Boundary,
