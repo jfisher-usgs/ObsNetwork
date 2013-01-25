@@ -4,9 +4,35 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
                             popSize=50, pcrossover=0.8, pmutation=0.1, 
                             elitism=base::max(1, round(popSize * 0.05)), 
                             maxiter=100, run=maxiter, maxfitness=Inf, 
-                            suggestions=NULL) {
+                            suggestions=NULL, ...) {
 
   # Additional functions (subroutines)
+
+  # Calculate objective functions
+  EvalObj <- function(idxs) {
+    
+    # Remove selected sites
+    locations <- pts[-idxs, ]
+    
+    # Perform point kriging to predict values at removed site locations
+    kr.pts <- gstat::krige(formula=formula, locations=locations, 
+                           newdata=pts[idxs, ], model=model, nmax=nmax, 
+                           debug.level=0)
+    kr.pts.pred <- kr.pts$var1.pred
+    
+    # Perform point kriging to predict standard errors for modified grid
+    kr.grd <- gstat::krige(formula=formula, locations=locations, 
+                           newdata=grd.mod, model=model, nmax=nmax, 
+                           debug.level=0)
+    
+    # Solve objective functions
+    objs <- NULL
+    objs[1] <- mean(kr.grd$var1.var, na.rm=TRUE)
+    objs[2] <- sqrt(sum((kr.pts.pred - pts$var1[idxs])^2) / nsites)
+    objs[3] <- mean(pts$var1.sd[idxs])
+    objs[4] <- mean(pts$var1.acy[-idxs])
+    objs * obj.weights
+  }
 
   # Decode binary string
   DecodeBinaryString <- function(string) {
@@ -27,32 +53,6 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
     }
     objs <- EvalObj(idxs)
     -sum(objs, na.rm=TRUE)
-  }
-
-  # Calculate objective functions
-  EvalObj <- function(idxs) {
-    
-    # Remove selected sites
-    locations <- pts[-idxs, ]
-    
-    # Perform point kriging to predict values at removed site locations
-    kr.pts <- gstat::krige(formula=formula, locations=locations, 
-                           newdata=pts[idxs, ], model=model, nmax=nmax, 
-                           debug.level=0)
-    kr.pts.pred <- kr.pts$var1.pred
-    
-    # Perform point kriging to predict standard errors in modified grid
-    kr.grd <- gstat::krige(formula=formula, locations=locations, 
-                           newdata=grd.mod, model=model, nmax=nmax, 
-                           debug.level=0)
-    
-    # Solve objective functions
-    objs <- NULL
-    objs[1] <- mean(kr.grd$var1.var, na.rm=TRUE)
-    objs[2] <- sqrt(sum((kr.pts.pred - pts$var1[idxs])^2) / nsites)
-    objs[3] <- mean(pts$var1.sd[idxs])
-    objs[4] <- mean(pts$var1.acy[-idxs])
-    objs * obj.weights
   }
 
   # Monitor progress at end of each GA iteration
@@ -198,7 +198,7 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
                      pcrossover=pcrossover, pmutation=pmutation, 
                      elitism=elitism, monitor=MonitorGA, maxiter=maxiter,
                      run=run, maxfitness=-maxfitness, names=NULL,
-                     suggestions=suggestions)
+                     suggestions=suggestions, ...)
   })
   
   summary(ga.ans, echo=TRUE)

@@ -21,7 +21,7 @@ WriteGAResults(x, file)
 \details{
 Printed components of \code{ga} include: \code{call}; 
 \code{obj.values}; \code{nrep.ans}; \code{elapsed.time}; 
-\code{sum(ncalls.penalty)}; and \code{pts.rm}.
+\code{ncalls.penalty}; and \code{pts.rm}.
 }
 
 \value{

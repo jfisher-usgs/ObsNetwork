@@ -102,12 +102,6 @@ Krige(fo, model, xlim, ylim)
 cv <- RunCrossValidation(fo, pts, model = model)
 cat(cv$me, cv$mspe, cv$cor.op, cv$cor.pr, "\n")
 
-# UK with block estimates
-block <- grd@grid@cellsize
-Krige(fo, model, xlim, ylim, block = block)
-cv <- RunCrossValidation(fo, pts, model = model, block = block)
-cat(cv$me, cv$mspe, cv$cor.op, cv$cor.pr, "\n")
-
 ### Kriging with External Drift (KED); assumes var1 forms a subdued replica of var2:
 fo <- var1 ~ var2
 lm.trend <- lm(fo, data = pts)

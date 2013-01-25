@@ -18,7 +18,7 @@ OptimizeNetwork(pts, grd, ply, network.nm, nsites, model, formula, nmax = Inf,
                 popSize = 50, pcrossover = 0.8, pmutation = 0.1, 
                 elitism = base::max(1, round(popSize * 0.05)), 
                 maxiter = 100, run = maxiter, maxfitness = Inf, 
-                suggestions=NULL)
+                suggestions=NULL, ...)
 }
 
 \arguments{
@@ -74,6 +74,8 @@ OptimizeNetwork(pts, grd, ply, network.nm, nsites, model, formula, nmax = Inf,
 \item{maxfitness}{numeric; upper bound on the fitness function after that the 
   GA search is interrupted.}
 \item{suggestions}{matrix; initial population.}
+\item{...}{additional arguments to be passed to the \code{\link{ga}} function,
+  such as, \code{seed}.}
 }
 
 \details{
@@ -99,7 +101,8 @@ remove an objective from the multi-objective function.
 Spatial data is transformed to the map projection and datum of the
 raster data set in \code{grd}.
 
-The optimization problem is solved using binary GAs with Gray encoding.
+The optimization problem is solved using binary GAs with Gray encoding; 
+that is, site index numbers are represented in binary code.
 }
 
 \value{
@@ -121,13 +124,13 @@ Returns a list with components:
   the penalty function for each iteration of the GA.}
 \item{kr}{SpatialGridDataFrame; a data frame containing the coordinates of
   \code{grd} cropped to the axis limits and polygon. Data attributes are based
-  on kriging of the reduced network and include:
+  on block kriging of the reduced network and include:
   predictions, \code{var1.pred}; prediction variances, \code{var1.var}; 
   and prediction standard errors, \code{var1.se}. 
-  Prediction differences between the original and reduced network are
-  contained in the \code{var1.diff} attribute.}
+  Differences between the original and reduced network predictions are
+  specified in the \code{var1.diff} attribute.}
 \item{ga.ans}{ga; returned value of \code{\link{ga}}.}
-The status of the objective values after each GA iteration is plotted.
+The status of the objective values after each iteration of the GA is plotted.
 }
 
 \author{J.C. Fisher}
