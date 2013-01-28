@@ -1,0 +1,10 @@
+Changes in Version 0.1-4
+  
+  o  Implemented variable penalty function.
+  
+  o  Changed genetic algorithm (GA) R library from "genalg" to "GA". GA now 
+     solved using integer chromosome (indexes of sites to remove) with binary 
+     encoding.
+  
+  o  Software license changed from "Unlimited" to "GPL (>= 2)".
+  
