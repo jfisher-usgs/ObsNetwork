@@ -157,9 +157,9 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
 
   # Initialize matrix of objective values
   nobjs <- length(obj.weights)
+  col.names <- c(paste("obj", 1:nobjs, sep="."), "fitness")
   obj.values <- matrix(NA, nrow=maxiter, ncol=nobjs + 1L,
-                       dimnames=list(1:maxiter, c(paste("obj", 1:nobjs, sep="."),
-                                                 "fitness")))
+                       dimnames=list(1:maxiter, col.names))
 
   # Set plot attributes
   windows(width=8, height=(nobjs + 1) * 2)
@@ -200,8 +200,7 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
                      run=run, maxfitness=-maxfitness, names=NULL,
                      suggestions=suggestions, ...)
   })
-  
-  summary(ga.ans, echo=TRUE)
+  cat("\nGA solution:\n", as.vector(ga.ans@solution), "\n")
   
   rm.idxs <- sort(as.vector(t(DecodeBinaryString(ga.ans@solution))))
   pts.rm <- pts[rm.idxs, ]
@@ -223,10 +222,15 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
   elapsed.time <- as.numeric(elapsed.time["elapsed"]) / 3600
   cat("\nElapsed time:", format(elapsed.time), "hours\n")
 
-  # Report how many times the final solution was repeated
+  # Report the number of completed iterations
+  obj.values <- obj.values[!is.na(obj.values[, "fitness"]), ]
+  niter <- nrow(obj.values)
+  cat("\nNumber of completed iterations:", niter, "\n")
+  
+  # Report the number of times the final solution was repeated
   nrep.ans <- 0L
-  for (i in maxiter:1L) {
-    if (!identical(obj.values[i, ], obj.values[maxiter, ]))
+  for (i in niter:1L) {
+    if (!identical(obj.values[i, ], obj.values[niter, ]))
       break
     nrep.ans <-  nrep.ans + 1L
   }
@@ -236,12 +240,12 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
   cat("\nNumber of calls to penalty function:", format(ncalls.penalty), "\n")
   
   # Report best fitness score
-  fitness <- min(obj.values[, "fitness"])
+  fitness <- obj.values[niter, "fitness"]
   cat("\nBest fitness score:", format(fitness), "\n\n")
 
   # Return GA solution
   invisible(list(call=call, pts.rm=pts.rm, is.net=is.net, is.rm=is.rm, 
-                 obj.values=obj.values, nrep.ans=nrep.ans, 
+                 obj.values=obj.values, niter=niter, nrep.ans=nrep.ans, 
                  elapsed.time=elapsed.time, ncalls.penalty=ncalls.penalty, 
                  kr=kr, ga.ans=ga.ans))
 }

@@ -118,7 +118,8 @@ Returns a list with components:
 \item{obj.values}{matrix; objective values after each iteration of the GA.
   This matrix has \code{maxiter} rows and 5 columns 
   (that is, the 4 objective values and their sum).}
-\item{nrep.ans}{numeric; number of times the final solution was repeated.}
+\item{niter}{integer; number of completed iterations.}
+\item{nrep.ans}{integer; number of times the final solution was repeated.}
 \item{elapsed.time}{numeric; elapsed time for running the GA, in hours.}
 \item{ncalls.penalty}{integer; vector giving the number of calls to 
   the penalty function for each iteration of the GA.}
@@ -160,7 +161,7 @@ ans <- OptimizeNetwork(ESRP_NWIS, ESRP_NED, ESRP_Boundary,
                        network.nm = c("State", "INL"), nsites = 20, 
                        model = model, formula = fo, grd.fact = 5, 
                        obj.weights = c(10, 1, 1, 1), popSize = 20, maxiter = 3)
-PlotRaster(ans$kr, "var1.pred", ESRP_NWIS ,
+PlotRaster(ans$kr, "var1.pred", ESRP_NWIS,
            pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
            main = "Predictions", net.idxs = which(ans$is.net), 
            rm.idxs = which(ans$is.rm), xlim = xlim, ylim = ylim)
