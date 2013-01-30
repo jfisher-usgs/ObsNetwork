@@ -156,7 +156,7 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
 
   # Initialize matrix of objective values
   nobjs <- length(obj.weights)
-  col.names <- c(paste("obj", 1:nobjs, sep="."), "fitness")
+  col.names <- c(paste("objective", 1:nobjs, sep="-"), "fitness")
   obj.values <- matrix(NA, nrow=maxiter, ncol=nobjs + 1L,
                        dimnames=list(1:maxiter, col.names))
 
@@ -166,7 +166,7 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
   tcl <- 0.50 / (6 * par("csi"))
   pal <- c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#A6D854")
   labs <- NULL
-  labs[1] <- "Mean standard error"
+  labs[1] <- "Mean prediction variance"
   labs[2] <- "Root-mean-square error"
   labs[3] <- "Mean standard deviaiton"
   labs[4] <- "Mean measurement error"

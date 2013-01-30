@@ -32,9 +32,12 @@ WriteGAResults <- function(x, file) {
       file=file, append=TRUE)
 
   # Penalty
-  cat("\nNumber of calls to penalty function:\t", sum(x$ncalls.penalty), "\n", 
+  npenalty <- sum(x$ncalls.penalty)
+  ppenalty <- npenalty / (x$ga.ans@popSize * x$niter) * 100
+  cat("\nNumber of calls to penalty function:\t", npenalty, "\t", 
+      ppenalty, "%\n", file=file, append=TRUE)
+  cat(paste(deparse(as.numeric(x$ncalls.penalty)), collapse="\n"), "\n",
       file=file, append=TRUE)
-  cat(paste(deparse(x$ncalls.penalty), "\n"), file=file, append=TRUE)
   
   # Remove
   cat("\nRemoved sites:\n", file=file, append=TRUE) 
@@ -44,8 +47,8 @@ WriteGAResults <- function(x, file) {
   
   # Suggestion
   cat("\nSuggestion for initial population:\n", file=file, append=TRUE)
-  obj <- paste(deparse(x$ga.ans@population), collapse="\n")
-  cat(paste("suggestion <- ", obj, sep="\n"), file=file, append=TRUE)
+  cat(paste(deparse(x$ga.ans@population), collapse="\n"), "\n",
+      file=file, append=TRUE)
   
   invisible(NULL)
 }
