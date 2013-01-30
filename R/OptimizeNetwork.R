@@ -3,8 +3,7 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
                             grd.fact=1, obj.weights=c(1, 1, 1, 1), 
                             popSize=50, pcrossover=0.8, pmutation=0.1, 
                             elitism=base::max(1, round(popSize * 0.05)), 
-                            maxiter=100, run=maxiter, maxfitness=Inf, 
-                            suggestions=NULL, ...) {
+                            maxiter=100, run=maxiter, suggestions=NULL, ...) {
 
   # Additional functions (subroutines)
 
@@ -197,8 +196,7 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
                      nBits=length.bin.string * nsites, popSize=popSize,
                      pcrossover=pcrossover, pmutation=pmutation, 
                      elitism=elitism, monitor=MonitorGA, maxiter=maxiter,
-                     run=run, maxfitness=-maxfitness, names=NULL,
-                     suggestions=suggestions, ...)
+                     run=run, suggestions=suggestions, ...)
   })
   cat("\nGA solution:\n", as.vector(ga.ans@solution), "\n")
   

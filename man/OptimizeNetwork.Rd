@@ -17,8 +17,7 @@ OptimizeNetwork(pts, grd, ply, network.nm, nsites, model, formula, nmax = Inf,
                 obj.weights = c(1, 1, 1, 1),
                 popSize = 50, pcrossover = 0.8, pmutation = 0.1, 
                 elitism = base::max(1, round(popSize * 0.05)), 
-                maxiter = 100, run = maxiter, maxfitness = Inf, 
-                suggestions=NULL, ...)
+                maxiter = 100, run = maxiter, suggestions = NULL, ...)
 }
 
 \arguments{
@@ -71,11 +70,8 @@ OptimizeNetwork(pts, grd, ply, network.nm, nsites, model, formula, nmax = Inf,
   search is halted.}
 \item{run}{integer;  number of consecutive generations without any improvement 
   in the best fitness value before the GA is stopped.}
-\item{maxfitness}{numeric; upper bound on the fitness function after that the 
-  GA search is interrupted.}
 \item{suggestions}{matrix; initial population.}
-\item{...}{additional arguments to be passed to the \code{\link{ga}} function,
-  such as, \code{seed}.}
+\item{...}{additional arguments to be passed to \code{\link{ga}}.}
 }
 
 \details{
@@ -142,7 +138,7 @@ Submitted to Journal of Statistical Sofware.
 }
 
 \seealso{
-\code{\link{krige}}, \code{\link{ga}}, \code{\link{WriteGAResults}}
+\code{\link{WriteGAResults}}, \code{\link{krige}}, \code{\link{ga}}
 }
 
 \examples{
