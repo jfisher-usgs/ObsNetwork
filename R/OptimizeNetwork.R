@@ -135,7 +135,7 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
   x <- coordinates(grd)[, 1]
   y <- coordinates(grd)[, 2]
   is.in.lim <- x >= xlim[1] & x <= xlim[2] & y >= ylim[1] & y <= ylim[2]
-  grd <- grd[is.in.lim, ] # NA's values outside of limits
+  grd <- grd[is.in.lim, ]
 
   # Crop grid to polygon
   if (!missing(ply))
