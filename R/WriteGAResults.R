@@ -1,5 +1,8 @@
 WriteGAResults <- function(x, file) {
-
+  
+  if (missing(x))
+    stop("object is missing")
+  
   if (missing(file)) {
     file <- as.character(tcltk::tcl("tk_getSaveFile", 
                                     title="Save GA Results As",

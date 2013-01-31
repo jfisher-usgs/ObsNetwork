@@ -111,14 +111,14 @@ Returns a list with components:
   \code{pts} specifying sites belonging to the reducded network.}
 \item{is.rm}{logical; vector of length equal to the number of rows in
   \code{pts} specifying sites to remove from the network.}
-\item{obj.values}{matrix; objective values after each iteration of the GA.
+\item{obj.values}{matrix; objective values at each iteration of the GA.
   This matrix has \code{maxiter} rows and 5 columns 
   (that is, the 4 objective values and their sum).}
 \item{niter}{integer; number of completed iterations.}
-\item{nrep.ans}{integer; number of times the final solution was repeated.}
+\item{nrep.ans}{integer; number of iterations the best solution was repeated.}
 \item{elapsed.time}{numeric; elapsed time for running the GA, in hours.}
 \item{ncalls.penalty}{integer; vector giving the number of calls to 
-  the penalty function for each iteration of the GA.}
+  the penalty function at each iteration of the GA.}
 \item{kr}{SpatialGridDataFrame; a data frame containing the coordinates of
   \code{grd} cropped to the axis limits and polygon. Data attributes are based
   on block kriging of the reduced network and include:

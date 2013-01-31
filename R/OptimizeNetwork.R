@@ -200,16 +200,13 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
   })
   
   # Decode GA solution
-  ga.decoded.solution <- try(DecodeBinaryString(ga.ans@solution))
-  if (inherits(ga.decoded.solution, "try-error"))
-    stop("problem with GA solution:\n", ga.ans@solution, "\n", 
-         ga.decoded.solution)
-  rm.idxs <- sort(as.vector(t(ga.decoded.solution)))
+  if (nrow(ga.ans@solution) > 1)
+    warning("More than one solution was found, first instance reported.")
+  ga.decoded.solution <- DecodeBinaryString(ga.ans@solution[1, ])
+  rm.idxs <- sort(ga.decoded.solution)
   
   # Identify removed sites
-  pts.rm <- try(pts[rm.idxs, ])
-  if (inherits(pts.rm, "try-error"))
-    stop("problem with indexes for removed sites:\n", rm.idxs)
+  pts.rm <- pts[rm.idxs, ]
   is.rm <- orig.site.no %in% pts.rm$site.no
 
   # Reset graphics parameters
