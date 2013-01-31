@@ -69,7 +69,7 @@ OptimizeNetwork(pts, grd, ply, network.nm, nsites, model, formula, nmax = Inf,
 \item{maxiter}{integer; maximum number of iterations to run before the GA 
   search is halted.}
 \item{run}{integer;  number of consecutive generations without any improvement 
-  in the best fitness value before the GA is stopped.}
+  in the \dQuote{best} fitness value before the GA is stopped.}
 \item{suggestions}{matrix; initial population.}
 \item{...}{additional arguments to be passed to \code{\link{ga}}.}
 }
@@ -87,18 +87,19 @@ objectives are given as:
         at removed sites.
   \item Mean measurement error, at remaining sites.
 }
-The optimal solution obtained will depend on the relative values of the weights
-specified in \code{obj.weights}. For example, if a higher weight is specified 
-for the mean prediction variance, the solution will be one that favors a smaller
-mean prediction variance over a small root-mean squared error, mean standard 
-deviation, and mean measurement error. Setting a weight equal to zero will 
-remove an objective from the multi-objective function.
+The \dQuote{best} solution found will depend on the relative values of the 
+weights specified in \code{obj.weights}. For example, if a higher weight is 
+specified for the mean prediction variance, the solution will be one that 
+favors a smaller mean prediction variance over a small root-mean squared error, 
+mean standard deviation, and mean measurement error. Setting a weight equal 
+to zero will remove an objective from the multi-objective function.
 
 Spatial data is transformed to the map projection and datum of the
 raster data set in \code{grd}.
 
 The optimization problem is solved using binary GAs with Gray encoding; 
-that is, site index numbers are represented in binary code.
+that is, site index numbers are represented in binary code. The GA uses
+linear-rank selection, single-point crossoever, and uniform random mutation.
 }
 
 \value{
@@ -115,7 +116,8 @@ Returns a list with components:
   This matrix has \code{maxiter} rows and 5 columns 
   (that is, the 4 objective values and their sum).}
 \item{niter}{integer; number of completed iterations.}
-\item{nrep.ans}{integer; number of iterations the best solution was repeated.}
+\item{nrep.ans}{integer; number of iterations the \dQuote{best} solution 
+  was repeated.}
 \item{elapsed.time}{numeric; elapsed time for running the GA, in hours.}
 \item{ncalls.penalty}{integer; vector giving the number of calls to 
   the penalty function at each iteration of the GA.}
@@ -181,7 +183,7 @@ PlotRaster(ans$kr, "var1.diff", ESRP_NWIS, pal = jet.colors,
            main = "Prediction Differences", net.idxs = which(ans$is.net), 
            rm.idxs = which(ans$is.rm), xlim = xlim, ylim = ylim)
 
-# Restart GA using previous best solution
+# Restart GA using previous "best" solution
 ans <- OptimizeNetwork(ESRP_NWIS, ESRP_NED, ESRP_Boundary,
                        network.nm = "INL", nsites = 20, model = model,
                        formula = fo, xlim = xlim, ylim = ylim, 
