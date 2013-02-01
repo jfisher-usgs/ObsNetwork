@@ -200,8 +200,12 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
   })
   
   # Decode GA solution
-  if (nrow(ga.ans@solution) > 1)
-    warning("More than one solution was found, first instance reported.")
+  nsolutions <- nrow(ga.ans@solution)
+  if (nsolutions > 1) {
+    txt <- paste("The GA found", nsolutions, "solutions with identical",
+                 "fitness scores.")
+    warning(txt)
+  }
   ga.decoded.solution <- DecodeBinaryString(ga.ans@solution[1, ])
   rm.idxs <- sort(ga.decoded.solution)
   
