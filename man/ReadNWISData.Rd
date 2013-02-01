@@ -75,13 +75,13 @@ be downloaded at \href{http://waterdata.usgs.gov/id/nwis/gw}{NWISWeb}.
 \value{
 Returns an object of \code{\link{SpatialPointsDataFrame-class}} with components:
 \item{site.no}{numeric; unique identifier for site.}
-\item{var1}{numeric; the median value of the water-table elevation, in meters, 
+\item{var1}{numeric; the median value of the water-level elevation, in meters, 
   for the time period defined by \code{dt.lim}.}
-\item{var1.acy}{numeric; mean measurement accuracy of the water-table elevation, 
+\item{var1.acy}{numeric; mean measurement accuracy of the water-level elevation, 
   in meters, for the time period defined by \code{dt.lim}. This variable
   is calculated from the summation of \code{alt.acy.va} and \code{lev.acy.va} 
   values.}
-\item{var1.sd}{numeric; standard deviation of the water-table elevation, 
+\item{var1.sd}{numeric; standard deviation of the water-level elevation, 
   in meters, for the entire period of record.}
 \item{var2}{numeric; land-surface datum, in meters.}
 \item{map.no}{integer; identifier (row index number) used to locate 

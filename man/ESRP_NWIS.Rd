@@ -32,11 +32,11 @@ This data set has the following variables:
   \item{var2}{Land-surface reference point elevation, in meters 
     above the NAVD 88.}
   \item{map.no}{Numeric identifier used to locate well sites on map.}
-  \item{network.nm}{Identifier for water-table monitoring network. 
+  \item{network.nm}{Identifier for water-level monitoring network. 
     For this data set "State" is used to identify wells in the 2008 
-    Federal-State Cooperative water-table monitoring network (166 wells), 
+    Federal-State Cooperative water-level monitoring network (166 wells), 
     and "INL" for wells in the 2008 U.S. Geological Survey-Idaho National 
-    Laboratory water-table monitoring network (171 wells). Wells coded as 
+    Laboratory water-level monitoring network (171 wells). Wells coded as 
     "State, INL" belong to both monitoring networks.}
   \item{nrec.por}{Number of records in the entire period of record.}
   \item{nrec}{Number of records in calendar year 2008.}

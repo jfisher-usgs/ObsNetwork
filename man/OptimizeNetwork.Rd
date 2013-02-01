@@ -24,7 +24,7 @@ OptimizeNetwork(pts, grd, ply, network.nm, nsites, model, formula, nmax = Inf,
 \item{pts}{SpatialPointsDataFrame; data at observation sites. Required data 
   frame variables include: 
   \code{site.no}, a unique site number;
-  \code{var1}, the dependent variable (such as, the water-table elevation);
+  \code{var1}, the dependent variable (such as, the water-level elevation);
   \code{var1.acy}, the mean measurement error of the dependent variable;
   \code{var1.sd}, the standard deviation of the dependent variable.
   An optional \code{network.nm} variable may be included to identify a 
