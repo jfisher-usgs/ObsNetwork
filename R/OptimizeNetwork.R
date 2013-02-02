@@ -94,6 +94,7 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
 
   # Main program
   
+  # Save call with specified arguments
   call <- match.call()
   
   # Check for required variables in spatial points data frame
@@ -172,14 +173,22 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
   labs[4] <- "Mean measurement error"
   labs[5] <- "Fitness score"
 
-  # Determine maximum lengthy of binary string
+  # Determine maximum length of binary string
   length.bin.string <- length(GA::decimal2binary(nsites.in.network))
 
   # Initialize population
   if (is.null(suggestions)) {
-    fun <- function(i) sample(1:nsites.in.network, nsites, replace=FALSE)
-    idxs <- t(sapply(1:popSize, fun))
-    fun <- function(i) {
+    Fun <- function(i) sample(1:nsites.in.network, nsites, replace=FALSE)
+    idxs <- t(vapply(1:popSize, Fun, rep(0, nsites)))
+    
+    # Attempt to remove duplicate chromosomes
+    duplicates <- which(duplicated(t(apply(idxs, 1, sort))))
+    nduplicates <- length(duplicates)
+    if (nduplicates > 0)
+      idxs[duplicates, ] <- t(vapply(1:nduplicates, Fun, rep(0, nsites)))
+    
+    # Convert to binary
+    Fun <- function(i) {
              suggestion <- NULL
              for (j in i) {
                gry <- GA::binary2gray(GA::decimal2binary(j, length.bin.string))
@@ -187,7 +196,7 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
              }
              suggestion
            }
-    suggestions <- t(apply(idxs, 1, function(i) fun(i)))
+    suggestions <- t(apply(idxs, 1, function(i) Fun(i)))
   }
 
   # Run GA
