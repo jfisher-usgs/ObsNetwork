@@ -90,7 +90,15 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
       }
     }
   }
-
+  
+  # Find the number of k-combinations
+  FindNumCombinations <- function(n, k) {
+    nc <- suppressWarnings(factorial(n) / (factorial(k) * factorial(n - k)))
+    if (is.na(nc))
+      return(Inf)
+    nc
+  }
+  
 
   # Main program
   
@@ -181,11 +189,17 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
     Fun <- function(i) sample(1:nsites.in.network, nsites, replace=FALSE)
     idxs <- t(vapply(1:popSize, Fun, rep(0, nsites)))
     
-    # Attempt to remove duplicate chromosomes
-    duplicates <- which(duplicated(t(apply(idxs, 1, sort))))
-    nduplicates <- length(duplicates)
-    if (nduplicates > 0)
-      idxs[duplicates, ] <- t(vapply(1:nduplicates, Fun, rep(0, nsites)))
+    # Remove duplicates
+    ncombinations <- FindNumCombinations(nsites.in.network, nsites)
+    if (popSize < ncombinations) {
+      dups <- which(duplicated(t(apply(idxs, 1, sort))))
+      iter <- 1L
+      while (length(dups) > 0 & iter < 1000L) {
+        idxs[dups, ] <- t(vapply(1:length(dups), Fun, rep(0, nsites)))
+        dups <- which(duplicated(t(apply(idxs, 1, sort))))
+        iter <- iter + 1L
+      }
+    }
     
     # Convert to binary
     Fun <- function(i) {
