@@ -91,7 +91,7 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
     }
   }
   
-  # Find the number of k-combinations
+  # Find number of k-combinations
   FindNumCombinations <- function(n, k) {
     nc <- suppressWarnings(factorial(n) / (factorial(k) * factorial(n - k)))
     if (is.na(nc))
@@ -99,6 +99,11 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
     nc
   }
   
+  # Build integer chromosomes from random sample of sites
+  GetIntChromosomes <- function(m, n, k) {
+    t(vapply(1:m, function(i) sample(1:n, k, replace=FALSE), rep(0, k)))
+  }
+
 
   # Main program
   
@@ -186,22 +191,23 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
 
   # Initialize population
   if (is.null(suggestions)) {
-    Fun <- function(i) sample(1:nsites.in.network, nsites, replace=FALSE)
-    idxs <- t(vapply(1:popSize, Fun, rep(0, nsites)))
+    int.pop <- GetIntChromosomes(popSize, nsites.in.network, nsites)
     
     # Remove duplicates
     ncombinations <- FindNumCombinations(nsites.in.network, nsites)
     if (popSize < ncombinations) {
-      dups <- which(duplicated(t(apply(idxs, 1, sort))))
+      dups <- which(duplicated(t(apply(int.pop, 1, sort))))
+      ndups <- length(dups)
       iter <- 1L
-      while (length(dups) > 0 & iter < 1000L) {
-        idxs[dups, ] <- t(vapply(1:length(dups), Fun, rep(0, nsites)))
-        dups <- which(duplicated(t(apply(idxs, 1, sort))))
+      while (ndups > 0 & iter < 1000L) {
+        int.pop[dups, ] <- GetIntChromosomes(ndups, nsites.in.network, nsites)
+        dups <- which(duplicated(t(apply(int.pop, 1, sort))))
+        ndups <- length(dups)
         iter <- iter + 1L
       }
     }
     
-    # Convert to binary
+    # Convert integer chromosomes to binary chromosomes with Gray encoding
     Fun <- function(i) {
              suggestion <- NULL
              for (j in i) {
@@ -210,9 +216,9 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
              }
              suggestion
            }
-    suggestions <- t(apply(idxs, 1, function(i) Fun(i)))
+    suggestions <- t(apply(int.pop, 1, function(i) Fun(i)))
   }
-
+  
   # Run GA
   elapsed.time <- system.time({
     ga.ans <- GA::ga(type="binary", fitness=EvalFit, 
