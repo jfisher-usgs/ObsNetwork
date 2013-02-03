@@ -1,5 +1,7 @@
 Changes in Version 0.1-4
   
+  o  Improved construction of initial default population.
+  
   o  Implemented variable penalty function.
   
   o  Changed genetic algorithm (GA) R library from "genalg" to "GA". GA now 
