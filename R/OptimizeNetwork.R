@@ -19,14 +19,15 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
                            debug.level=0)
     kr.pts.pred <- kr.pts$var1.pred
     
-    # Perform point kriging to predict standard errors for modified grid
+    # Perform block kriging to predict standard errors for modified grid
     kr.grd <- gstat::krige(formula=formula, locations=locations, 
                            newdata=grd.mod, model=model, nmax=nmax, 
-                           debug.level=0)
+                           debug.level=0, block=grd.mod@grid@cellsize)
+    kr.grd.se <- sqrt(na.omit(kr.grd$var1.var))
     
     # Solve objective functions
     objs <- NULL
-    objs[1] <- mean(kr.grd$var1.var, na.rm=TRUE)
+    objs[1] <- mean(kr.grd.se, na.rm=TRUE)
     objs[2] <- sqrt(sum((kr.pts.pred - pts$var1[idxs])^2) / nsites)
     objs[3] <- mean(pts$var1.sd[idxs])
     objs[4] <- mean(pts$var1.acy[-idxs])
@@ -180,7 +181,7 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
   tcl <- 0.50 / (6 * par("csi"))
   pal <- c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#A6D854")
   labs <- NULL
-  labs[1] <- "Mean prediction variance"
+  labs[1] <- "Mean standard error"
   labs[2] <- "Root-mean-square error"
   labs[3] <- "Mean standard deviaiton"
   labs[4] <- "Mean measurement error"

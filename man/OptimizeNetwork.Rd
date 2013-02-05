@@ -79,7 +79,7 @@ A solution to the multiobjective optimization problem is found by minimizing
 the aggregate objective function, the weighted linear sum of 4 objectives. The
 objectives are given as:
 \enumerate{
-  \item Mean prediction variance from the application of point kriging, 
+  \item Mean standard error from the application of point kriging, 
         at grid points.
   \item Root-mean-square error, difference between predicted and measured
         values, at removed sites.
@@ -89,8 +89,8 @@ objectives are given as:
 }
 The \dQuote{best} solution found will depend on the relative values of the 
 weights specified in \code{obj.weights}. For example, if a higher weight is 
-specified for the mean prediction variance, the solution will be one that 
-favors a smaller mean prediction variance over a small root-mean squared error, 
+specified for the mean standard error, the solution will be one that 
+favors a smaller mean standard error over a small root-mean squared error, 
 mean standard deviation, and mean measurement error. Setting a weight equal 
 to zero will remove an objective from the multi-objective function.
 
@@ -161,7 +161,7 @@ ylim <- c(81200, 335700)
 ans <- OptimizeNetwork(ESRP_NWIS, ESRP_NED, ESRP_Boundary,
                        network.nm = c("State", "INL"), nsites = 20, 
                        model = model, formula = fo, grd.fact = 5, 
-                       obj.weights = c(10, 1, 1, 1), popSize = 20, maxiter = 3)
+                       obj.weights = c(100, 1, 1, 1), popSize = 20, maxiter = 3)
 PlotRaster(ans$kr, "var1.pred", ESRP_NWIS,
            pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
            main = "Predictions", net.idxs = which(ans$is.net), 
@@ -176,8 +176,8 @@ xlim <- c(178000, 257500)
 ylim <- c(202000, 272000)
 ans <- OptimizeNetwork(ESRP_NWIS, ESRP_NED, ESRP_Boundary,
                        network.nm = "INL", nsites = 20, model = model,
-                       formula = fo, xlim = xlim, ylim = ylim,
-                       grd.fact = 5, obj.weights = c(10, 1, 1, 1),  maxiter = 3)
+                       formula = fo, xlim = xlim, ylim = ylim, grd.fact = 5, 
+                       obj.weights = c(100, 1, 1, 1),  maxiter = 3)
 PlotRaster(ans$kr, "var1.pred", ESRP_NWIS,
            pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
            main = "Predictions", net.idxs = which(ans$is.net), 
@@ -190,7 +190,7 @@ PlotRaster(ans$kr, "var1.diff", ESRP_NWIS, pal = jet.colors,
 ans <- OptimizeNetwork(ESRP_NWIS, ESRP_NED, ESRP_Boundary,
                        network.nm = "INL", nsites = 20, model = model,
                        formula = fo, xlim = xlim, ylim = ylim, 
-                       grd.fact = 5, obj.weights = c(10, 1, 1, 1), maxiter = 3, 
+                       grd.fact = 5, obj.weights = c(100, 1, 1, 1), maxiter = 3,
                        suggestions = ans$ga.ans@population)
 }
 
