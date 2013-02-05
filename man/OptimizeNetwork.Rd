@@ -79,8 +79,7 @@ A solution to the multiobjective optimization problem is found by minimizing
 the aggregate objective function, the weighted linear sum of 4 objectives. The
 objectives are given as:
 \enumerate{
-  \item Mean standard error from the application of point kriging, 
-        at grid points.
+  \item Mean standard error of points in interpolation grid.
   \item Root-mean-square error, difference between predicted and measured
         values, at removed sites.
   \item Mean standard deviation, variability of measurement over time,
@@ -161,7 +160,7 @@ ylim <- c(81200, 335700)
 ans <- OptimizeNetwork(ESRP_NWIS, ESRP_NED, ESRP_Boundary,
                        network.nm = c("State", "INL"), nsites = 20, 
                        model = model, formula = fo, grd.fact = 5, 
-                       obj.weights = c(1000, 1, 1, 1), popSize = 20, 
+                       obj.weights = c(100, 1, 1, 1), popSize = 20, 
                        maxiter = 3)
 PlotRaster(ans$kr, "var1.pred", ESRP_NWIS,
            pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
@@ -178,7 +177,7 @@ ylim <- c(202000, 272000)
 ans <- OptimizeNetwork(ESRP_NWIS, ESRP_NED, ESRP_Boundary,
                        network.nm = "INL", nsites = 20, model = model,
                        formula = fo, xlim = xlim, ylim = ylim, grd.fact = 5, 
-                       obj.weights = c(1000, 1, 1, 1),  maxiter = 3)
+                       obj.weights = c(100, 1, 1, 1),  maxiter = 3)
 PlotRaster(ans$kr, "var1.pred", ESRP_NWIS,
            pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
            main = "Predictions", net.idxs = which(ans$is.net), 
@@ -191,7 +190,7 @@ PlotRaster(ans$kr, "var1.diff", ESRP_NWIS, pal = jet.colors,
 ans <- OptimizeNetwork(ESRP_NWIS, ESRP_NED, ESRP_Boundary,
                        network.nm = "INL", nsites = 20, model = model,
                        formula = fo, xlim = xlim, ylim = ylim, 
-                       grd.fact = 5, obj.weights = c(1000, 1, 1, 1), 
+                       grd.fact = 5, obj.weights = c(100, 1, 1, 1), 
                        maxiter = 3, suggestions = ans$ga.ans@population)
 }
 
