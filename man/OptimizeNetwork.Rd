@@ -161,7 +161,8 @@ ylim <- c(81200, 335700)
 ans <- OptimizeNetwork(ESRP_NWIS, ESRP_NED, ESRP_Boundary,
                        network.nm = c("State", "INL"), nsites = 20, 
                        model = model, formula = fo, grd.fact = 5, 
-                       obj.weights = c(100, 1, 1, 1), popSize = 20, maxiter = 3)
+                       obj.weights = c(1000, 1, 1, 1), popSize = 20, 
+                       maxiter = 3)
 PlotRaster(ans$kr, "var1.pred", ESRP_NWIS,
            pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
            main = "Predictions", net.idxs = which(ans$is.net), 
@@ -177,7 +178,7 @@ ylim <- c(202000, 272000)
 ans <- OptimizeNetwork(ESRP_NWIS, ESRP_NED, ESRP_Boundary,
                        network.nm = "INL", nsites = 20, model = model,
                        formula = fo, xlim = xlim, ylim = ylim, grd.fact = 5, 
-                       obj.weights = c(100, 1, 1, 1),  maxiter = 3)
+                       obj.weights = c(1000, 1, 1, 1),  maxiter = 3)
 PlotRaster(ans$kr, "var1.pred", ESRP_NWIS,
            pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
            main = "Predictions", net.idxs = which(ans$is.net), 
@@ -190,8 +191,8 @@ PlotRaster(ans$kr, "var1.diff", ESRP_NWIS, pal = jet.colors,
 ans <- OptimizeNetwork(ESRP_NWIS, ESRP_NED, ESRP_Boundary,
                        network.nm = "INL", nsites = 20, model = model,
                        formula = fo, xlim = xlim, ylim = ylim, 
-                       grd.fact = 5, obj.weights = c(100, 1, 1, 1), maxiter = 3,
-                       suggestions = ans$ga.ans@population)
+                       grd.fact = 5, obj.weights = c(1000, 1, 1, 1), 
+                       maxiter = 3, suggestions = ans$ga.ans@population)
 }
 
 \keyword{optimize}
