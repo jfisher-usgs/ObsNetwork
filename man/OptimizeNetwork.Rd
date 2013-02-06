@@ -124,12 +124,14 @@ Returns a list with components:
 \item{ncalls.penalty}{integer; vector giving the number of calls to 
   the penalty function at each iteration of the GA.}
 \item{kr}{SpatialGridDataFrame; a data frame containing the coordinates of
-  \code{grd} cropped to the axis limits and polygon. Data attributes are based
-  on block kriging of the reduced network and include:
+  \code{grd} cropped to the axis limits and polygon. Data attributes based
+  on block kriging of the reduced network include:
   predictions, \code{var1.pred}; prediction variances, \code{var1.var}; 
   and prediction standard errors, \code{var1.se}. 
   Differences between the original and reduced network predictions are
   specified in the \code{var1.diff} attribute.}
+\item{rmsd}{numeric; root-mean-square-deviation between original and reduced
+  network predictions.}
 \item{ga.ans}{ga; returned value of \code{\link{ga}}.}
 The status of the objective values after each iteration of the GA is plotted.
 }

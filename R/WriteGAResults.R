@@ -22,6 +22,10 @@ WriteGAResults <- function(x, file) {
   write.table(tbl, file=file, col.names=FALSE, row.names=TRUE, quote=FALSE, 
               sep="\t", append=TRUE)
   
+  # Root-mean-square-deviation
+  cat("\nRoot-mean-square-deviation:\t", format(x$rmsd), "\n", 
+      file=file, append=TRUE)
+  
   # Iterations
   cat("\nNumber of completed iterations:\t", x$niter, "\n", 
       file=file, append=TRUE)

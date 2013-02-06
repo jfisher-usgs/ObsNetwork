@@ -246,14 +246,18 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
   # Reset graphics parameters
   par(op)
 
-  # Final block kriging at original grid resolution
+  # Block kriging of reduced network at original grid resolution
   kr <- krige(formula=formula, locations=pts[-rm.idxs, ], newdata=grd,
               model=model, debug.level=0, block=grd@grid@cellsize)
   kr$var1.se <- sqrt(kr$var1.var) # standard error
   
+  # Block kriging of original network at original grid resolution
   kr0 <- krige(formula=formula, locations=pts, newdata=grd, model=model, 
                debug.level=0, block=grd@grid@cellsize)
   kr$var1.diff <- kr0$var1.pred - kr$var1.pred
+  
+  # Root-mean-square-deviation
+  rmsd <- sqrt(sum(kr$var1.diff, na.rm=TRUE) / length(na.omit(kr$var1.diff)))
 
   # Report elapsed time for running optimization
   elapsed.time <- as.numeric(elapsed.time["elapsed"]) / 3600
@@ -284,5 +288,5 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
   invisible(list(call=call, pts.rm=pts.rm, is.net=is.net, is.rm=is.rm, 
                  obj.values=obj.values, niter=niter, nrep.ans=nrep.ans, 
                  elapsed.time=elapsed.time, ncalls.penalty=ncalls.penalty, 
-                 kr=kr, ga.ans=ga.ans))
+                 kr=kr, rmsd=rmsd, ga.ans=ga.ans))
 }
