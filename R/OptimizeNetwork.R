@@ -257,7 +257,8 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
   kr$var1.diff <- kr0$var1.pred - kr$var1.pred
   
   # Root-mean-square-deviation
-  rmsd <- sqrt(sum(kr$var1.diff, na.rm=TRUE) / length(na.omit(kr$var1.diff)))
+  var1.diff <- as.numeric(na.omit(kr$var1.diff))
+  rmsd <- sqrt(sum(var1.diff^2) / length(var1.diff))
 
   # Report elapsed time for running optimization
   elapsed.time <- as.numeric(elapsed.time["elapsed"]) / 3600
