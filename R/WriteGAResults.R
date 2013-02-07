@@ -37,7 +37,15 @@ WriteGAResults <- function(x, file) {
   # Time
   cat("\nElapsed time, in hours:\t", format(x$elapsed.time), "\n", 
       file=file, append=TRUE)
-
+  
+  # Solution-space
+  cat("\nRange of objective values in solution space:\n", 
+      file=file, append=TRUE) 
+  cat("\t", paste(colnames(x$obj.space), collapse="\t"), "\n", 
+      file=file, append=TRUE) 
+  write.table(x$obj.space, file=file, col.names=FALSE, row.names=TRUE, 
+              quote=FALSE, sep="\t", append=TRUE)
+  
   # Penalty
   npenalty <- sum(x$ncalls.penalty)
   ppenalty <- npenalty / (x$ga.ans@popSize * x$niter) * 100

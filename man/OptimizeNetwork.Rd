@@ -132,6 +132,7 @@ Returns a list with components:
   specified in the \code{var1.diff} attribute.}
 \item{rmsd}{numeric; root-mean-square-deviation between original and reduced
   network predictions.}
+\item{obj.space}{matrix; range of objective values in solution space.}
 \item{ga.ans}{ga; returned value of \code{\link{ga}}.}
 The status of the objective values after each iteration of the GA is plotted.
 }

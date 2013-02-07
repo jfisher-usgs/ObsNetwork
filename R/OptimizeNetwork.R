@@ -34,15 +34,6 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
     objs * obj.weights
   }
 
-  # Decode binary string
-  DecodeBinaryString <- function(string) {
-    sapply(seq(1, nsites * length.bin.string, by=length.bin.string),
-           function(i) {
-             gry <- string[i:(i + length.bin.string - 1L)]
-             GA::binary2decimal(GA::gray2binary(gry))
-           })
-  }
-  
   # Evaluate fitness function
   EvalFit <- function(string) {
     idxs <- DecodeBinaryString(string)
@@ -52,7 +43,23 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
       return(-1E6 * (nduplicates + 1L))
     }
     objs <- EvalObj(idxs)
-    -sum(objs, na.rm=TRUE)
+    
+    r <- vapply(1:4, function(i) c(min(obj.space[i, 1], objs[i], na.rm=TRUE),
+                                   max(obj.space[i, 2], objs[i], na.rm=TRUE)), 
+                                   rep(0, 2))
+    obj.space[, ] <<- t(r)
+    
+    fitness.score <- -sum(objs, na.rm=TRUE)
+    fitness.score
+  }
+
+  # Decode binary string
+  DecodeBinaryString <- function(string) {
+    sapply(seq(1, nsites * length.bin.string, by=length.bin.string),
+           function(i) {
+             gry <- string[i:(i + length.bin.string - 1L)]
+             GA::binary2decimal(GA::gray2binary(gry))
+           })
   }
 
   # Monitor progress at end of each GA iteration
@@ -82,8 +89,7 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
       axis(4, tcl=tcl, labels=FALSE)
       axis(1, tcl=tcl, labels=(i == m))
       points(x, y, type="o", pch=21, col=pal[i], bg=pal[i])
-      txt <- paste(format(y[n]), "     \n(", format(diff(range(y))), ")     ", 
-                   sep="")
+      txt <- paste(format(y[n]), "    ")
       mtext(txt, side=3, line=-3, adj=1, cex=0.75)
       if (i < m & is.weighted[i]) {
         txt <- paste("Weighted by", format(obj.weights[i]))
@@ -171,9 +177,9 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
 
   # Initialize matrix of objective values
   nobjs <- length(obj.weights)
-  col.names <- c(paste("objective", 1:nobjs, sep="-"), "fitness")
+  obj.names <- c(paste("objective", 1:nobjs, sep="-"), "fitness")
   obj.values <- matrix(NA, nrow=maxiter, ncol=nobjs + 1L,
-                       dimnames=list(1:maxiter, col.names))
+                       dimnames=list(1:maxiter, obj.names))
 
   # Set plot attributes
   windows(width=8, height=(nobjs + 1) * 2)
@@ -186,6 +192,10 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
   labs[3] <- "Mean standard deviaiton"
   labs[4] <- "Mean measurement error"
   labs[5] <- "Fitness score"
+  
+  # Initialize extent of solution space
+  obj.space <- matrix(NA, nrow=nobjs, ncol=2, dimnames=list(obj.names[1:nobjs], 
+                                                            c("Min", "Max")))
 
   # Determine maximum length of binary string
   length.bin.string <- length(GA::decimal2binary(nsites.in.network))
@@ -284,10 +294,15 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
   # Report best fitness score
   fitness <- obj.values[niter, "fitness"]
   cat("\nBest fitness score:", format(fitness), "\n\n")
+  
+  # Determine range of objectives in solution space
+  col.names <- colnames(obj.space)
+  obj.space <- cbind(obj.space, obj.space[, 2] - obj.space[, 1])
+  colnames(obj.space) <- c(col.names, "Range")
 
   # Return GA solution
   invisible(list(call=call, pts.rm=pts.rm, is.net=is.net, is.rm=is.rm, 
                  obj.values=obj.values, niter=niter, nrep.ans=nrep.ans, 
                  elapsed.time=elapsed.time, ncalls.penalty=ncalls.penalty, 
-                 kr=kr, rmsd=rmsd, ga.ans=ga.ans))
+                 kr=kr, rmsd=rmsd, obj.space=obj.space, ga.ans=ga.ans))
 }
