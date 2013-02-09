@@ -89,8 +89,7 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
       axis(4, tcl=tcl, labels=FALSE)
       axis(1, tcl=tcl, labels=(i == m))
       points(x, y, type="o", pch=21, col=pal[i], bg=pal[i])
-      txt <- paste(format(y[n]), "    ")
-      mtext(txt, side=3, line=-3, adj=1, cex=0.75)
+      mtext(paste(format(y[n]), "    "), side=3, line=-2, adj=1, cex=0.75)
       if (i < m & is.weighted[i]) {
         txt <- paste("Weighted by", format(obj.weights[i]))
         mtext(txt, side=4, line=0.5, cex=0.75, col="dark gray")
