@@ -70,9 +70,5 @@ WriteGAResults <- function(x, file) {
   cat("\nSystem date-time at start of GA run:\t", 
       format(x$start.time, "%Y-%m-%d %H:%M:%S"), "\n", file=file, append=TRUE)
   
-  cat("\nTime differences at the end of each GA iteration, in hours:\n", 
-      file=file, append=TRUE)
-  cat(paste(deparse(x$diff.time), collapse="\n"), "\n", file=file, append=TRUE)
-  
   invisible(NULL)
 }
