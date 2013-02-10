@@ -79,7 +79,7 @@ A solution to the multiobjective optimization problem is found by minimizing
 the aggregate objective function, the weighted linear sum of 4 objectives. The
 objectives are given as:
 \enumerate{
-  \item Mean standard error of points in interpolation grid.
+  \item Mean standard error at points in interpolation grid.
   \item Root-mean-square error, difference between predicted and measured
         values, at removed sites.
   \item Mean standard deviation, variability of measurement over time,
@@ -120,7 +120,7 @@ Returns a list with components:
 \item{niter}{integer; number of completed iterations.}
 \item{nrep.ans}{integer; number of iterations the \dQuote{best} solution 
   was repeated.}
-\item{elapsed.time}{numeric; elapsed time for running the GA, in hours.}
+\item{proc.time}{proc_time; CPU time for running the GA, in seconds.}
 \item{ncalls.penalty}{integer; vector giving the number of calls to 
   the penalty function at each iteration of the GA.}
 \item{kr}{SpatialGridDataFrame; a data frame containing the coordinates of
@@ -134,6 +134,9 @@ Returns a list with components:
   network predictions.}
 \item{obj.space}{matrix; range of objective values in solution space.}
 \item{ga.ans}{ga; returned value of \code{\link{ga}}.}
+\item{start.time}{POSIXct; system time at start of GA run.}
+\item{diff.time}{numeric; vector of time differences since start of GA run, 
+  specified for each iteration in the GA, in hours.}
 The status of the objective values after each iteration of the GA is plotted.
 }
 

@@ -21,8 +21,8 @@ WriteGAResults(x, file)
 \details{
 Printed components of \code{ga} include: \code{call}; 
 \code{obj.values}; \code{rmsd}; \code{niters}; \code{nrep.ans}; 
-\code{elapsed.time}; code{obj.space}; \code{ncalls.penalty}; \code{pts.rm}; 
-and \code{ga.ans@suggestion}.
+\code{proc.time}; \code{obj.space}; \code{ncalls.penalty}; \code{pts.rm}; 
+\code{ga.ans@suggestion}, and \code{start.time}, \code{diff.time}.
 }
 
 \value{

@@ -70,6 +70,7 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
     obj.values[obj@iter, ] <<- c(objectives, sum(objectives, na.rm=TRUE))
     ncalls.penalty[obj@iter] <<- ncalls.penalty.iter
     ncalls.penalty.iter <<- 0L
+    diff.time[obj@iter] <<- difftime(Sys.time(), start.time, units="hours")
     PlotObjValues()
   }
 
@@ -229,8 +230,12 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
     suggestions <- t(apply(int.pop, 1, function(i) Fun(i)))
   }
   
+  # Save system time
+  start.time <- Sys.time()
+  diff.time <- NULL
+  
   # Run GA
-  elapsed.time <- system.time({
+  proc.time <- system.time({
     ga.ans <- GA::ga(type="binary", fitness=EvalFit, 
                      nBits=length.bin.string * nsites, popSize=popSize,
                      pcrossover=pcrossover, pmutation=pmutation, 
@@ -270,8 +275,8 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
   rmsd <- sqrt(sum(var1.diff^2) / length(var1.diff))
 
   # Report elapsed time for running optimization
-  elapsed.time <- as.numeric(elapsed.time["elapsed"]) / 3600
-  cat("\nElapsed time:", format(elapsed.time), "hours\n")
+  cat("\nElapsed time:", format(as.numeric(proc.time["elapsed"]) / 3600), 
+      "hours\n")
 
   # Report the number of completed iterations
   obj.values <- obj.values[!is.na(obj.values[, "fitness"]), ]
@@ -298,10 +303,11 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
   col.names <- colnames(obj.space)
   obj.space <- cbind(obj.space, obj.space[, 2] - obj.space[, 1])
   colnames(obj.space) <- c(col.names, "Range")
-
+  
   # Return GA solution
   invisible(list(call=call, pts.rm=pts.rm, is.net=is.net, is.rm=is.rm, 
                  obj.values=obj.values, niter=niter, nrep.ans=nrep.ans, 
-                 elapsed.time=elapsed.time, ncalls.penalty=ncalls.penalty, 
-                 kr=kr, rmsd=rmsd, obj.space=obj.space, ga.ans=ga.ans))
+                 proc.time=proc.time, ncalls.penalty=ncalls.penalty, 
+                 kr=kr, rmsd=rmsd, obj.space=obj.space, ga.ans=ga.ans,
+                 start.time=start.time, diff.time=diff.time))
 }
