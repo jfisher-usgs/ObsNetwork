@@ -57,7 +57,8 @@ WriteGAResults <- function(x, file) {
   
   # Remove
   cat("\nRemoved sites:\n", file=file, append=TRUE) 
-  cat(paste(names(x$pts.rm), collapse="\t"), "\n", file=file, append=TRUE)
+  cat(paste(c(names(x$pts.rm), "x", "y"), collapse="\t"), "\n", 
+      file=file, append=TRUE)
   write.table(x$pts.rm, file=file, append=TRUE, quote=FALSE, sep="\t", 
               col.names=FALSE, row.names=FALSE)
   
