@@ -1,6 +1,7 @@
 OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula, 
                             nmax=Inf, xlim=bbox(grd)[1, ], ylim=bbox(grd)[2, ], 
                             grd.fact=1, obj.weights=c(1, 1, 1, 1), 
+                            penalty.constant=1E6,
                             popSize=50, pcrossover=0.8, pmutation=0.1, 
                             elitism=base::max(1, round(popSize * 0.05)), 
                             maxiter=100, run=maxiter, suggestions=NULL, ...) {
@@ -37,11 +38,14 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
   # Evaluate fitness function
   EvalFit <- function(string) {
     idxs <- DecodeBinaryString(string)
-    nduplicates <- sum(duplicated(idxs))
-    if (nduplicates > 0 | min(idxs) < 1 | max(idxs) > nsites.in.network) {
+    
+    npenalties <- sum(duplicated(idxs)) + 
+                  sum(idxs < 1 | idxs > nsites.in.network)
+    if (npenalties > 0) {
       ncalls.penalty.iter <<- ncalls.penalty.iter + 1L
-      return(-1E6 * (nduplicates + 1L))
+      return(-penalty.constant * npenalties)
     }
+    
     objs <- EvalObj(idxs)
     
     r <- vapply(1:4, function(i) c(min(obj.space[i, 1], objs[i], na.rm=TRUE),
