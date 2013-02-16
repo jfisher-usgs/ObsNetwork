@@ -7,6 +7,56 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
                             maxiter=100, run=maxiter, suggestions=NULL, ...) {
 
   # Additional functions (subroutines)
+  
+  # Mutate
+  Mutate <- function (object, parent, ...) {
+    parent <- as.vector(object@population[parent, ])
+    all.idxs <- 1:nsites.in.network
+    idxs <- DecodeBinaryString(parent)
+    i <- sample(1:nsites, size=1)
+    idxs[i] <- sample(all.idxs[!all.idxs %in% idxs], size=1)
+    mutate <- CodeIntegerChromosome(idxs)
+    return(mutate)
+  }
+  
+  # Crossover
+  Crossover <- function (object, parents, ...) {
+    fitness <- object@fitness[parents]
+    parents <- object@population[parents, , drop=FALSE]
+    n <- ncol(parents)
+    children <- matrix(NA, nrow=2, ncol=n)
+    fitnessChildren <- rep(NA, 2)
+    crossOverPoint <- sample(0:n, size=1)
+    if (crossOverPoint == 0) {
+        children[1:2, ] <- parents[2:1, ]
+        fitnessChildren[1:2] <- fitness[2:1]
+    } else if (crossOverPoint == n) {
+        children <- parents
+        fitnessChildren <- fitness
+    } else {
+        children[1, ] <- c(parents[1, 1:crossOverPoint], 
+                           parents[2, (crossOverPoint + 1):n])
+        children[2, ] <- c(parents[2, 1:crossOverPoint], 
+                           parents[1, (crossOverPoint + 1):n])
+        fitnessChildren <- NA
+    }
+    out <- list(children = children, fitness=fitnessChildren)
+    return(out)
+  }
+
+  
+  
+  
+  
+  
+  
+  
+
+  
+  
+  
+  
+  
 
   # Calculate objective functions
   EvalObj <- function(idxs) {
@@ -57,15 +107,6 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
     fitness.score
   }
 
-  # Decode binary string
-  DecodeBinaryString <- function(string) {
-    sapply(seq(1, nsites * length.bin.string, by=length.bin.string),
-           function(i) {
-             gry <- string[i:(i + length.bin.string - 1L)]
-             GA::binary2decimal(GA::gray2binary(gry))
-           })
-  }
-
   # Monitor progress at end of each GA iteration
   MonitorGA <- function(obj) {
     string <- obj@population[which(obj@fitness == max(obj@fitness))[1L], ]
@@ -113,6 +154,25 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
   # Build integer chromosomes from random sample of sites
   GetIntChromosomes <- function(m, n, k) {
     t(vapply(1:m, function(i) sample(1:n, k, replace=FALSE), rep(0, k)))
+  }
+  
+  # Convert integer chromosome to binary chromosome using Gray encoding
+  CodeIntegerChromosome <- function(int.chr) {
+    bin.chr <- NULL
+    for (i in int.chr) {
+      gry <- GA::binary2gray(GA::decimal2binary(i, length.bin.string))
+      bin.chr <- c(bin.chr, gry)
+    }
+    bin.chr
+  }
+  
+  # Decode binary string
+  DecodeBinaryString <- function(string) {
+    sapply(seq(1, nsites * length.bin.string, by=length.bin.string),
+           function(i) {
+             gry <- string[i:(i + length.bin.string - 1L)]
+             GA::binary2decimal(GA::gray2binary(gry))
+           })
   }
 
 
@@ -223,15 +283,7 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
     }
     
     # Convert integer chromosomes to binary chromosomes with Gray encoding
-    Fun <- function(i) {
-             suggestion <- NULL
-             for (j in i) {
-               gry <- GA::binary2gray(GA::decimal2binary(j, length.bin.string))
-               suggestion <- c(suggestion, gry)
-             }
-             suggestion
-           }
-    suggestions <- t(apply(int.pop, 1, function(i) Fun(i)))
+    suggestions <- t(apply(int.pop, 1, function(i) CodeIntegerChromosome(i)))
   }
   
   # Save system time
@@ -241,10 +293,11 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
   # Run GA
   proc.time <- system.time({
     ga.ans <- GA::ga(type="binary", fitness=EvalFit, 
-                     nBits=length.bin.string * nsites, popSize=popSize,
-                     pcrossover=pcrossover, pmutation=pmutation, 
-                     elitism=elitism, monitor=MonitorGA, maxiter=maxiter,
-                     run=run, suggestions=suggestions, ...)
+                     nBits=length.bin.string * nsites, 
+                     mutation=Mutate, crossover=Crossover,
+                     popSize=popSize, pcrossover=pcrossover, 
+                     pmutation=pmutation, elitism=elitism, monitor=MonitorGA, 
+                     maxiter=maxiter, run=run, suggestions=suggestions, ...)
   })
   
   # Decode GA solution
