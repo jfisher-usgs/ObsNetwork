@@ -212,7 +212,7 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
   y <- coordinates(grd)[, 2]
   is.in.lim <- x >= xlim[1] & x <= xlim[2] & y >= ylim[1] & y <= ylim[2]
   grd <- grd[is.in.lim, ]
-
+  
   # Crop grid to polygon
   if (!missing(ply))
     grd[[1]] <- grd[[1]] * overlay(grd, ply)
@@ -225,17 +225,17 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
   else
     grd.mod <- grd
   coordnames(grd.mod) <- c("x", "y")
-
+  
   # Initialize number of calls to penalty function
   ncalls.penalty <- NULL
   ncalls.penalty.iter <- 0L
-
+  
   # Initialize matrix of objective values
   nobjs <- length(obj.weights)
   obj.names <- c(paste("objective", 1:nobjs, sep="-"), "fitness")
   obj.values <- matrix(NA, nrow=maxiter, ncol=nobjs + 1L,
                        dimnames=list(1:maxiter, obj.names))
-
+  
   # Set plot attributes
   windows(width=8, height=(nobjs + 1) * 2)
   op <- par(mfrow=c(nobjs + 1, 1), oma=c(3, 2, 2, 2), mar=c(1, 4, 0, 2))
@@ -251,10 +251,10 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
   # Initialize extent of solution space
   obj.space <- matrix(NA, nrow=nobjs, ncol=2, dimnames=list(obj.names[1:nobjs], 
                                                             c("Min", "Max")))
-
+  
   # Determine maximum length of binary string
   length.bin.string <- length(GA::decimal2binary(nsites.in.network))
-
+  
   # Initialize population
   if (is.null(suggestions)) {
     int.pop <- GetIntChromosomes(popSize, nsites.in.network, nsites)
@@ -304,10 +304,10 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
   # Identify removed sites
   pts.rm <- pts[rm.idxs, ]
   is.rm <- orig.site.no %in% pts.rm$site.no
-
+  
   # Reset graphics parameters
   par(op)
-
+  
   # Block kriging of reduced network at original grid resolution
   kr <- krige(formula=formula, locations=pts[-rm.idxs, ], newdata=grd,
               model=model, debug.level=0, block=grd@grid@cellsize)
@@ -321,11 +321,11 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
   # Root-mean-square-deviation
   var1.diff <- as.numeric(na.omit(kr$var1.diff))
   rmsd <- sqrt(sum(var1.diff^2) / length(var1.diff))
-
+  
   # Report elapsed time for running optimization
   cat("\nElapsed time:", format(as.numeric(proc.time["elapsed"]) / 3600), 
       "hours\n")
-
+  
   # Report the number of completed iterations
   obj.values <- obj.values[!is.na(obj.values[, "fitness"]), ]
   niter <- nrow(obj.values)
