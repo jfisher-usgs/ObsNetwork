@@ -98,10 +98,10 @@ to zero will remove an objective from the multi-objective function.
 Spatial data is transformed to the map projection and datum of the
 raster data set in \code{grd}.
 
-The optimization problem is solved using binary GAs with 
-\href{http://en.wikipedia.org/wiki/Gray_Encoding}{Gray} encoding; 
-that is, site index numbers are represented in binary code. The GA uses
-linear-rank selection, single-point crossoever, and uniform random mutation.
+The optimization problem is solved using binary GAs with integer chromosomes;
+site index numbers are represented as binary strings using
+\href{http://en.wikipedia.org/wiki/Gray_Encoding}{Gray} encoding. The GA uses
+linear-rank selection, single-point crossover, and uniform random mutation.
 The initial population is randomly generated with valid chromosomes; that is,
 sites are not repeated within a single chromosome.
 }
@@ -186,10 +186,6 @@ ans <- OptimizeNetwork(ESRP_NWIS, ESRP_NED, ESRP_Boundary,
                        network.nm = "INL", nsites = 20, model = model,
                        formula = fo, xlim = xlim, ylim = ylim, grd.fact = 5, 
                        obj.weights = c(100, 1, 1, 1),  maxiter = 3)
-PlotRaster(ans$kr, "var1.pred", ESRP_NWIS,
-           pal = colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9")),
-           main = "Predictions", net.idxs = which(ans$is.net), 
-           rm.idxs = which(ans$is.rm), xlim = xlim, ylim = ylim)
 PlotRaster(ans$kr, "var1.diff", ESRP_NWIS, pal = jet.colors,
            main = "Prediction Differences", net.idxs = which(ans$is.net), 
            rm.idxs = which(ans$is.rm), xlim = xlim, ylim = ylim)
