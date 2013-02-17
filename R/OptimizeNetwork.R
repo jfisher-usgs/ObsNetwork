@@ -7,7 +7,7 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
                             maxiter=100, run=maxiter, suggestions=NULL, ...) {
 
   # Additional functions (subroutines)
-  
+
   # Mutate
   Mutate <- function (object, parent, ...) {
     parent <- as.vector(object@population[parent, ])
@@ -18,46 +18,42 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
     mutate <- EncodeChromosome(idxs)
     return(mutate)
   }
-  
+
   # Crossover
   Crossover <- function (object, parents, ...) {
     fitness <- object@fitness[parents]
-    parents <- object@population[parents, , drop=FALSE]
-    n <- ncol(parents)
-    children <- matrix(NA, nrow=2, ncol=n)
-    fitnessChildren <- rep(NA, 2)
-    crossOverPoint <- sample(0:n, size=1)
-    if (crossOverPoint == 0) {
-        children[1:2, ] <- parents[2:1, ]
-        fitnessChildren[1:2] <- fitness[2:1]
-    } else if (crossOverPoint == n) {
-        children <- parents
-        fitnessChildren <- fitness
-    } else {
-        children[1, ] <- c(parents[1, 1:crossOverPoint], 
-                           parents[2, (crossOverPoint + 1):n])
-        children[2, ] <- c(parents[2, 1:crossOverPoint], 
-                           parents[1, (crossOverPoint + 1):n])
-        fitnessChildren <- NA
+    encoded.parents <- object@population[parents, , drop=FALSE]
+    decoded.parents <- t(apply(encoded.parents, 1, DecodeChromosome))
+    n <- ncol(decoded.parents)
+    decoded.children <- matrix(NA, nrow=2, ncol=n)
+    fitness.children <- rep(NA, 2)
+    i <- 1L
+    while (i < 100L) {
+      crossover.point <- sample(0:n, size=1)
+      if (crossover.point == 0) {
+          decoded.children[1:2, ] <- decoded.parents[2:1, ]
+          fitness.children[1:2] <- fitness[2:1]
+      } else if (crossover.point == n) {
+          decoded.children <- decoded.parents
+          fitness.children <- fitness
+      } else {
+          decoded.children[1, ] <- c(decoded.parents[1, 1:crossover.point], 
+                                     decoded.parents[2, (crossover.point + 1):n])
+          decoded.children[2, ] <- c(decoded.parents[2, 1:crossover.point], 
+                                     decoded.parents[1, (crossover.point + 1):n])
+          fitness.children <- NA
+      }
+      is.unique <- !any(apply(decoded.children, 1, 
+                              function(j) any(duplicated(j))))
+      if (is.unique)
+        break
+      else
+        i <- i + 1L
     }
-    out <- list(children = children, fitness=fitnessChildren)
-    return(out)
+    children <- t(apply(decoded.children, 1, function(i) EncodeChromosome(i)))
+    list(children=children, fitness=fitness.children)
   }
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
   # Calculate objective functions
   CalcObjs <- function(idxs) {
     
@@ -76,7 +72,7 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
                            debug.level=0)
     kr.grd.se <- sqrt(kr.grd$var1.var)
     
-    # Solve objective functions
+    # Solve individual objective functions
     objs <- NULL
     objs[1] <- mean(kr.grd.se, na.rm=TRUE)
     objs[2] <- sqrt(sum((kr.pts.pred - pts$var1[idxs])^2) / nsites)
@@ -85,24 +81,19 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
     objs * obj.weights
   }
 
-  # Evaluate fitness function
-  EvalFit <- function(string) {
+  # Calculate fitness
+  CalcFitness <- function(string) {
     idxs <- DecodeChromosome(string)
-    
-    npenalties <- sum(duplicated(idxs)) + 
-                  sum(idxs < 1 | idxs > nsites.in.network)
+    npenalties <- sum(duplicated(idxs))
     if (npenalties > 0) {
       ncalls.penalty.iter <<- ncalls.penalty.iter + 1L
       return(-penalty.constant * npenalties)
     }
-    
     objs <- CalcObjs(idxs)
-    
     r <- vapply(1:4, function(i) c(min(obj.space[i, 1], objs[i], na.rm=TRUE),
                                    max(obj.space[i, 2], objs[i], na.rm=TRUE)), 
                                    rep(0, 2))
     obj.space[, ] <<- t(r)
-    
     fitness.score <- -sum(objs, na.rm=TRUE)
     fitness.score
   }
@@ -142,7 +133,7 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
       }
     }
   }
-  
+
   # Find number of k-combinations
   FindNumCombinations <- function(n, k) {
     nc <- suppressWarnings(factorial(n) / (factorial(k) * factorial(n - k)))
@@ -150,12 +141,12 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
       return(Inf)
     nc
   }
-  
+
   # Build integer chromosomes from random sample of sites
   GetIntChromosomes <- function(m, n, k) {
     t(vapply(1:m, function(i) sort(sample(1:n, k, replace=FALSE)), rep(0, k)))
   }
-  
+
   # Encode chromosome
   EncodeChromosome <- function(int.chr) {
     bin.chr <- NULL
@@ -165,7 +156,7 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
     }
     bin.chr
   }
-  
+
   # Decode chromosome
   DecodeChromosome <- function(string) {
     sapply(seq(1, nsites * length.bin.string, by=length.bin.string),
@@ -292,7 +283,7 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
   
   # Run GA
   proc.time <- system.time({
-    ga.ans <- GA::ga(type="binary", fitness=EvalFit, 
+    ga.ans <- GA::ga(type="binary", fitness=CalcFitness, 
                      nBits=length.bin.string * nsites, 
                      mutation=Mutate, crossover=Crossover,
                      popSize=popSize, pcrossover=pcrossover, 
