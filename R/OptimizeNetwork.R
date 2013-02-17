@@ -28,7 +28,7 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
     decoded.children <- matrix(NA, nrow=2, ncol=n)
     fitness.children <- rep(NA, 2)
     i <- 1L
-    while (i < 100L) {
+    while (i < 10L) {
       crossover.point <- sample(0:n, size=1)
       if (crossover.point == 0) {
           decoded.children[1:2, ] <- decoded.parents[2:1, ]
