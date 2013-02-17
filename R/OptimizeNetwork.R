@@ -12,10 +12,10 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
   Mutate <- function (object, parent, ...) {
     parent <- as.vector(object@population[parent, ])
     all.idxs <- 1:nsites.in.network
-    idxs <- DecodeBinaryString(parent)
+    idxs <- DecodeChromosome(parent)
     i <- sample(1:nsites, size=1)
     idxs[i] <- sample(all.idxs[!all.idxs %in% idxs], size=1)
-    mutate <- CodeIntegerChromosome(idxs)
+    mutate <- EncodeChromosome(idxs)
     return(mutate)
   }
   
@@ -43,7 +43,6 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
     out <- list(children = children, fitness=fitnessChildren)
     return(out)
   }
-
   
   
   
@@ -51,15 +50,16 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
   
   
   
-
   
   
   
   
   
-
+  
+  
+  
   # Calculate objective functions
-  EvalObj <- function(idxs) {
+  CalcObjs <- function(idxs) {
     
     # Remove selected sites
     locations <- pts[-idxs, ]
@@ -87,7 +87,7 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
 
   # Evaluate fitness function
   EvalFit <- function(string) {
-    idxs <- DecodeBinaryString(string)
+    idxs <- DecodeChromosome(string)
     
     npenalties <- sum(duplicated(idxs)) + 
                   sum(idxs < 1 | idxs > nsites.in.network)
@@ -96,7 +96,7 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
       return(-penalty.constant * npenalties)
     }
     
-    objs <- EvalObj(idxs)
+    objs <- CalcObjs(idxs)
     
     r <- vapply(1:4, function(i) c(min(obj.space[i, 1], objs[i], na.rm=TRUE),
                                    max(obj.space[i, 2], objs[i], na.rm=TRUE)), 
@@ -110,8 +110,8 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
   # Monitor progress at end of each GA iteration
   MonitorGA <- function(obj) {
     string <- obj@population[which(obj@fitness == max(obj@fitness))[1L], ]
-    idxs <- DecodeBinaryString(string)
-    objectives <- EvalObj(idxs)
+    idxs <- DecodeChromosome(string)
+    objectives <- CalcObjs(idxs)
     obj.values[obj@iter, ] <<- c(objectives, sum(objectives, na.rm=TRUE))
     ncalls.penalty[obj@iter] <<- ncalls.penalty.iter
     ncalls.penalty.iter <<- 0L
@@ -153,11 +153,11 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
   
   # Build integer chromosomes from random sample of sites
   GetIntChromosomes <- function(m, n, k) {
-    t(vapply(1:m, function(i) sample(1:n, k, replace=FALSE), rep(0, k)))
+    t(vapply(1:m, function(i) sort(sample(1:n, k, replace=FALSE)), rep(0, k)))
   }
   
-  # Convert integer chromosome to binary chromosome using Gray encoding
-  CodeIntegerChromosome <- function(int.chr) {
+  # Encode chromosome
+  EncodeChromosome <- function(int.chr) {
     bin.chr <- NULL
     for (i in int.chr) {
       gry <- GA::binary2gray(GA::decimal2binary(i, length.bin.string))
@@ -166,8 +166,8 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
     bin.chr
   }
   
-  # Decode binary string
-  DecodeBinaryString <- function(string) {
+  # Decode chromosome
+  DecodeChromosome <- function(string) {
     sapply(seq(1, nsites * length.bin.string, by=length.bin.string),
            function(i) {
              gry <- string[i:(i + length.bin.string - 1L)]
@@ -283,7 +283,7 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
     }
     
     # Convert integer chromosomes to binary chromosomes with Gray encoding
-    suggestions <- t(apply(int.pop, 1, function(i) CodeIntegerChromosome(i)))
+    suggestions <- t(apply(int.pop, 1, function(i) EncodeChromosome(i)))
   }
   
   # Save system time
@@ -307,7 +307,7 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
                  "fitness scores.")
     warning(txt)
   }
-  ga.decoded.solution <- DecodeBinaryString(ga.ans@solution[1, ])
+  ga.decoded.solution <- DecodeChromosome(ga.ans@solution[1, ])
   rm.idxs <- sort(ga.decoded.solution)
   
   # Identify removed sites

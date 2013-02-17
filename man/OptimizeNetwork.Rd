@@ -101,7 +101,7 @@ raster data set in \code{grd}.
 The optimization problem is solved using binary GAs with 
 \href{http://en.wikipedia.org/wiki/Gray_Encoding}{Gray} encoding; 
 that is, site index numbers are represented in binary code. The GA uses
-linear-rank selection, single-point crossoever, and bit-string mutation.
+linear-rank selection, single-point crossoever, and uniform random mutation.
 The initial population is randomly generated with valid chromosomes; that is,
 sites are not repeated within a single chromosome.
 }
