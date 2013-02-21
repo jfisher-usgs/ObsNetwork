@@ -98,12 +98,12 @@ to zero will remove an objective from the multi-objective function.
 Spatial data is transformed to the map projection and datum of the
 raster data set in \code{grd}.
 
-The optimization problem is solved using binary GAs with integer chromosomes;
-site index numbers are represented as binary strings using
-\href{http://en.wikipedia.org/wiki/Gray_Encoding}{Gray} encoding. The GA uses
-linear-rank selection, single-point crossover, and uniform random mutation.
+The optimization problem is solved using a GA with integer chromosomes;
+site identifiers are represented as binary strings using
+\href{http://en.wikipedia.org/wiki/Gray_Encoding}{Gray} encoding. 
 The initial population is randomly generated with valid chromosomes; that is,
-sites are not repeated within a single chromosome.
+sites are not repeated within a single chromosome. The GA uses
+linear-rank selection, single-point crossover, and uniform random mutation.
 }
 
 \value{
