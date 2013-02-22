@@ -1,12 +1,14 @@
 Changes in Version 0.1-4
   
+  o  Implemented crossover and mutation functions that are problem specific.
+
   o  Improved construction of initial default population.
   
   o  Implemented variable penalty function.
   
-  o  Changed genetic algorithm (GA) R library from "genalg" to "GA". GA now 
-     solved using integer chromosome (indexes of sites to remove) with binary 
-     encoding.
+  o  Changed chromosome from binary to integer type.
+  
+  o  Changed genetic algorithm (GA) R library from "genalg" to "GA".
   
   o  Software license changed from "Unlimited" to "GPL (>= 2)".
   
