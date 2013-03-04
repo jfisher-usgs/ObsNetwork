@@ -1,5 +1,7 @@
 Changes in Version 0.1-5
-
+  
+  o  Added percent local error to output.
+  
   o  Added maxabort argument in OptimizeNetwork function.
 
 Changes in Version 0.1-4

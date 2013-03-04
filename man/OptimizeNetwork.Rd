@@ -136,6 +136,8 @@ Returns a list with components:
   specified in the \code{var1.diff} attribute.}
 \item{rmsd}{numeric; root-mean-square-deviation between original and reduced
   network predictions.}
+\item{local.error}{numeric; percent local error between the kriged surfaces 
+  using the original and reduced networks.}
 \item{obj.space}{matrix; range of objective values in solution space.}
 \item{ga.ans}{ga; returned value of \code{\link{ga}}.}
 \item{start.time}{POSIXct; system time at start of GA run.}

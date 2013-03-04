@@ -322,6 +322,11 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
   var1.diff <- as.numeric(na.omit(kr$var1.diff))
   rmsd <- sqrt(sum(var1.diff^2) / length(var1.diff))
   
+  # Percent local error
+  max.error <- var1.diff[which.max(abs(var1.diff))]
+  relief <- diff(range(kr0$var1.pred, na.rm=TRUE))
+  local.error <- (max.error / relief) * 100
+  
   # Report elapsed time for running optimization
   cat("\nElapsed time:", format(as.numeric(proc.time["elapsed"]) / 3600), 
       "hours\n")
@@ -358,6 +363,7 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
   invisible(list(call=call, pts.rm=pts.rm, is.net=is.net, is.rm=is.rm, 
                  obj.values=obj.values, niter=niter, nrep.ans=nrep.ans, 
                  proc.time=proc.time, ncalls.penalty=ncalls.penalty, 
-                 kr=kr, rmsd=rmsd, obj.space=obj.space, ga.ans=ga.ans,
-                 start.time=start.time, diff.time=diff.time))
+                 kr=kr, rmsd=rmsd, local.error=local.error, 
+                 obj.space=obj.space, ga.ans=ga.ans, start.time=start.time, 
+                 diff.time=diff.time))
 }

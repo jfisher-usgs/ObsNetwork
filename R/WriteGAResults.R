@@ -26,6 +26,10 @@ WriteGAResults <- function(x, file) {
   cat("\nRoot-mean-square-deviation:\t", format(x$rmsd), "\n", 
       file=file, append=TRUE)
   
+  # Local error
+  cat("\nLocal error:\t", format(x$local.error), "%\n", 
+      file=file, append=TRUE)
+  
   # Iterations
   cat("\nNumber of completed iterations:\t", x$niter, "\n", 
       file=file, append=TRUE)

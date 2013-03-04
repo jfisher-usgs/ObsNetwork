@@ -20,9 +20,9 @@ WriteGAResults(x, file)
 
 \details{
 Printed components of \code{ga} include: \code{call}; 
-\code{obj.values}; \code{rmsd}; \code{niters}; \code{nrep.ans}; 
-\code{proc.time}; \code{start.time}; \code{obj.space}; \code{ncalls.penalty}; 
-\code{pts.rm}; and \code{ga.ans@suggestion}.
+\code{obj.values}; \code{rmsd}; \code{local.error}; \code{niters}; 
+\code{nrep.ans}; \code{proc.time}; \code{start.time}; \code{obj.space}; 
+\code{ncalls.penalty}; \code{pts.rm}; and \code{ga.ans@suggestion}.
 }
 
 \value{
