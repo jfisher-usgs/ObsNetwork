@@ -134,8 +134,8 @@ Returns a list with components:
   and prediction standard errors, \code{var1.se}. 
   Differences between the original and reduced network predictions are
   specified in the \code{var1.diff} attribute.}
-\item{rmsd}{numeric; root-mean-square-deviation between original and reduced
-  network predictions.}
+\item{rmsd}{numeric; root-mean-square-deviation between the kriged surfaces 
+  using the original and reduced networks.}
 \item{local.error}{numeric; percent local error between the kriged surfaces 
   using the original and reduced networks.}
 \item{obj.space}{matrix; range of objective values in solution space.}
