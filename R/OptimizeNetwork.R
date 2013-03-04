@@ -1,7 +1,7 @@
 OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula, 
                             nmax=Inf, xlim=bbox(grd)[1, ], ylim=bbox(grd)[2, ], 
                             grd.fact=1, obj.weights=c(1, 1, 1, 1), 
-                            penalty.constant=1E6,
+                            penalty.constant=1E6, maxabort=10,
                             popSize=50, pcrossover=0.8, pmutation=0.1, 
                             elitism=base::max(1, round(popSize * 0.05)), 
                             maxiter=100, run=maxiter, suggestions=NULL, ...) {
@@ -28,7 +28,7 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
     decoded.children <- matrix(NA, nrow=2, ncol=n)
     fitness.children <- rep(NA, 2)
     i <- 1L
-    while (i < 10L) {
+    while (i <= maxabort) {
       crossover.point <- sample(0:n, size=1)
       if (crossover.point == 0) {
           decoded.children[1:2, ] <- decoded.parents[2:1, ]
@@ -341,7 +341,9 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
   cat("\nNumber of times final solution was repeated:", nrep.ans, "\n")
   
   # Report the number of calls to the penalty function
-  cat("\nNumber of calls to penalty function:", format(ncalls.penalty), "\n")
+  ppenalty <- sum(ncalls.penalty) / (popSize * niter) * 100
+  cat("\nPercent of chromosomes that invoke the penalty function:", 
+      format(ppenalty), "\n")
   
   # Report best fitness score
   fitness <- obj.values[niter, "fitness"]

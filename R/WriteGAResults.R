@@ -39,6 +39,10 @@ WriteGAResults <- function(x, file) {
       format(as.numeric(x$proc.time["elapsed"]) / 3600), "\n", 
       file=file, append=TRUE)
   
+  # System time
+  cat("\nSystem date-time at start of GA run:\t", 
+      format(x$start.time, "%Y-%m-%d %H:%M:%S"), "\n", file=file, append=TRUE)
+  
   # Solution-space
   cat("\nRange of objective values in solution space:\n", 
       file=file, append=TRUE) 
@@ -66,10 +70,6 @@ WriteGAResults <- function(x, file) {
   cat("\nSuggestion for initial population:\n", file=file, append=TRUE)
   cat(paste(deparse(x$ga.ans@population), collapse="\n"), "\n",
       file=file, append=TRUE)
-  
-  # System time
-  cat("\nSystem date-time at start of GA run:\t", 
-      format(x$start.time, "%Y-%m-%d %H:%M:%S"), "\n", file=file, append=TRUE)
   
   invisible(NULL)
 }

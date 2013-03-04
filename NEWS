@@ -1,6 +1,6 @@
 Changes in Version 0.1-5
 
-  o  
+  o  Added maxabort argument in OptimizeNetwork function.
 
 Changes in Version 0.1-4
   

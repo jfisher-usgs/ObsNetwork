@@ -14,8 +14,8 @@ problem.
 \usage{
 OptimizeNetwork(pts, grd, ply, network.nm, nsites, model, formula, nmax = Inf,
                 xlim = bbox(grd)[1, ], ylim = bbox(grd)[2, ], grd.fact = 1,
-                obj.weights = c(1, 1, 1, 1), penalty.constant = 1E6,
-                popSize = 50, pcrossover = 0.8, pmutation = 0.1, 
+                obj.weights = c(1, 1, 1, 1), penalty.constant = 1E6, 
+                maxabort = 10, popSize = 50, pcrossover = 0.8, pmutation = 0.1, 
                 elitism = base::max(1, round(popSize * 0.05)), 
                 maxiter = 100, run = maxiter, suggestions = NULL, ...)
 }
@@ -62,6 +62,8 @@ OptimizeNetwork(pts, grd, ply, network.nm, nsites, model, formula, nmax = Inf,
   see \sQuote{details} section below.}
 \item{penalty.constant}{numeric; constant in the penalty function, its value
   needs to be greater than the largest possible fitness value.}
+\item{maxabort}{integer; maximum number of times an invalid child chromosome 
+  can be aborted during crossover.}
 \item{popSize}{integer; population size.}
 \item{pcrossover}{numeric; probability of crossover between pairs of 
   chromosomes.}
