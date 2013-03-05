@@ -26,7 +26,7 @@ Install the **ObsNetwork** package:
 
     > install.packages('devtools')
     > library(devtools)
-    > install_github('ObsNetwork', username='jfisher-usgs', ref='v0.1.4')
+    > install_github('ObsNetwork', username='jfisher-usgs', ref='v0.1.5')
 
 Run
 ---
