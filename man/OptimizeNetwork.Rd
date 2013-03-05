@@ -58,7 +58,7 @@ OptimizeNetwork(pts, grd, ply, network.nm, nsites, model, formula, nmax = Inf,
 \item{grd.fact}{integer; aggregation factor for the interpolation grid, 
   \code{grd}.}
 \item{obj.weights}{numeric; vector of length 4 giving the weights for each
-  objective in the multi-objective optimzation problem,
+  objective in the multi-objective optimization problem,
   see \sQuote{details} section below.}
 \item{penalty.constant}{numeric; constant in the penalty function, its value
   needs to be greater than the largest possible fitness value.}
@@ -79,7 +79,7 @@ OptimizeNetwork(pts, grd, ply, network.nm, nsites, model, formula, nmax = Inf,
 }
 
 \details{
-A solution to the multiobjective optimization problem is found by minimizing
+A solution to the multi-objective optimization problem is found by minimizing
 the aggregate objective function, the weighted linear sum of 4 objectives. The
 objectives are given as:
 \enumerate{
@@ -115,7 +115,7 @@ Returns a list with components:
   equal to \code{nsites}. Includes data records for those sites identified 
   by the GA for removal from the observation network(s).}
 \item{is.net}{logical; vector of length equal to the number of rows in
-  \code{pts} specifying sites belonging to the reducded network.}
+  \code{pts} specifying sites belonging to the reduced network.}
 \item{is.rm}{logical; vector of length equal to the number of rows in
   \code{pts} specifying sites to remove from the network.}
 \item{obj.values}{matrix; objective values at each iteration of the GA.
@@ -150,7 +150,7 @@ The status of the objective values after each iteration of the GA is plotted.
 
 \references{
 Scrucca, L., 2012, GA: a package for genetic algorithms in R,
-Submitted to Journal of Statistical Sofware.
+Submitted to Journal of Statistical Software.
 }
 
 \seealso{

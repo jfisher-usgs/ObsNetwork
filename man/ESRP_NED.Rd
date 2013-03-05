@@ -20,11 +20,11 @@ ESRP_NED
 
 \format{
 An object of \code{\link{SpatialGridDataFrame-class}} with 323,724
-points (coordintates) and a single data attribute, \code{var2}, the
+points (coordinates) and a single data attribute, \code{var2}, the
 land-surface elevation.
 Geographic coordinates are in units of meters, in conformance
 with the North American Datum of 1927 (NAD 27), and placed in a
-Albers Equal-Area Conic projection; standard parellels 42.83, 44.16;
+Albers Equal-Area Conic projection; standard parallels 42.83, 44.16;
 central meridian -113.00, false easting 200,000 meters; false northing 0.
 }
 
