@@ -2,6 +2,9 @@ Changes in Version 0.1-6
   
   o  
   
+  o  Revised calculation of the number of iterations the best fitness value was 
+     repeated; was reporting n + 1 for n repeats.
+  
 Changes in Version 0.1-5
   
   o  Added percent local error to output.

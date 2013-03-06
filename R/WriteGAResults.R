@@ -35,8 +35,8 @@ WriteGAResults <- function(x, file) {
       file=file, append=TRUE)
   
   # Repeats
-  cat("\nNumber of times final solution was repeated:\t", x$nrep.ans, "\n", 
-      file=file, append=TRUE)
+  cat("\nNumber of iterations the best fitness value was repeated:\t", 
+      x$nrep.ans, "\n", file=file, append=TRUE)
 
   # Elapsed time
   cat("\nElapsed time, in hours:\t", 

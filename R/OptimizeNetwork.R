@@ -318,7 +318,7 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
                debug.level=0, block=grd@grid@cellsize)
   kr$var1.diff <- kr0$var1.pred - kr$var1.pred
   
-  # Root-mean-square-deviation
+  # Root-mean-square deviation
   var1.diff <- as.numeric(na.omit(kr$var1.diff))
   rmsd <- sqrt(sum(var1.diff^2) / length(var1.diff))
   
@@ -332,18 +332,21 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
       "hours\n")
   
   # Report the number of completed iterations
-  obj.values <- obj.values[!is.na(obj.values[, "fitness"]), ]
+  obj.values <- obj.values[!is.na(obj.values[, "fitness"]), , drop=FALSE]
   niter <- nrow(obj.values)
   cat("\nNumber of completed iterations:", niter, "\n")
   
   # Report the number of times the final solution was repeated
   nrep.ans <- 0L
-  for (i in niter:1L) {
-    if (!identical(obj.values[i, ], obj.values[niter, ]))
-      break
-    nrep.ans <-  nrep.ans + 1L
+  if (niter > 1L) {
+    for (i in (niter - 1L):1L) {
+      if (!identical(obj.values[i, ], obj.values[niter, ]))
+        break
+      nrep.ans <-  nrep.ans + 1L
+    }
   }
-  cat("\nNumber of times final solution was repeated:", nrep.ans, "\n")
+  cat("\nNumber of iterations the best fitness value was repeated:", nrep.ans, 
+      "\n")
   
   # Report the number of calls to the penalty function
   ppenalty <- sum(ncalls.penalty) / (popSize * niter) * 100
@@ -352,7 +355,7 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
   
   # Report best fitness score
   fitness <- obj.values[niter, "fitness"]
-  cat("\nBest fitness score:", format(fitness), "\n\n")
+  cat("\nBest fitness value:", format(fitness), "\n\n")
   
   # Determine range of objectives in solution space
   col.names <- colnames(obj.space)
