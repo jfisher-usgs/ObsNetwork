@@ -1,13 +1,18 @@
 Package: ObsNetwork
 Version: 0.1-6
-Date: 2013-03-05
+Date: 2013-04-30
 Title: Optimization of Observation Networks
 Author: Jason C. Fisher
 Maintainer: Fisher, Jason <jfisher@usgs.gov>
-Depends: R (>= 2.15.0), tcltk, raster, sp, rgdal, gstat, GA
+Depends: R (>= 3.0.0), tcltk, raster, sp, rgdal, gstat, GA
 Description: This package evaluates and optimizes long-term monitoring networks
   using a kriging-based genetic algorithm methodology.
-License: GPL (>= 2)
+License: file LICENSE
+Copyright: This software is in the public domain because it contains materials
+  that originally came from the United States Geological Survey, an agency of
+  the United States Department of Interior. For more information, see the
+  official USGS copyright policy at
+  http://www.usgs.gov/visual-id/credit_usgs.html#copyright
 URL: https://github.com/jfisher-usgs/ObsNetwork
 BugReports: https://github.com/jfisher-usgs/ObsNetwork/issues
 ByteCompile: yes
