@@ -1,27 +1,27 @@
 Changes in Version 0.1-6
-  
-  o  
-  
-  o  Revised calculation of the number of iterations the best fitness value was 
+
+  o  LICENSE file edited to clearly state that this software is in the public
+     domain.
+
+  o  Revised calculation of the number of iterations the best fitness value was
      repeated; was reporting n + 1 for n repeats.
-  
+
 Changes in Version 0.1-5
-  
+
   o  Added percent local error to output.
-  
+
   o  Added maxabort argument in OptimizeNetwork function.
 
 Changes in Version 0.1-4
-  
+
   o  Implemented crossover and mutation functions that are problem specific.
 
   o  Improved construction of initial default population.
-  
+
   o  Implemented variable penalty function.
-  
+
   o  Changed chromosome from binary to integer type.
-  
+
   o  Changed genetic algorithm (GA) R library from "genalg" to "GA".
-  
+
   o  Software license changed from "Unlimited" to "GPL (>= 2)".
-  
