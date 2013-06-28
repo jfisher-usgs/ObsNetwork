@@ -25,7 +25,7 @@ PlotRaster(grd, zcol, pts, ply, net.idxs, rm.idxs, xlim, ylim, at,
   of the raster data; data outside this domain is excluded. Polygon is
   included in the layout.}
 \item{net.idxs}{integer; vector of row indexes in \code{pts}, point coordinates
-  at these sites are drawn as circle symbols with white backgrounds. 
+  at these sites are drawn as circle symbols with white backgrounds.
   All other circle symbols are drawn with gray backgrounds.}
 \item{rm.idxs}{integer; vector of row indexes in \code{pts}, point symbols at
   these sites are drawn as crosses.}
@@ -33,7 +33,7 @@ PlotRaster(grd, zcol, pts, ply, net.idxs, rm.idxs, xlim, ylim, at,
   the x-axis.}
 \item{ylim}{numeric; vector of length 2 giving lower and upper limits for
   the y-axis.}
-\item{at}{numeric; vector giving breakpoints along the range of z (including 
+\item{at}{numeric; vector giving breakpoints along the range of z (including
   upper and lower limits).}
 \item{pal}{function; a color palette to be used to assign colors in the plot.}
 \item{contour}{logical; add contour lines to plot, default is \code{FALSE}.}

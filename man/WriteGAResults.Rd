@@ -5,7 +5,7 @@
 \title{Write Results of Genetic Algorithm}
 
 \description{
-Prints list components returned from the \code{OptimizeNetwork} function 
+Prints list components returned from the \code{OptimizeNetwork} function
 to a file.
 }
 
@@ -19,9 +19,9 @@ WriteGAResults(x, file)
 }
 
 \details{
-Printed components of \code{ga} include: \code{call}; 
-\code{obj.values}; \code{rmsd}; \code{local.error}; \code{niters}; 
-\code{nrep.ans}; \code{proc.time}; \code{start.time}; \code{obj.space}; 
+Printed components of \code{ga} include: \code{call};
+\code{obj.values}; \code{rmsd}; \code{local.error}; \code{niters};
+\code{nrep.ans}; \code{proc.time}; \code{start.time}; \code{obj.space};
 \code{ncalls.penalty}; \code{pts.rm}; and \code{ga.ans@suggestion}.
 }
 
