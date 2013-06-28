@@ -1,6 +1,8 @@
 Changes in Version 0.1-7
 
-  o
+  o  Replaced the deprecated sp::overlay function with sp::over.
+
+  o  Added citation for U.S. Geological Survey report.
 
 Changes in Version 0.1-6
 

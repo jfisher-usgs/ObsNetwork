@@ -1,5 +1,5 @@
-ObsNetwork: Optimize Observation Networks
-=========================================
+ObsNetwork
+==========
 
 This [R](http://www.r-project.org/ "R") package
 evaluates and optimizes long-term monitoring networks using a kriging-based

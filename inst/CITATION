@@ -1,0 +1,23 @@
+citHeader("To cite 'ObsNetwork' in publications use:")
+
+title <- paste("Optimization of water-level monitoring networks in the eastern",
+               "Snake River Plain aquifer using a kriging-based genetic",
+               "algorithm method")
+author <- person(given="Jason C.", family="Fisher", email="jfisher@usgs.gov")
+
+citEntry(entry       = "TechReport",
+         author      = author,
+         year        = "2013",
+         title       = title,
+         institution = "U.S. Geological Survey",
+         series      = "Scientific Investigations Report",
+         number      = "2013-5120 (DOE/ID-22224)",
+         pages       = "74",
+         url         = "http://pubs.usgs.gov/sir20135120/",
+         textVersion = paste("Fisher, J.C., 2013,",
+                             "Optimization of water-level monitoring networks",
+                             "in the eastern Snake River Plain aquifer",
+                             "using a kriging-based genetic algorithm method:",
+                             "U.S. Geological Survey Scientific Investigations",
+                             "Report 2013-5120 (DOE/ID-22224), 74 p.,",
+                             "http://pubs.usgs.gov/sir20135120/."))

@@ -34,10 +34,10 @@ PlotRaster <- function(grd, zcol, pts, ply, net.idxs, rm.idxs, xlim, ylim, at,
       rm.idxs <- c()
     }
     if (length(not.net.idxs) > 0)
-      lo[[length(lo) + 1L]] <- list("sp.points", pts[not.net.idxs, ], pch=21, 
+      lo[[length(lo) + 1L]] <- list("sp.points", pts[not.net.idxs, ], pch=21,
                                     cex=0.5, col="black", fill="light gray")
     if (length(net.idxs) > 0)
-      lo[[length(lo) + 1L]] <- list("sp.points", pts[net.idxs, ], pch=21, 
+      lo[[length(lo) + 1L]] <- list("sp.points", pts[net.idxs, ], pch=21,
                                     cex=0.5, col="black", fill="white")
     if (length(rm.idxs) > 0)
       lo[[length(lo) + 1L]] <- list("sp.points", pts[rm.idxs, ], pch=4,
@@ -76,7 +76,8 @@ PlotRaster <- function(grd, zcol, pts, ply, net.idxs, rm.idxs, xlim, ylim, at,
 
   # Exclude raster data outside of polygon
   if (!missing(ply))
-    grd[[zcol]]  <- grd[[zcol]] * overlay(grd, ply)
+    grd[[zcol]] <- grd[[zcol]] * sp::over(as(grd, "SpatialPoints"),
+                                          as(ply, "SpatialPolygons"))
 
   # Add polygon to layout
   if (!missing(ply))
@@ -98,7 +99,7 @@ PlotRaster <- function(grd, zcol, pts, ply, net.idxs, rm.idxs, xlim, ylim, at,
   # Set axis breakpoints
   if (missing(at))
     at <- pretty(grd[[zcol]], n=20)
-  
+
   # Set color palettes
   n <- length(at) - 1L
   cols <- pal(n)

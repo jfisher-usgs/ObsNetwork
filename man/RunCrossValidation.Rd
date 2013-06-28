@@ -12,7 +12,7 @@ model, such as the worst errors or the areas with consistent bias.
 }
 
 \usage{
-RunCrossValidation(formula, pts, model, nfold = nrow(pts), ..., 
+RunCrossValidation(formula, pts, model, nfold = nrow(pts), ...,
                    projargs = proj4string(pts))
 }
 
@@ -20,11 +20,11 @@ RunCrossValidation(formula, pts, model, nfold = nrow(pts), ...,
 \item{formula}{formula; defines the dependent variable as a linear model of
   independent variables.}
 \item{pts}{SpatialPointsDataFrame; data at observation sites.}
-\item{model}{variogramModel; variogram model of dependent variable defined 
+\item{model}{variogramModel; variogram model of dependent variable defined
   by a call to \code{\link{vgm}}.}
-\item{nfold}{numeric; for local kriging, the number of nearest observations 
-  that should be used for a kriging prediction or simulation, where nearest 
-  is defined in terms of the space of the spatial locations. By default, all 
+\item{nfold}{numeric; for local kriging, the number of nearest observations
+  that should be used for a kriging prediction or simulation, where nearest
+  is defined in terms of the space of the spatial locations. By default, all
   observations are used.}
 \item{...}{other arguments that will be passed to \code{\link{predict.gstat}}.}
 \item{projargs}{character; projection arguments; the arguments must be entered
@@ -33,8 +33,8 @@ RunCrossValidation(formula, pts, model, nfold = nrow(pts), ...,
 
 \value{
 Returns a list with components:
-\item{cv}{SpatialPointsDataFrame; attributes of prediction and prediction 
-  variance of cross validated data points, observed values, residuals, 
+\item{cv}{SpatialPointsDataFrame; attributes of prediction and prediction
+  variance of cross validated data points, observed values, residuals,
   zscore (residual divided by kriging standard error), and fold.}
 \item{me}{numeric; mean error, ideally 0.}
 \item{mspe}{numeric; mean squared prediction error, ideally small.}
@@ -60,7 +60,8 @@ ply <- spTransform(ESRP_Boundary, crs)
 
 # Exclude grid points outside polygon
 grd <- ESRP_NED
-grd$var2 <- grd$var2 * sp::overlay(grd, ply)
+grd$var2 <- grd$var2 * sp::over(as(grd, "SpatialPoints"),
+                                as(ply, "SpatialPolygons"))
 
 # Set axis limits
 xlim <- c(10000, 328000)
@@ -94,7 +95,7 @@ lm.trend <- lm(fo, data = pts)
 summary(lm.trend)
 
 vg <- variogram(fo, pts, cutoff = 150000)
-model <- fit.variogram(vg, vgm(psill = 1500, model = "Sph", range = 100000, 
+model <- fit.variogram(vg, vgm(psill = 1500, model = "Sph", range = 100000,
                                nugget = 0), fit.method = 1)
 plot(vg, model, main = "Residual variogram model (var1 ~ x + y)")
 
@@ -109,8 +110,8 @@ summary(lm.trend)
 plot(fo, pts, main = "Correlation plot and fitted regression model")
 abline(lm.trend)
 
-vg <- variogram(fo, pts) 
-model <- fit.variogram(vg, vgm(psill = 4500, model = "Sph", range = 100000, 
+vg <- variogram(fo, pts)
+model <- fit.variogram(vg, vgm(psill = 4500, model = "Sph", range = 100000,
                                nugget = 0), fit.method = 1)
 plot(vg, model, main = "Residual variogram model (var1 ~ var2)")
 Krige(fo, model, xlim, ylim)
