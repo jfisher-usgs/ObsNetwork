@@ -22,7 +22,7 @@ Open an R session and install the required packages from CRAN:
 
     > install.packages(c('sp', 'rgdal', 'gstat', 'raster', 'GA'))
 
-Install the **ObsNetwork** package:
+Download and compile the **ObsNetwork** package (this may take a few minutes):
 
     > install.packages('devtools')
     > library(devtools)
