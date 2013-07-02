@@ -24,8 +24,7 @@ Open an R session and install the required packages from CRAN:
 
 Download and compile the **ObsNetwork** package (this may take a few minutes):
 
-    > library(devtools)
-    > install_github('ObsNetwork', username='jfisher-usgs', ref='v0.1.7')
+    > devtools::install_github('ObsNetwork', username='jfisher-usgs', ref='v0.1.7')
 
 Run
 ---
