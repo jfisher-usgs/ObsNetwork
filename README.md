@@ -3,7 +3,7 @@ ObsNetwork
 
 This [R](http://www.r-project.org/ "R") package
 evaluates and optimizes long-term monitoring networks using a kriging-based
-genetic algorithm methodology.
+genetic algorithm method.
 
 The set of standards used for coding **ObsNetwork** is documented in
 [Google's R Style Guide](http://google-styleguide.googlecode.com/svn/trunk/google-r-style.html "Google's R Style Guide").
@@ -11,8 +11,8 @@ The set of standards used for coding **ObsNetwork** is documented in
 Install
 -------
 
-If R is not already installed on your
-computer, download and install the latest binary distribution from
+If R is not already installed on your computer, download and install the latest
+binary distribution from
 [CRAN](http://cran.r-project.org/ "The Comprehensive R Archive Network").
 Windows users should set R to operate as an SDI application during installation
 by choosing to customize the startup options and specifying the SDI interface
