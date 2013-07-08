@@ -4,10 +4,7 @@ OpenGraphicsDevice <- function(file, type="windows", w=7, h=7, p=12,
 #   "windows", "pdf", "png", or "postscript"
 
   if (type == "windows") {
-    if (.Platform$OS.type == "windows")
-      windows(width=w, height=h, pointsize=p, family="sans")
-    else
-      x11(width=w, height=h, pointsize=p)
+    dev.new(width=w, height=h, pointsize=p)
   } else {
     if (missing(file) || is.null(file)) {
       if (type == "postscript")

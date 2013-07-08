@@ -29,7 +29,7 @@ RunCrossValidation <- function(formula, pts, model, nfold=nrow(pts), ...,
   lim  <- range(pretty(extendrange(c(x, y))))
   xlim <- range(pretty(extendrange(x)))
   ylim <- range(pretty(extendrange(y)))
-  x11()
+  dev.new()
   tcl <- 0.50 / (6 * par("csi"))
   plot(x, y, xaxs="i", yaxs="i", xlim=xlim, ylim=ylim, asp=1, tcl=tcl,
        xlab="Observed value", ylab="Predicted value")
@@ -42,7 +42,7 @@ RunCrossValidation <- function(formula, pts, model, nfold=nrow(pts), ...,
   y <- cv$residual
   xlim <- range(pretty(extendrange(x)))
   ylim <- range(pretty(extendrange(y)))
-  x11()
+  dev.new()
   plot(x, y, xaxs="i", yaxs="i", xlim=xlim, ylim=ylim, tcl=tcl,
        xlab="Predicted value", ylab="Residual")
   lines(x=xlim, y=rep(me, 2), col="red")
