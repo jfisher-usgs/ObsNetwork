@@ -4,7 +4,7 @@ Date: 2013-06-29
 Title: Optimization of Observation Networks
 Author: Jason C. Fisher
 Maintainer: Fisher, Jason <jfisher@usgs.gov>
-Depends: R (>= 3.0.0), sp, rgdal, gstat, raster
+Depends: R (>= 3.0), sp, rgdal, gstat, raster
 Imports: tcltk, GA
 SystemRequirements: Tcl/Tk (>= 8.5)
 Description: This package evaluates and optimizes long-term monitoring networks
