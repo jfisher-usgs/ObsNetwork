@@ -6,10 +6,10 @@ RunCrossValidation <- function(formula, pts, model, nfold=nrow(pts), ...,
   pts <- spTransform(pts, crs)
 
   # Create object of class gstat
-  obj <- gstat::gstat(formula=formula, data=pts, model=model)
+  obj <- gstat(formula=formula, data=pts, model=model)
 
   # Cross validation
-  cv <- gstat::gstat.cv(obj, verbose=FALSE, ...)
+  cv <- gstat.cv(obj, verbose=FALSE, ...)
   proj4string(cv) <- pts@proj4string
 
   # Mean error

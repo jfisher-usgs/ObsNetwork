@@ -1,5 +1,3 @@
-importClassesFrom(sp)
-
 export(OpenGraphicsDevice,
        OptimizeNetwork,
        PlotBubble,

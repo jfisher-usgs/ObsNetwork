@@ -20,11 +20,11 @@ by choosing to customize the startup options and specifying the SDI interface
 
 Open an R session and install the required packages from CRAN:
 
-    > install.packages(c('sp', 'rgdal', 'gstat', 'raster', 'GA', 'devtools'))
+    > install.packages(c('sp', 'rgdal', 'gstat', 'raster', 'GA'))
 
-Download and compile the **ObsNetwork** package (this may take a few minutes):
+Install the **ObsNetwork** package:
 
-    > devtools::install_github('ObsNetwork', username='jfisher-usgs', ref='v0.1.7')
+    > install.packages('ObsNetwork', repos='http://jfisher-usgs.github.com/R/')
 
 Run
 ---

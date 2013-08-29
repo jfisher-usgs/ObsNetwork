@@ -53,7 +53,7 @@ summary(ESRP_NED)
 
 # Commands used to construct this data object:
 f <- system.file("extdata/ESRP_NED.tif", package = "ObsNetwork")
-grd <- rgdal::readGDAL(f, band = 1)
+grd <- readGDAL(f, band = 1)
 names(grd) <- "var2"
 summary(grd)
 grd.attr <- as.data.frame(slot(grd, "grid"))
@@ -80,7 +80,7 @@ newdata <- SpatialGrid(newdata, proj4string = CRS(projargs))
 coordnames(newdata) <- c("x", "y")
 \donttest{
 # Inverse distance weighting interpolation; computationally demanding
-obj <- gstat::idw(var2 ~ 1, pts, newdata, idp = 2.0, maxdist = 250)
+obj <- idw(var2 ~ 1, pts, newdata, idp = 2.0, maxdist = 250)
 obj$var1.var <- NULL
 names(obj) <- "var2"
 

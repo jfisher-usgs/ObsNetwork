@@ -1,8 +1,8 @@
 OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
                             nmax=Inf, xlim=bbox(grd)[1, ], ylim=bbox(grd)[2, ],
                             grd.fact=1, obj.weights=c(1, 1, 1, 1),
-                            penalty.constant=1E6, maxabort=10,
-                            popSize=50, pcrossover=0.8, pmutation=0.1,
+                            penalty.constant=1E6, maxabort=10, popSize=50,
+                            pcrossover=0.8, pmutation=0.1,
                             elitism=base::max(1, round(popSize * 0.05)),
                             maxiter=100, run=maxiter, suggestions=NULL, ...) {
 
@@ -61,15 +61,13 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
     locations <- pts[-idxs, ]
 
     # Perform point kriging to predict values at removed site locations
-    kr.pts <- gstat::krige(formula=formula, locations=locations,
-                           newdata=pts[idxs, ], model=model, nmax=nmax,
-                           debug.level=0)
+    kr.pts <- krige(formula=formula, locations=locations, newdata=pts[idxs, ],
+                    model=model, nmax=nmax, debug.level=0)
     kr.pts.pred <- kr.pts$var1.pred
 
     # Perform point kriging to predict standard errors in modified grid
-    kr.grd <- gstat::krige(formula=formula, locations=locations,
-                           newdata=grd.mod, model=model, nmax=nmax,
-                           debug.level=0)
+    kr.grd <- krige(formula=formula, locations=locations, newdata=grd.mod,
+                    model=model, nmax=nmax, debug.level=0)
     kr.grd.se <- sqrt(kr.grd$var1.var)
 
     # Solve individual objective functions
@@ -215,14 +213,14 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
 
   # Crop grid to polygon
   if (!missing(ply))
-    grd[[1]] <- grd[[1]] * sp::over(as(grd, "SpatialPoints"),
-                                    as(ply, "SpatialPolygons"))
+    grd[[1]] <- grd[[1]] * over(as(grd, "SpatialPoints"),
+                                as(ply, "SpatialPolygons"))
 
   # Reduce grid resolution
   # TODO(jfisher): prevent raster() from removing all but first field
   if (grd.fact > 1)
     grd.mod <- as(aggregate(raster(grd), fact=grd.fact, fun=mean, expand=TRUE,
-                            na.rm=TRUE), 'SpatialGridDataFrame')
+                            na.rm=TRUE), "SpatialGridDataFrame")
   else
     grd.mod <- grd
   coordnames(grd.mod) <- c("x", "y")

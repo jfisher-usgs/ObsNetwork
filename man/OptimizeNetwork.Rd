@@ -196,7 +196,7 @@ ans <- OptimizeNetwork(ESRP_NWIS, ESRP_NED, ESRP_Boundary,
                        network.nm = "INL", nsites = 20, model = model,
                        formula = fo, xlim = xlim, ylim = ylim, grd.fact = 5,
                        obj.weights = c(100, 1, 1, 1),  maxiter = 3)
-PlotRaster(ans$kr, "var1.diff", ESRP_NWIS, pal = jet.colors,
+PlotRaster(ans$kr, "var1.diff", ESRP_NWIS, pal = GA::jet.colors,
            main = "Prediction Differences", net.idxs = which(ans$is.net),
            rm.idxs = which(ans$is.rm), xlim = xlim, ylim = ylim)
 

@@ -76,8 +76,8 @@ PlotRaster <- function(grd, zcol, pts, ply, net.idxs, rm.idxs, xlim, ylim, at,
 
   # Exclude raster data outside of polygon
   if (!missing(ply))
-    grd[[zcol]] <- grd[[zcol]] * sp::over(as(grd, "SpatialPoints"),
-                                          as(ply, "SpatialPolygons"))
+    grd[[zcol]] <- grd[[zcol]] * over(as(grd, "SpatialPoints"),
+                                      as(ply, "SpatialPolygons"))
 
   # Add polygon to layout
   if (!missing(ply))

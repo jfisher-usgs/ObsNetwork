@@ -1,4 +1,5 @@
-*.RData
-*.Rhistory
-*.tar.gz
-*.zip
+/.RData
+/.Rhistory
+/.Rprofile
+/*.tar.gz
+/*.zip

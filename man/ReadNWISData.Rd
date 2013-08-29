@@ -106,7 +106,7 @@ Returns an object of \code{\link{SpatialPointsDataFrame-class}} with components:
 \author{J.C. Fisher}
 
 \seealso{
-\code{\link{read.table}}, \code{\link{as.POSIXct}}, \code{\link[sp]{CRS}}
+\code{\link{read.table}}, \code{\link{as.POSIXct}}, \code{\link[rgdal]{CRS}}
 }
 
 \examples{

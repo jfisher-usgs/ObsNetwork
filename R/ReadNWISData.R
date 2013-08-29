@@ -173,7 +173,6 @@ ReadNWISData <- function(file, dt.lim, dt.fmt="%Y-%m-%d %H:%M", sep="\t") {
   }
 
   # Convert data frame to spatial data frame
-  require(sp)
   coordinates(dd) = ~x+y
   idxs <- zerodist(dd, zero=0.0, unique.ID=FALSE)
   if (nrow(idxs) > 0) {

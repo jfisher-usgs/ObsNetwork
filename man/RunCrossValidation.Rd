@@ -60,8 +60,8 @@ ply <- spTransform(ESRP_Boundary, crs)
 
 # Exclude grid points outside polygon
 grd <- ESRP_NED
-grd$var2 <- grd$var2 * sp::over(as(grd, "SpatialPoints"),
-                                as(ply, "SpatialPolygons"))
+grd$var2 <- grd$var2 * over(as(grd, "SpatialPoints"),
+                            as(ply, "SpatialPolygons"))
 
 # Set axis limits
 xlim <- c(10000, 328000)
@@ -69,8 +69,7 @@ ylim <- c(81200, 335700)
 
 # Kriging function with plotting routine
 Krige <- function(fo, model, xlim, ylim, ...) {
-  kr <- gstat::krige(formula = fo, locations = pts, newdata = grd,
-                     model = model, ...)
+  kr <- krige(formula = fo, locations = pts, newdata = grd, model = model, ...)
   kr$var1.se <- sqrt(kr$var1.var)
   pal1 <- colorRampPalette(c("#F02311", "#F7FDFA", "#107FC9"))
   pal2 <- terrain.colors
