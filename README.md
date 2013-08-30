@@ -4,7 +4,6 @@ ObsNetwork
 This [R](http://www.r-project.org/ "R") package
 evaluates and optimizes long-term monitoring networks using a kriging-based
 genetic algorithm method.
-
 The set of standards used for coding **ObsNetwork** is documented in
 [Google's R Style Guide](http://google-styleguide.googlecode.com/svn/trunk/google-r-style.html "Google's R Style Guide").
 
@@ -22,7 +21,7 @@ Open an R session and install the required packages from CRAN:
 
     > install.packages(c('sp', 'rgdal', 'gstat', 'raster', 'GA'))
 
-Install the **ObsNetwork** package:
+Install the **ObsNetwork** package with the following call:
 
     > install.packages('ObsNetwork', repos = 'http://jfisher-usgs.github.com/R/')
 
