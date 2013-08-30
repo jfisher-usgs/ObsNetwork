@@ -236,7 +236,7 @@ OptimizeNetwork <- function(pts, grd, ply, network.nm, nsites, model, formula,
                        dimnames=list(1:maxiter, obj.names))
 
   # Set plot attributes
-  windows(width=8, height=(nobjs + 1) * 2)
+  dev.new(width=8, height=(nobjs + 1) * 2)
   op <- par(mfrow=c(nobjs + 1, 1), oma=c(3, 2, 2, 2), mar=c(1, 4, 0, 2))
   tcl <- 0.50 / (6 * par("csi"))
   pal <- c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3", "#A6D854")
