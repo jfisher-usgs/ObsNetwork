@@ -5,10 +5,8 @@
 \title{Run Cross Validation}
 
 \description{
-Cross validation function for kriging; a wrapper around the
-\code{\link[gstat]{krige.cv}} function in the \pkg{gstat} package.
-This function may be used to identify negative aspects of a kriging
-model, such as the worst errors or the areas with consistent bias.
+Cross validation function for kriging; a wrapper around the \code{\link[gstat]{krige.cv}} function in the \pkg{gstat} package.
+This function may be used to identify negative aspects of a kriging model, such as the worst errors or the areas with consistent bias.
 }
 
 \usage{
@@ -17,25 +15,18 @@ RunCrossValidation(formula, pts, model, nfold = nrow(pts), ...,
 }
 
 \arguments{
-\item{formula}{formula; defines the dependent variable as a linear model of
-  independent variables.}
+\item{formula}{formula; defines the dependent variable as a linear model of independent variables.}
 \item{pts}{SpatialPointsDataFrame; data at observation sites.}
-\item{model}{variogramModel; variogram model of dependent variable defined
-  by a call to \code{\link{vgm}}.}
-\item{nfold}{numeric; for local kriging, the number of nearest observations
-  that should be used for a kriging prediction or simulation, where nearest
-  is defined in terms of the space of the spatial locations. By default, all
-  observations are used.}
+\item{model}{variogramModel; variogram model of dependent variable defined by a call to \code{\link{vgm}}.}
+\item{nfold}{numeric; for local kriging, the number of nearest observations that should be used for a kriging prediction or simulation, where nearest is defined in terms of the space of the spatial locations.
+  By default, all observations are used.}
 \item{...}{other arguments that will be passed to \code{\link{predict.gstat}}.}
-\item{projargs}{character; projection arguments; the arguments must be entered
-  exactly as in the PROJ.4 documentation.}
+\item{projargs}{character; projection arguments; the arguments must be entered exactly as in the PROJ.4 documentation.}
 }
 
 \value{
 Returns a list with components:
-\item{cv}{SpatialPointsDataFrame; attributes of prediction and prediction
-  variance of cross validated data points, observed values, residuals,
-  zscore (residual divided by kriging standard error), and fold.}
+\item{cv}{SpatialPointsDataFrame; attributes of prediction and prediction variance of cross validated data points, observed values, residuals, zscore (residual divided by kriging standard error), and fold.}
 \item{me}{numeric; mean error, ideally 0.}
 \item{mspe}{numeric; mean squared prediction error, ideally small.}
 \item{cor.op}{numeric; correlation of observed and predicted, ideally 1.}

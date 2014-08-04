@@ -5,8 +5,7 @@
 \title{Write Results of Genetic Algorithm}
 
 \description{
-Prints list components returned from the \code{OptimizeNetwork} function
-to a file.
+Prints list components returned from the \code{OptimizeNetwork} function to a file.
 }
 
 \usage{

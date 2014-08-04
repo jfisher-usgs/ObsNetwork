@@ -15,15 +15,12 @@ ESRP_Lakes
 }
 
 \format{
-An object of \code{\link{SpatialPolygonsDataFrame-class}} containing
-a set of \code{\link{Polygons}}.
-Geographic coordinates are in units of decimal degrees, and in conformance
-with the North American Datum of 1983 (NAD 83).
+An object of \code{\link{SpatialPolygonsDataFrame-class}} containing a set of \code{\link{Polygons}}.
+Geographic coordinates are in units of decimal degrees, and in conformance with the North American Datum of 1983 (NAD 83).
 }
 
 \source{
-Idaho Department of Water Resources
-(\href{http://www.idwr.idaho.gov/GeographicInfo/GISdata/gis_data.htm}{IDWR}).
+Idaho Department of Water Resources (\href{http://www.idwr.idaho.gov/GeographicInfo/GISdata/gis_data.htm}{IDWR}).
 }
 
 \examples{

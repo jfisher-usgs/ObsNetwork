@@ -18,45 +18,31 @@ PlotRaster(grd, zcol, pts, ply, net.idxs, rm.idxs, xlim, ylim, at,
 
 \arguments{
 \item{grd}{SpatialGridDataFrame; raster data.}
-\item{zcol}{character; z-variable column name or number in attribute table
-  of \code{grd}.}
+\item{zcol}{character; z-variable column name or number in attribute table of \code{grd}.}
 \item{pts}{SpatialPointsDataFrame; point coordinates to include in layout.}
-\item{ply}{SpatialPolygonsDataFrame; a polygon defining the spatial domain
-  of the raster data; data outside this domain is excluded. Polygon is
-  included in the layout.}
-\item{net.idxs}{integer; vector of row indexes in \code{pts}, point coordinates
-  at these sites are drawn as circle symbols with white backgrounds.
+\item{ply}{SpatialPolygonsDataFrame; a polygon defining the spatial domain of the raster data; data outside this domain is excluded.
+  Polygon is included in the layout.}
+\item{net.idxs}{integer; vector of row indexes in \code{pts}, point coordinates at these sites are drawn as circle symbols with white backgrounds.
   All other circle symbols are drawn with gray backgrounds.}
-\item{rm.idxs}{integer; vector of row indexes in \code{pts}, point symbols at
-  these sites are drawn as crosses.}
-\item{xlim}{numeric; vector of length 2 giving left and right limits for
-  the x-axis.}
-\item{ylim}{numeric; vector of length 2 giving lower and upper limits for
-  the y-axis.}
-\item{at}{numeric; vector giving breakpoints along the range of z (including
-  upper and lower limits).}
+\item{rm.idxs}{integer; vector of row indexes in \code{pts}, point symbols at these sites are drawn as crosses.}
+\item{xlim}{numeric; vector of length 2 giving left and right limits for the x-axis.}
+\item{ylim}{numeric; vector of length 2 giving lower and upper limits for the y-axis.}
+\item{at}{numeric; vector giving breakpoints along the range of z (including upper and lower limits).}
 \item{pal}{function; a color palette to be used to assign colors in the plot.}
 \item{contour}{logical; add contour lines to plot, default is \code{FALSE}.}
 \item{label.contours}{logical; label contour lines, default is \code{FALSE}.}
-\item{label.pts}{character or logical; attribute in \code{pts} specifying the
-  labels to place at point coordinates. If \code{TRUE}, points are labeled with
-  index numbers.}
+\item{label.pts}{character or logical; attribute in \code{pts} specifying the labels to place at point coordinates.
+  If \code{TRUE}, points are labeled with index numbers.}
 \item{main}{character; main plot title to be placed on top.}
-\item{gr.type}{character; the name of a graphics driver, either
-  "postscript", "pdf", "png", or the default "windows".}
-\item{gr.file}{character; the path of a file for writing the graphics,
-               only used if \code{gr.type} is not "windows".}
-\item{width, height}{numeric; the (nominal) width and height of the canvas
-                     of the plotting window in inches.}
-\item{lo}{list; a list with more layout items, see \code{sp.layout} argument
-  in \code{\link[sp]{spplot}}.}
-\item{ll.lines}{logical; plot long-lat grid over projected data, default is
-  \code{FALSE}.}
+\item{gr.type}{character; the name of a graphics driver, either "postscript", "pdf", "png", or the default "windows".}
+\item{gr.file}{character; the path of a file for writing the graphics, only used if \code{gr.type} is not "windows".}
+\item{width, height}{numeric; the (nominal) width and height of the canvas of the plotting window in inches.}
+\item{lo}{list; a list with more layout items, see \code{sp.layout} argument in \code{\link[sp]{spplot}}.}
+\item{ll.lines}{logical; plot long-lat grid over projected data, default is \code{FALSE}.}
 }
 
 \details{
-Spatial data is transformed to the map projection and datum of the
-raster data set, \code{grd}.
+Spatial data is transformed to the map projection and datum of the raster data set, \code{grd}.
 }
 
 \value{

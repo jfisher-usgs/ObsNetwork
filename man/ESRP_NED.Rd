@@ -7,11 +7,9 @@
 \title{Topographic Information on the ESRP}
 
 \description{
-The eastern Snake River Plain (ESRP) is a geologic feature located in the
-state of Idaho. This data set gives topographic information for the ESRP and
-vicinity on a 500 by 500 meter grid. The west, east, north, and
-south bounding coordinates are about -115.4, -111.4, 44.5, and 42.2
-decimal degrees, respectively.
+The eastern Snake River Plain (ESRP) is a geologic feature located in the state of Idaho.
+This data set gives topographic information for the ESRP and vicinity on a 500 by 500 meter grid.
+The west, east, north, and south bounding coordinates are about -115.4, -111.4, 44.5, and 42.2 decimal degrees, respectively.
 }
 
 \usage{
@@ -19,31 +17,20 @@ ESRP_NED
 }
 
 \format{
-An object of \code{\link{SpatialGridDataFrame-class}} with 323,724
-points (coordinates) and a single data attribute, \code{var2}, the
-land-surface elevation.
-Geographic coordinates are in units of meters, in conformance
-with the North American Datum of 1927 (NAD 27), and placed in a
-Albers Equal-Area Conic projection; standard parallels 42.83, 44.16;
-central meridian -113.00, false easting 200,000 meters; false northing 0.
+An object of \code{\link{SpatialGridDataFrame-class}} with 323,724 points (coordinates) and a single data attribute, \code{var2}, the land-surface elevation.
+Geographic coordinates are in units of meters, in conformance with the North American Datum of 1927 (NAD 27), and placed in a Albers Equal-Area Conic projection; standard parallels 42.83, 44.16; central meridian -113.00, false easting 200,000 meters; false northing 0.
 }
 
 \source{
-The National Elevation Dataset (\href{http://ned.usgs.gov/}{NED})
-1-arc-second raster. Dataset resampled to 10 arc-seconds using a
-cubic convolution assignment. All other data processing is shown in
-\sQuote{Examples} section.
+The National Elevation Dataset (\href{http://ned.usgs.gov/}{NED}) 1-arc-second raster.
+Dataset resampled to 10 arc-seconds using a cubic convolution assignment.
+All other data processing is shown in \sQuote{Examples} section.
 }
 
 \references{
-Gesch, D.B., 2007, The National Elevation Dataset, in Maune, D., ed.,
-Digital Elevation Model Technologies and Applications: The DEM Users Manual,
-2nd Edition: Bethesda, Maryland, American Society for Photogrammetry and
-Remote Sensing, p. 99-118.
+Gesch, D.B., 2007, The National Elevation Dataset, in Maune, D., ed., Digital Elevation Model Technologies and Applications: The DEM Users Manual, 2nd Edition: Bethesda, Maryland, American Society for Photogrammetry and Remote Sensing, p. 99-118.
 
-Gesch, D., Oimoen, M., Greenlee, S., Nelson, C., Steuck, M., and Tyler, D.,
-2002, The National Elevation Dataset: Photogrammetric Engineering and
-Remote Sensing, v. 68, no. 1, p. 5-11.
+Gesch, D., Oimoen, M., Greenlee, S., Nelson, C., Steuck, M., and Tyler, D., 2002, The National Elevation Dataset: Photogrammetric Engineering and Remote Sensing, v. 68, no. 1, p. 5-11.
 }
 
 \examples{
