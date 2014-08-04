@@ -2,7 +2,6 @@ ObsNetwork
 ==========
 
 This [R](http://www.r-project.org/ "R") package evaluates and optimizes long-term monitoring networks using a kriging-based genetic algorithm method.
-
 The set of standards used for coding **ObsNetwork** is documented in [Google's R Style Guide](http://google-styleguide.googlecode.com/svn/trunk/Rguide.xml "Google's R Style Guide").
 
 Install
