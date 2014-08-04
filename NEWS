@@ -1,6 +1,6 @@
 Changes in Version 0.2-0
 
-  o  Tidy help documentation and import dependent packages in the NAMESPACE file.
+  o  Tidy help documentation and import dependent packages in namespace.
 
 Changes in Version 0.1-9
 
