@@ -37,7 +37,7 @@ This data set has the following variables:
 \item{coord.meth.cd}{is the method used to determine horizontal datum.}
 \item{alt.meth.cd}{is the method used to determine land-surface datum.}
 \item{lev.meth.cd}{are all methods used to determine water levels; comma separated.}
-\item{site.nm}{the local well identifier, for example "07N 31E 34BDD1 USGS 25".}
+\item{site.nm}{is the local well identifier, for example "07N 31E 34BDD1 USGS 25".}
 }
 }
 

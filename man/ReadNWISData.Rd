@@ -13,13 +13,13 @@ ReadNWISData(file, dt.lim, dt.fmt = "\%Y-\%m-\%d \%H:\%M", sep = "\t")
 }
 
 \arguments{
-\item{file}{character; a path to the file to be opened.}
-\item{dt.lim}{character; vector of length 2 giving the starting and ending date-time limits.
+\item{file}{\code{character}; a path to the file to be opened.}
+\item{dt.lim}{\code{character}; a vector of length 2 giving the starting and ending date-time limits.
   Measurements recorded during this time period are used to calculate the median water-level elevation \code{var1} and mean measurement accuracy \code{var1.acy}.
   Defaults to the entire period of record.}
-\item{dt.fmt}{character; a date-time format as used by \code{\link{strptime}}.
+\item{dt.fmt}{\code{character}; a date-time format as used by \code{\link{strptime}}.
   Date-time values specified in \code{dt.lim} must be provided in this format.}
-\item{sep}{character; the field separator string.
+\item{sep}{\code{character}; the field separator string.
   Values on each line of the file are separated by this string, its default is the tab separator.}
 }
 
@@ -58,24 +58,24 @@ Groundwater data can be downloaded at \href{http://waterdata.usgs.gov/id/nwis/gw
 }
 
 \value{
-Returns an object of \code{\link{SpatialPointsDataFrame-class}} with components:
-\item{site.no}{numeric; unique identifier for site.}
-\item{var1}{numeric; the median value of the water-level elevation, in meters, for the time period defined by \code{dt.lim}.}
-\item{var1.acy}{numeric; mean measurement accuracy of the water-level elevation, in meters, for the time period defined by \code{dt.lim}.
+Returns an object of \code{\link{SpatialPointsDataFrame-class}} with the following components:
+\item{site.no}{\code{numeric}; a unique identifier for site.}
+\item{var1}{\code{numeric}; the median value of the water-level elevation, in meters, for the time period defined by \code{dt.lim}.}
+\item{var1.acy}{\code{numeric}; the mean measurement accuracy of the water-level elevation, in meters, for the time period defined by \code{dt.lim}.
   This variable is calculated from the summation of \code{alt.acy.va} and \code{lev.acy.va} values.}
-\item{var1.sd}{numeric; standard deviation of the water-level elevation, in meters, for the entire period of record.}
-\item{var2}{numeric; land-surface datum, in meters.}
-\item{map.no}{integer; identifier (row index number) used to locate sites on map.}
-\item{network.nm}{character; monitoring network name.}
-\item{nrec.por}{integer; number of records in the entire period of record.}
-\item{nrec}{integer; number of records in the time period defined by \code{dt.lim}.}
-\item{alt.acy.va}{numeric; accuracy of land-surface datum, in meters.}
-\item{lev.acy.va}{numeric; mean water-level measurement accuracy, in meters, for the time period defined by \code{dt.lim}.}
-\item{coord.acy.va}{numeric; latitude/longitude coordinate accuracy, in arc-seconds.}
-\item{coord.meth.cd}{character; method used to determine horizontal datum.}
-\item{alt.meth.cd}{character; method used to determine elevation at land-surface datum.}
-\item{lev.meth.cd}{character; all methods used to determine water levels, comma separated.}
-\item{site.nm}{character; site name.}
+\item{var1.sd}{\code{numeric}; the standard deviation of the water-level elevation, in meters, for the entire period of record.}
+\item{var2}{\code{numeric}; the land-surface datum, in meters.}
+\item{map.no}{\code{integer}; an identifier (row index number) used to locate sites on map.}
+\item{network.nm}{\code{character}; the monitoring network name.}
+\item{nrec.por}{\code{integer}; the number of records in the entire period of record.}
+\item{nrec}{\code{integer}; the number of records in the time period defined by \code{dt.lim}.}
+\item{alt.acy.va}{\code{numeric}; the accuracy of land-surface datum, in meters.}
+\item{lev.acy.va}{\code{numeric}; the mean water-level measurement accuracy, in meters, for the time period defined by \code{dt.lim}.}
+\item{coord.acy.va}{\code{numeric}; the latitude/longitude coordinate accuracy, in arc-seconds.}
+\item{coord.meth.cd}{\code{character}; the method used to determine horizontal datum.}
+\item{alt.meth.cd}{\code{character}; the method used to determine elevation at land-surface datum.}
+\item{lev.meth.cd}{\code{character}; all methods used to determine water levels, comma separated.}
+\item{site.nm}{\code{character}; the site name.}
 }
 
 \author{J.C. Fisher}

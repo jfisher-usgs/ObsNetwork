@@ -19,7 +19,7 @@ OptimizeNetwork(pts, grd, ply, network.nm, nsites, model, formula, nmax = Inf,
 }
 
 \arguments{
-\item{pts}{SpatialPointsDataFrame; data at observation sites.
+\item{pts}{\code{SpatialPointsDataFrame}; data at observation sites.
   Required data frame variables include:
     \code{site.no}, a unique site number;
     \code{var1}, the dependent variable (such as, the water-level elevation);
@@ -28,30 +28,30 @@ OptimizeNetwork(pts, grd, ply, network.nm, nsites, model, formula, nmax = Inf,
   An optional \code{network.nm} variable may be included to identify a sites observation network(s).
   Sites belonging to multiple networks are specified using comma separation.
   Note that duplicate site numbers and (or) spatial coordinates are not permitted.}
-\item{grd}{SpatialGridDataFrame; interpolation grid.
+\item{grd}{\code{SpatialGridDataFrame}; interpolation grid.
   For kriging with external drift (KED) a data frame variable \code{var2}, the independent variable (such as, land-surface elevation), is required.}
-\item{ply}{SpatialPolygonsDataFrame; a polygon used to crop the raster grid (optional).}
-\item{network.nm}{character; vector of observation network names.
+\item{ply}{\code{SpatialPolygonsDataFrame}; a polygon used to crop the raster grid (optional).}
+\item{network.nm}{\code{character}; vector of observation network names.
   Only sites belonging to this network will be included in the analysis; this argument is optional, in its absence all sites are assumed to belong to a single network (that is, all sites are used).}
-\item{nsites}{integer; number of sites to remove from the observation network.}
-\item{model}{variogramModel; variogram model of dependent variable defined by a call to \code{\link{vgm}}.}
-\item{formula}{formula; defines the dependent variable as a linear model of the independent variables.}
-\item{nmax}{numeric; for local kriging, the number of nearest sites that should be used for a kriging prediction or simulation, where nearest is defined in terms of the space of the spatial locations.
+\item{nsites}{\code{integer}; number of sites to remove from the observation network.}
+\item{model}{\code{variogramModel}; variogram model of dependent variable defined by a call to \code{\link{vgm}}.}
+\item{formula}{\code{formula}; defines the dependent variable as a linear model of the independent variables.}
+\item{nmax}{\code{numeric}; for local kriging, the number of nearest sites that should be used for a kriging prediction or simulation, where nearest is defined in terms of the space of the spatial locations.
   By default, all sites are used.}
-\item{xlim}{numeric; vector of length 2 giving left and right limits for the x-axis, used to crop the interpolation grid.}
-\item{ylim}{numeric; vector of length 2 giving lower and upper limits for the y-axis, used to crop the interpolation grid.}
-\item{grd.fact}{integer; aggregation factor for the interpolation grid, \code{grd}.}
-\item{obj.weights}{numeric; vector of length 4 giving the weights for each objective in the multi-objective optimization problem, see \sQuote{details} section below.}
-\item{penalty.constant}{numeric; constant in the penalty function, its value needs to be greater than the largest possible fitness value.}
-\item{maxabort}{integer; maximum number of times an invalid child chromosome can be aborted during crossover.}
-\item{popSize}{integer; population size.}
-\item{pcrossover}{numeric; probability of crossover between pairs of chromosomes.}
-\item{pmutation}{numeric; probability of mutation in a parent chromosome.}
-\item{elitism}{integer; number of chromosomes to survive into the next generation.
+\item{xlim}{\code{numeric}; vector of length 2 giving left and right limits for the x-axis, used to crop the interpolation grid.}
+\item{ylim}{\code{numeric}; vector of length 2 giving lower and upper limits for the y-axis, used to crop the interpolation grid.}
+\item{grd.fact}{\code{integer}; aggregation factor for the interpolation grid, \code{grd}.}
+\item{obj.weights}{\code{numeric}; vector of length 4 giving the weights for each objective in the multi-objective optimization problem, see \sQuote{details} section below.}
+\item{penalty.constant}{\code{numeric}; constant in the penalty function, its value needs to be greater than the largest possible fitness value.}
+\item{maxabort}{\code{integer}; maximum number of times an invalid child chromosome can be aborted during crossover.}
+\item{popSize}{\code{integer}; population size.}
+\item{pcrossover}{\code{numeric}; probability of crossover between pairs of chromosomes.}
+\item{pmutation}{\code{numeric}; probability of mutation in a parent chromosome.}
+\item{elitism}{\code{integer}; number of chromosomes to survive into the next generation.
   By default is about 5 percent of the population size.}
-\item{maxiter}{integer; maximum number of iterations to run before the GA search is halted.}
-\item{run}{integer; number of consecutive generations without any improvement in the \dQuote{best} fitness value before the GA is stopped.}
-\item{suggestions}{matrix; initial population.}
+\item{maxiter}{\code{integer}; maximum number of iterations to run before the GA search is halted.}
+\item{run}{\code{integer}; number of consecutive generations without any improvement in the \dQuote{best} fitness value before the GA is stopped.}
+\item{suggestions}{\code{matrix}; initial population.}
 \item{...}{additional arguments to be passed to \code{\link{ga}}.}
 }
 
@@ -76,28 +76,28 @@ The GA uses linear-rank selection, single-point crossover, and uniform random mu
 }
 
 \value{
-Returns a list with components:
-\item{call}{character; function call with all specified arguments.}
-\item{pts.rm}{SpatialPointsDataFrame; a subset of \code{pts} with row length equal to \code{nsites}.
+Returns a \code{list} with components:
+\item{call}{\code{character}; function call with all specified arguments.}
+\item{pts.rm}{\code{SpatialPointsDataFrame}; a subset of \code{pts} with row length equal to \code{nsites}.
   Includes data records for those sites identified by the GA for removal from the observation network(s).}
-\item{is.net}{logical; vector of length equal to the number of rows in \code{pts} specifying sites belonging to the reduced network.}
-\item{is.rm}{logical; vector of length equal to the number of rows in \code{pts} specifying sites to remove from the network.}
-\item{obj.values}{matrix; objective values at each iteration of the GA.
+\item{is.net}{\code{logical}; vector of length equal to the number of rows in \code{pts} specifying sites belonging to the reduced network.}
+\item{is.rm}{\code{logical}; vector of length equal to the number of rows in \code{pts} specifying sites to remove from the network.}
+\item{obj.values}{\code{matrix}; objective values at each iteration of the GA.
   This matrix has \code{maxiter} rows and 5 columns (that is, the 4 objective values and their sum).}
-\item{niter}{integer; number of completed iterations.}
-\item{nrep.ans}{integer; number of iterations the \dQuote{best} solution was repeated.}
-\item{proc.time}{proc_time; CPU time for running the GA, in seconds.}
-\item{ncalls.penalty}{integer; vector giving the number of calls to the penalty function at each iteration of the GA.}
-\item{kr}{SpatialGridDataFrame; a data frame containing the coordinates of \code{grd} cropped to the axis limits and polygon.
+\item{niter}{\code{integer}; number of completed iterations.}
+\item{nrep.ans}{\code{integer}; number of iterations the \dQuote{best} solution was repeated.}
+\item{proc.time}{\code{proc_time}; CPU time for running the GA, in seconds.}
+\item{ncalls.penalty}{\code{integer}; vector giving the number of calls to the penalty function at each iteration of the GA.}
+\item{kr}{\code{SpatialGridDataFrame}; a data frame containing the coordinates of \code{grd} cropped to the axis limits and polygon.
   Data attributes based on block kriging of the reduced network include: predictions, \code{var1.pred}; prediction variances, \code{var1.var}; and prediction standard errors, \code{var1.se}.
   Differences between the original and reduced network predictions are specified in the \code{var1.diff} attribute.}
-\item{rmsd}{numeric; root-mean-square-deviation between the kriged surfaces using the original and reduced networks.}
-\item{local.error}{numeric; percent local error between the kriged surfaces using the original and reduced networks.}
-\item{obj.space}{matrix; range of objective values in solution space.}
-\item{ga.ans}{ga; returned value of \code{\link{ga}}.}
-\item{start.time}{POSIXct; system time at start of GA run.}
-\item{diff.time}{numeric; vector of time differences since start of GA run, specified for each iteration in the GA, in hours.}
-The status of the objective values after each iteration of the GA is plotted.
+\item{rmsd}{\code{numeric}; root-mean-square-deviation between the kriged surfaces using the original and reduced networks.}
+\item{local.error}{\code{numeric}; percent local error between the kriged surfaces using the original and reduced networks.}
+\item{obj.space}{\code{matrix}; range of objective values in solution space.}
+\item{ga.ans}{\code{ga}; returned value of \code{\link{ga}}.}
+\item{start.time}{\code{POSIXct}; system time at start of GA run.}
+\item{diff.time}{\code{numeric}; vector of time differences since start of GA run, specified for each iteration in the GA, in hours.}
+  The status of the objective values after each iteration of the GA is plotted.
 }
 
 \author{J.C. Fisher}

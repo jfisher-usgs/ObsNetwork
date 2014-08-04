@@ -15,7 +15,7 @@ ESRP_Rivers
 }
 
 \format{
-An object of \code{\link{SpatialLinesDataFrame-class}} containing a set of \code{\link{Lines}}.
+An object of \code{\link{SpatialLinesDataFrame-class}} containing a set of \code{Lines}.
 Geographic coordinates are in units of decimal degrees, and in conformance with the North American Datum of 1983 (NAD 83).
 }
 

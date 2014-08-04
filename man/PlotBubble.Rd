@@ -16,19 +16,20 @@ PlotBubble(pts, zcol, ply, xlim = bbox(ply)[1, ], ylim = bbox(ply)[2, ],
 }
 
 \arguments{
-\item{pts}{SpatialPointsDataFrame; data at observation sites.}
-\item{zcol}{character; z-variable column name in attribute table of \code{pts}.}
-\item{ply}{SpatialPolygonsDataFrame; polygon to include in layout.}
-\item{xlim}{numeric; vector of length 2 giving left and right limits for the x-axis.}
-\item{ylim}{numeric; vector of length 2 giving lower and upper limits for the y-axis.}
-\item{main}{character; main plot title to be placed on top.}
-\item{gr.type}{character; the name of a graphics driver, either "postscript", "pdf", "png", or the default "windows".}
-\item{gr.file}{character; the path of a file for writing the graphics, only used if \code{gr.type} is not "windows".}
-\item{projargs}{character; projection arguments; the arguments must be entered exactly as in the PROJ.4 documentation.}
+\item{pts}{\code{SpatialPointsDataFrame}; the data at the observation sites.}
+\item{zcol}{\code{character}; the z-variable column name in attribute table of \code{pts}.}
+\item{ply}{\code{SpatialPolygonsDataFrame}; a polygon to include in layout.}
+\item{xlim}{\code{numeric}; a vector of length 2 giving left and right limits for the x-axis.}
+\item{ylim}{\code{numeric}; a vector of length 2 giving lower and upper limits for the y-axis.}
+\item{main}{\code{character}; the main plot title to be placed on top.}
+\item{gr.type}{\code{character}; the name of a graphics driver, either "postscript", "pdf", "png", or the default "windows".}
+\item{gr.file}{\code{character}; the path of a file for writing the graphics, only used if \code{gr.type} is not "windows".}
+\item{projargs}{\code{character}; the projection arguments; the arguments must be entered exactly as in the PROJ.4 documentation.}
 }
 
 \value{
-Returns (or plots) the bubble plot. Values plotted in the key include the five quantiles: minimum, 25th percentile, median, 75th percentile, and maximum.
+Returns (or plots) the bubble plot.
+Values plotted in the key include the five quantiles: minimum, 25th percentile, median, 75th percentile, and maximum.
 }
 
 \author{J.C. Fisher}

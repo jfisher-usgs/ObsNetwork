@@ -15,22 +15,22 @@ RunCrossValidation(formula, pts, model, nfold = nrow(pts), ...,
 }
 
 \arguments{
-\item{formula}{formula; defines the dependent variable as a linear model of independent variables.}
-\item{pts}{SpatialPointsDataFrame; data at observation sites.}
-\item{model}{variogramModel; variogram model of dependent variable defined by a call to \code{\link{vgm}}.}
-\item{nfold}{numeric; for local kriging, the number of nearest observations that should be used for a kriging prediction or simulation, where nearest is defined in terms of the space of the spatial locations.
+\item{formula}{\code{formula}; defines the dependent variable as a linear model of independent variables.}
+\item{pts}{\code{SpatialPointsDataFrame}; the data at observation sites.}
+\item{model}{\code{variogramModel}; the variogram model of dependent variable defined by a call to \code{\link{vgm}}.}
+\item{nfold}{\code{numeric}; for local kriging, the number of nearest observations that should be used for a kriging prediction or simulation, where nearest is defined in terms of the space of the spatial locations.
   By default, all observations are used.}
 \item{...}{other arguments that will be passed to \code{\link{predict.gstat}}.}
-\item{projargs}{character; projection arguments; the arguments must be entered exactly as in the PROJ.4 documentation.}
+\item{projargs}{\code{character}; the projection arguments; the arguments must be entered exactly as in the PROJ.4 documentation.}
 }
 
 \value{
-Returns a list with components:
-\item{cv}{SpatialPointsDataFrame; attributes of prediction and prediction variance of cross validated data points, observed values, residuals, zscore (residual divided by kriging standard error), and fold.}
-\item{me}{numeric; mean error, ideally 0.}
-\item{mspe}{numeric; mean squared prediction error, ideally small.}
-\item{cor.op}{numeric; correlation of observed and predicted, ideally 1.}
-\item{cor.pr}{numeric; correlation of predicted and residual, ideally 0.}
+Returns a \code{list} with components:
+\item{cv}{\code{SpatialPointsDataFrame}; the attributes of prediction and prediction variance of cross validated data points, observed values, residuals, zscore (residual divided by kriging standard error), and fold.}
+\item{me}{\code{numeric}; the mean error, ideally 0.}
+\item{mspe}{\code{numeric}; the mean squared prediction error, ideally small.}
+\item{cor.op}{\code{numeric}; the correlation of observed and predicted, ideally 1.}
+\item{cor.pr}{\code{numeric}; the correlation of predicted and residual, ideally 0.}
 }
 
 \author{J.C. Fisher}

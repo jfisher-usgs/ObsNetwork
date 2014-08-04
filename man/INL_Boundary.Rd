@@ -15,7 +15,7 @@ INL_Boundary
 }
 
 \format{
-An object of \code{\link{SpatialPolygonsDataFrame-class}} containing 1 \code{\link{Polygon}}.
+An object of \code{\link{SpatialPolygonsDataFrame-class}} containing 1 \code{Polygon}.
 Geographic coordinates are in units of decimal degrees, and in conformance with the North American Datum of 1983 (NAD 83).
 }
 
