@@ -10,11 +10,10 @@ Install
 
 If R is not already installed on your computer, download and install the latest binary distribution from [CRAN](http://cran.r-project.org/ "The Comprehensive R Archive Network").
 
-Open an R session and install the required packages using the following command:
+Open an R session and install the required packages using the following commands:
 
-    install.packages("ObsNetwork",
-    repos = c("http://jfisher-usgs.github.com/R", "http://cran.us.r-project.org"),
-    dependencies = TRUE, type = "both")
+    repos <- c("http://jfisher-usgs.github.com/R", "http://cran.us.r-project.org")
+    install.packages("ObsNetwork", repos = repos, dependencies = TRUE, type = "both")
 
 Run
 ---
