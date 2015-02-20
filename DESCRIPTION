@@ -7,8 +7,8 @@ Maintainer: Jason C. Fisher <jfisher@usgs.gov>
 Depends: R (>= 3.1.0), sp, rgdal, gstat, raster
 Imports: tcltk, GA
 SystemRequirements: Tcl/Tk (>= 8.5)
-Description: This package evaluates and optimizes long-term monitoring networks
-  using a kriging-based genetic algorithm method.
+Description: Evaluates and optimizes long-term monitoring networks using a
+  kriging-based genetic algorithm method.
 License: file LICENSE
 Copyright: This software is in the public domain because it contains materials
   that originally came from the United States Geological Survey (USGS), an
