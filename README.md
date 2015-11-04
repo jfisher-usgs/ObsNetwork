@@ -11,7 +11,7 @@ Open an R session and install user-contributed R packages using the following co
 ```r
 repos <- c("http://cran.us.r-project.org", "http://jfisher-usgs.github.com/R")
 update.packages(ask = FALSE, repos = repos[1])
-install.packages("ObsNetwork", repos = repos, dependencies = TRUE, type = "both")
+install.packages("ObsNetwork", repos = repos, type = "both")
 ```
 
 ## Usage
