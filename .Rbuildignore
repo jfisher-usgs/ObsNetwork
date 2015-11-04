@@ -1,2 +1,4 @@
 .gitattributes
 .gitignore
+.RData
+.Rhistory
