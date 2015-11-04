@@ -86,7 +86,7 @@ Returns an object of \code{\link{SpatialPointsDataFrame-class}} with the followi
 
 \examples{
 # Read data from text file
-file <- system.file("extdata/ESRP_NWIS.txt.gz", package = "ObsNetwork")
+file <- system.file("extdata/ESRP_NWIS.tsv", package = "ObsNetwork")
 dt.lim <- c("2008-01-01 00:00", "2008-12-31 23:59") # 2008 calendar year
 obj <- ReadNWISData(file, dt.lim)
 str(obj)
