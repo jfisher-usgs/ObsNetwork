@@ -103,7 +103,8 @@ Returns a \code{list} with components:
 \author{J.C. Fisher}
 
 \references{
-Fisher, J.C., 2013, Optimization of water-level monitoring networks in the eastern Snake River Plain aquifer using a kriging-based genetic algorithm method: U.S. Geological Survey Scientific Investigations Report 2013-5120 (DOE/ID-22224), 74 p., \url{http://pubs.usgs.gov/sir20135120/}.
+Fisher, J.C., 2013, Optimization of water-level monitoring networks in the eastern Snake River Plain aquifer using a kriging-based genetic algorithm method:
+U.S. Geological Survey Scientific Investigations Report 2013-5120 (DOE/ID-22224), 74 p., \url{http://pubs.usgs.gov/sir/2013/5120/}.
 
 Scrucca, Luca, 2013, GA: a package for genetic algorithms in R, Journal of Statistical Software, v. 53, no. 4, 37 p., \url{http://www.jstatsoft.org/v53/i04/}.
 }

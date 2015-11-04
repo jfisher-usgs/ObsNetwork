@@ -41,7 +41,7 @@ A plot device is opened.
 OpenGraphicsDevice(type = "windows")
 plot(1:3)
 dev.off()
-\donttest{
+\dontrun{
 OpenGraphicsDevice(type = "pdf")
 plot(1:3)
 dev.off()}
