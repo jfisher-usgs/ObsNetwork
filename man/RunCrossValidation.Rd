@@ -70,15 +70,6 @@ Krige <- function(fo, model, xlim, ylim, ...) {
              main = "Standard errors")
 }
 
-### Ordinary Kriging (OK):
-fo <- var1 ~ 1
-vg <- variogram(fo, pts)
-plot(variogram(fo, pts, cloud = TRUE), pch = 3)
-model <- fit.variogram(vg, vgm(model = "Lin", nugget = 0))
-plot(vg, model, main = "Linear variogram model (var1 ~ 1)")
-cv <- RunCrossValidation(fo, pts, model = model)
-cat(cv$me, cv$mspe, cv$cor.op, cv$cor.pr, "\n")
-
 ### Universal Kriging (UK), accounts for linear spatial trend:
 fo <- var1 ~ x + y
 lm.trend <- lm(fo, data = pts)

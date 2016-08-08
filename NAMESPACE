@@ -1,9 +1,16 @@
-import(GA, sp, rgdal, gstat, raster)
+importFrom("grDevices", "dev.new", "dev.off", "extendrange", "heat.colors",
+           "pdf", "png", "postscript")
+importFrom("graphics", "abline", "axis", "mtext", "par", "points")
+importFrom("methods", "as")
+importFrom("stats", "cor", "lm", "median", "na.omit", "sd")
+importFrom("utils", "read.table", "write.table")
 
-export(OpenGraphicsDevice,
-       OptimizeNetwork,
-       PlotBubble,
-       PlotRaster,
-       ReadNWISData,
-       RunCrossValidation,
-       WriteGAResults)
+import("GA", "sp", "rgdal", "gstat", "raster")
+
+export("OpenGraphicsDevice",
+       "OptimizeNetwork",
+       "PlotBubble",
+       "PlotRaster",
+       "ReadNWISData",
+       "RunCrossValidation",
+       "WriteGAResults")
