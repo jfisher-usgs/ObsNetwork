@@ -30,9 +30,7 @@ help(package = "ObsNetwork")
 
 ## Bugs
 
-Please consider reporting bugs and asking questions on the Issues page:
-
-[https://github.com/jfisher-usgs/ObsNetwork/issues](https://github.com/jfisher-usgs/ObsNetwork/issues)
+Please consider reporting bugs and asking questions on the [Issues page](https://github.com/jfisher-usgs/ObsNetwork/issues).
 
 ## Disclaimer
 
