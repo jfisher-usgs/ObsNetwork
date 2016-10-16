@@ -1,5 +1,9 @@
 # ObsNetwork
 
+[![Travis-CI Build Status](https://travis-ci.org/jfisher-usgs/ObsNetwork.svg?branch=master)](https://travis-ci.org/jfisher-usgs/ObsNetwork)
+
+## Overview
+
 This [R](http://www.r-project.org/ "R") package evaluates and optimizes long-term monitoring networks using a kriging-based genetic algorithm method.
 
 ## Install
@@ -12,6 +16,12 @@ Next, open an R session and install user-contributed R packages using the follow
 repos <- c("https://jfisher-usgs.github.io/R", getOption("repos"))
 update.packages(ask = FALSE, repos = repos)
 install.packages("ObsNetwork", repos = repos)
+```
+
+Or use **devtools** to install the development version from GitHub:
+
+```r
+devtools::install_github("jfisher-usgs/ObsNetwork")
 ```
 
 ## Run
@@ -30,7 +40,8 @@ help(package = "ObsNetwork")
 
 ## Bugs
 
-Please consider reporting bugs and asking questions on the [Issues page](https://github.com/jfisher-usgs/ObsNetwork/issues).
+Please consider reporting bugs and asking questions on the
+[Issues page](https://github.com/jfisher-usgs/ObsNetwork/issues).
 
 ## Disclaimer
 

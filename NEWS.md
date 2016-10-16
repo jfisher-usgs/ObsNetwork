@@ -1,6 +1,6 @@
 # ObsNetwork 1.0.0.9000
 
-- ...
+- Change NEWS file to markdown format.
 
 # ObsNetwork 1.0.0
 
