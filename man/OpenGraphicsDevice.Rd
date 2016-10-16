@@ -19,7 +19,8 @@ OpenGraphicsDevice(file, type = "windows", w = 7, h = 7, p = 12,
 \item{w, h}{\code{numeric}; the (nominal) width and height of the canvas of the plotting window in inches.
   Default is \code{7} and \code{7}, respectively.}
 \item{p}{\code{numeric}; the default point size of plotted text, its default is \code{12}.}
-\item{res}{\code{numeric}; the nominal resolution in points per inch (ppi) which will be recorded in the Portable Network Graphics (PNG) file, its default is \code{300} ppi to set the size of text and line widths.}
+\item{res}{\code{numeric}; the nominal resolution in points per inch (ppi) which will be recorded in the Portable Network Graphics (PNG) file,
+  its default is \code{300} ppi to set the size of text and line widths.}
 \item{win.title}{\code{character}; a string to display as the title of the dialog box, only used if \code{file} is not specified.}
 }
 
@@ -34,7 +35,7 @@ A plot device is opened.
 \author{J.C. Fisher}
 
 \seealso{
-\code{\link{postscript}}, \code{\link{pdf}}, \code{\link{png}}, \code{\link{windows}}
+\code{\link{postscript}}, \code{\link{pdf}}, \code{\link{png}}
 }
 
 \examples{
