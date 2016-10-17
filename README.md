@@ -8,8 +8,8 @@ The [R](http://www.r-project.org/) package **ObsNetwork** evaluates and optimize
 
 ## Install
 
-You can install the stable version of **ObsNetwork** from [GitHub](https://jfisher-usgs.github.io/R/) and
-its dependencies from [CRAN](http://cran.r-project.org/) using the following commands:
+You can install the stable version of **ObsNetwork** from [GitHub](https://jfisher-usgs.github.io/R/),
+and its dependencies from [CRAN](http://cran.r-project.org/), using the following commands:
 
 ```r
 repos <- c("https://jfisher-usgs.github.io/R", getOption("repos"))
