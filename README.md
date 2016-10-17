@@ -4,12 +4,12 @@
 
 ## Overview
 
-The [R](http://www.r-project.org/ "R") package **ObsNetwork** evaluates and optimizes long-term monitoring networks using a kriging-based genetic algorithm method.
+The [R](http://www.r-project.org/) package **ObsNetwork** evaluates and optimizes long-term monitoring networks using a kriging-based genetic algorithm method.
 
 ## Install
 
 You can install **ObsNetwork** from [GitHub](https://jfisher-usgs.github.io/R/) and
-its dependencies from [CRAN](http://cran.r-project.org/) using commands:
+its dependencies from [CRAN](http://cran.r-project.org/) using the following commands:
 
 ```r
 repos <- c("https://jfisher-usgs.github.io/R", getOption("repos"))
@@ -24,13 +24,13 @@ devtools::install_github("jfisher-usgs/ObsNetwork")
 
 ## Run
 
-Load **ObsNetwork** in the current R session:
+Load **ObsNetwork** in the current R session
 
 ```r
 library(ObsNetwork)
 ```
 
-Access package documentation:
+Access package documentation
 
 ```r
 help(package = "ObsNetwork")
