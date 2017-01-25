@@ -12,7 +12,7 @@ You can install the stable version of **ObsNetwork** from [GitHub](https://jfish
 and its dependencies from [CRAN](http://cran.r-project.org/), using the following commands:
 
 ```r
-repos <- c("https://jfisher-usgs.github.io/R", getOption("repos"))
+repos <- c("https://jfisher-usgs.github.io/R", "https://cloud.r-project.org/")
 install.packages("ObsNetwork", repos = repos)
 ```
 
