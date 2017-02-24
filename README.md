@@ -1,6 +1,7 @@
 # ObsNetwork
 
 [![Travis-CI Build Status](https://travis-ci.org/jfisher-usgs/ObsNetwork.svg?branch=master)](https://travis-ci.org/jfisher-usgs/ObsNetwork)
+[![CC0](https://img.shields.io/badge/license-CC0%201.0-brightgreen.svg)](https://creativecommons.org/publicdomain/zero/1.0/)
 
 ## Overview
 
@@ -52,5 +53,3 @@ is made by the USGS or the U.S. Government as to the accuracy and functioning of
 and no responsibility is assumed by the USGS in connection therewith.
 
 This software is provided "AS IS."
-
-[![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)](http://creativecommons.org/publicdomain/zero/1.0/)
