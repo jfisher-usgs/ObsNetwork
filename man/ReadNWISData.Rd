@@ -54,7 +54,7 @@ Measurement variables (columns in the data table) include:
 
 \details{
 This function is a pre-processor for \pkg{ObsNetwork}.
-Groundwater data can be downloaded at \href{http://waterdata.usgs.gov/id/nwis/gw}{NWISWeb}.
+Groundwater data can be downloaded at \href{https://waterdata.usgs.gov/id/nwis/gw}{NWISWeb}.
 }
 
 \value{
@@ -81,7 +81,7 @@ Returns an object of \code{\link{SpatialPointsDataFrame-class}} with the followi
 \author{J.C. Fisher}
 
 \seealso{
-\code{\link{read.table}}, \code{\link{as.POSIXct}}, \code{\link[rgdal]{CRS}}
+\code{\link{read.table}}, \code{\link{as.POSIXct}}
 }
 
 \examples{

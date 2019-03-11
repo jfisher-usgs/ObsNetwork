@@ -22,7 +22,7 @@ Geographic coordinates are in units of meters, in conformance with the North Ame
 }
 
 \source{
-The National Elevation Dataset (\href{http://ned.usgs.gov/}{NED}) 1-arc-second raster.
+The National Elevation Dataset (\href{https://www.usgs.gov/core-science-systems/national-geospatial-program/national-map}{NED}) 1-arc-second raster.
 Dataset resampled to 10 arc-seconds using a cubic convolution assignment.
 All other data processing is shown in \sQuote{Examples} section.
 }

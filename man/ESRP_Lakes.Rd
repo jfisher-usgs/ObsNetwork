@@ -20,7 +20,7 @@ Geographic coordinates are in units of decimal degrees, and in conformance with 
 }
 
 \source{
-Idaho Department of Water Resources (\href{http://www.idwr.idaho.gov/GeographicInfo/GISdata/gis_data.htm}{IDWR}).
+Idaho Department of Water Resources (\href{https://data-idwr.opendata.arcgis.com/pages/gis-data}{IDWR}).
 }
 
 \examples{

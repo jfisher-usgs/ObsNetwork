@@ -7,7 +7,7 @@
 \title{Outline of the Idaho National Laboratory}
 
 \description{
-The political boundary of the Idaho National Laboratory (\href{http://en.wikipedia.org/wiki/Idaho_National_Laboratory}{INL}).
+The political boundary of the Idaho National Laboratory (\href{https://en.wikipedia.org/wiki/Idaho_National_Laboratory}{INL}).
 }
 
 \usage{
@@ -20,7 +20,7 @@ Geographic coordinates are in units of decimal degrees, and in conformance with 
 }
 
 \source{
-\href{http://id.water.usgs.gov/projects/INL}{U.S. Geological Survey-INL Project Office}.
+\href{https://www.usgs.gov/centers/id-water/science/idaho-national-laboratory-project-office}{U.S. Geological Survey-INL Project Office}.
 }
 
 \examples{

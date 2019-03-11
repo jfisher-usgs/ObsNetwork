@@ -19,7 +19,8 @@ An object of \code{\link{SpatialPointsDataFrame-class}} with 335 points (coordin
 Geographic coordinates are in units of decimal degrees, and in conformance with the North American Datum of 1983 (NAD 83).
 This data set has the following variables:
 \describe{
-\item{site.no}{is a unique numerical identifier for each well site, for example \href{http://waterdata.usgs.gov/id/nwis/inventory/?site_no=435339112444601}{435339112444601}.}
+\item{site.no}{is a unique numerical identifier for each well site,
+  for example \href{https://waterdata.usgs.gov/id/nwis/inventory/?site_no=435339112444601}{435339112444601}.}
 \item{var1}{is the median water-level elevation for calendar year 2008, in meters above the North American Vertical Datum of 1988 (NAVD 88).}
 \item{var1.acy}{is the mean measurement accuracy of water-level elevations, in meters, for calendar year 2008.}
 \item{var1.sd}{is the standard deviation of water-level elevations, in meters, for entire period of record; duration varies for each well site.}
@@ -42,8 +43,9 @@ This data set has the following variables:
 }
 
 \source{
-The National Water Information System (\href{http://waterdata.usgs.gov/nwis}{NWIS}); accessed January 2013 using \href{https://github.com/jfisher-usgs/RNWIS}{RNWIS} (version 0.1-8).
-The software \href{http://www.ngs.noaa.gov/PC_PROD/VERTCON/}{VERTCON} (version 2.1) was used to convert National Geodetic Vertical Datum of 1929 (NGVD 29) heights to NAVD 88.
+The National Water Information System (\href{https://waterdata.usgs.gov/nwis}{NWIS});
+accessed January 2013 using \href{https://github.com/jfisher-usgs/RNWIS}{RNWIS} (version 0.1-8).
+The software \href{https://www.ngs.noaa.gov/PC_PROD/VERTCON/}{VERTCON} (version 2.1) was used to convert National Geodetic Vertical Datum of 1929 (NGVD 29) heights to NAVD 88.
 The final data table was constructed using the \code{\link{ReadNWISData}} pre-processing function.
 }
 
