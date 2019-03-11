@@ -3,13 +3,18 @@
 language: r
 sudo: required
 dist: trusty
-cache: packages
+cache:
+  - ccache
+
 r:
   - release
   - devel
+  - oldrel
 
 addons:
   apt:
+    sources:
+      - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
     packages:
       - libgdal-dev
       - libproj-dev
