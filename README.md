@@ -13,13 +13,13 @@ and its dependencies from [CRAN](https://cran.r-project.org/), using the followi
 
 ```r
 repos <- c("https://jfisher-usgs.github.io/R", "https://cloud.r-project.org/")
-install.packages("ObsNetwork", repos = repos)
+install.packages("ObsNetwork", repos = repos, dependencies = TRUE)
 ```
 
-Or use **devtools** to install the development version.
+Or use **remotes** to install the development version.
 
 ```r
-devtools::install_github("jfisher-usgs/ObsNetwork")
+remotes::install_github("jfisher-usgs/ObsNetwork", dependencies = TRUE)
 ```
 
 ## Run
@@ -43,15 +43,12 @@ Please consider reporting bugs and asking questions on the
 
 ## Disclaimer
 
-This information is preliminary or provisional and is subject to revision.
-It is being provided to meet the need for timely best science.
-The information has not received final approval by the U.S. Geological Survey (USGS)
-and is provided on the condition that neither the USGS nor the U.S. Government
-shall be held liable for any damages resulting from the authorized or unauthorized use of the information.
-
-Although this software program has been used by the U.S. Geological Survey (USGS),
-no warranty, expressed or implied, is made by the USGS or the U.S. Government
-as to the accuracy and functioning of the program and related program material
-nor shall the fact of distribution constitute any such warranty,
-and no responsibility is assumed by the USGS in connection therewith.
-
+This software has been approved for release by the U.S. Geological Survey
+(USGS). Although the software has been subjected to rigorous review, the USGS
+reserves the right to update the software as needed pursuant to further analysis
+and review. No warranty, expressed or implied, is made by the USGS or the U.S.
+Government as to the functionality of the software and related material nor
+shall the fact of release constitute any such warranty. Furthermore, the
+software is released on condition that neither the USGS nor the U.S. Government
+shall be held liable for any damages resulting from its authorized or
+unauthorized use.

@@ -1,6 +1,6 @@
 Package: ObsNetwork
 Title: Optimization of Observation Networks
-Version: 1.0.0.9000
+Version: 1.0.1
 Authors@R: person(given=c("Jason", "C."), family="Fisher", role=c("aut", "cre"), email="jfisher@usgs.gov")
 Description: Evaluates and optimizes long-term monitoring networks using a
   kriging-based genetic algorithm method.

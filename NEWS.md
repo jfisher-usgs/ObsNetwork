@@ -1,4 +1,6 @@
-# ObsNetwork 1.0.0.9000
+# ObsNetwork 1.0.1
+
+- Update outdated URLs
 
 - Change NEWS file to markdown format.
 
