@@ -1,20 +1,26 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
 language: r
-sudo: required
-dist: trusty
-cache:
-  - ccache
+sudo: false
+cache: packages
 
 r:
   - release
   - devel
-  - oldrel
 
 addons:
   apt:
     sources:
       - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
     packages:
-      - libgdal-dev
+      - libprotobuf-dev
+      - protobuf-compiler
+      - libv8-3.14-dev
+      - libjq-dev
+      - libudunits2-dev
       - libproj-dev
+      - libgeos-dev
+      - libspatialite-dev
+      - libgdal-dev
+      - libjson-c-dev
+      - libnetcdf-dev
